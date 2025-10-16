@@ -37,12 +37,11 @@ public class Game extends Application {
         scene.setOnKeyPressed(e -> paddle.onKeyPressed(e.getCode()));
         scene.setOnKeyReleased(e -> paddle.onKeyReleased(e.getCode()));
 
-        // Khởi tạo GameLoop
         GameLoop loop = new GameLoop(this);
         loop.start();
     }
 
-    // --- Update: cập nhật logic game ---
+
     public void update(double deltaTime) {
         paddle.update(deltaTime, canvas.getWidth());
     }
