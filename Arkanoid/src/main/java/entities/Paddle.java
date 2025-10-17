@@ -6,35 +6,25 @@ import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
 
 public class Paddle {
-
-    private double x, y, width, height;
-    private double speed = 500;
+    private double x, y, width, height, speed = 400;
     private boolean moveLeft, moveRight;
 
     public Paddle(double x, double y, double width, double height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        this.x = x; this.y = y; this.width = width; this.height = height;
     }
 
-    // Cập nhật vị trí
-    public void update(double deltaTime, double screenWidth) {
+    public void update(double deltaTime) {
         if (moveLeft) x -= speed * deltaTime;
         if (moveRight) x += speed * deltaTime;
-
-        // Không cho paddle ra ngoài màn hình
         if (x < 0) x = 0;
-        if (x + width > screenWidth) x = screenWidth - width;
+        if (x + width > 800) x = 800 - width;
     }
 
-    // Vẽ paddle
     public void render(GraphicsContext gc) {
-        gc.setFill(Color.GREEN);
+        gc.setFill(Color.LIGHTBLUE);
         gc.fillRect(x, y, width, height);
     }
 
-    // Xử lý phím
     public void onKeyPressed(KeyCode code) {
         if (code == KeyCode.LEFT) moveLeft = true;
         if (code == KeyCode.RIGHT) moveRight = true;
@@ -45,9 +35,7 @@ public class Paddle {
         if (code == KeyCode.RIGHT) moveRight = false;
     }
 
-    public Rectangle2D getBoundary() {
+    public Rectangle2D getBounds() {
         return new Rectangle2D(x, y, width, height);
     }
 }
-
-

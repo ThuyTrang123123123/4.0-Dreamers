@@ -1,53 +1,85 @@
 package core;
 
 import engine.GameLoop;
+import entities.Ball;
+import entities.bricks.Brick;
 import entities.Paddle;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Game extends Application {
     private Canvas canvas;
     private GraphicsContext gc;
     private Paddle paddle;
+    private Ball ball;
+    private List<Brick> bricks;
 
     @Override
     public void start(Stage primaryStage) {
-        double width = 800;
-        double height = 600;
-
-        // Canvas để vẽ game
-        canvas = new Canvas(width, height);
+        canvas = new Canvas(800, 600);
         gc = canvas.getGraphicsContext2D();
 
-        // Khởi tạo Paddle
-        paddle = new Paddle(width / 2 - 50, height - 40, 100, 20);
+        paddle = new Paddle(350, 550, 100, 15);
+        ball = new Ball(395, 530, 10, 200);
+        bricks = new ArrayList<>();
 
-        StackPane root = new StackPane(canvas);
-        Scene scene = new Scene(root, width, height);
-        primaryStage.setTitle("Arkanoid");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        // Tạo hàng gạch
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 10; col++) {
+                bricks.add(new Brick(60 + col * 70, 50 + row * 30, 60, 20));
+            }
+        }
 
-        // Bắt sự kiện phím
+        Scene scene = new Scene(new StackPane(canvas));
         scene.setOnKeyPressed(e -> paddle.onKeyPressed(e.getCode()));
         scene.setOnKeyReleased(e -> paddle.onKeyReleased(e.getCode()));
 
-        GameLoop loop = new GameLoop(this);
-        loop.start();
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Arkanoid - JavaFX Edition");
+        primaryStage.show();
+
+        new GameLoop(this).start();
     }
 
-
     public void update(double deltaTime) {
-        paddle.update(deltaTime, canvas.getWidth());
+        paddle.update(deltaTime);
+        ball.update(deltaTime);
+
+        // Va chạm tường
+        if (ball.getX() <= 0 || ball.getX() + ball.getRadius() * 2 >= 800)
+            ball.reverseX();
+        if (ball.getY() <= 0)
+            ball.reverseY();
+
+        // Va chạm paddle
+        if (ball.getBounds().intersects(paddle.getBounds()))
+            ball.reverseY();
+
+        // Va chạm gạch
+        bricks.removeIf(brick -> {
+            if (ball.getBounds().intersects(brick.getBounds())) {
+                ball.reverseY();
+                return true;
+            }
+            return false;
+        });
     }
 
     public void render() {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        // Vẽ nền đen
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
         paddle.render(gc);
+        ball.render(gc);
+        bricks.forEach(brick -> brick.render(gc));
     }
 }
