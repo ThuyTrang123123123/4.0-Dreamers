@@ -19,6 +19,11 @@ public class InGame {
     private Label livesLabel;
     private int score = 0;
     private int lives = 3;
+    private Canvas canvas;
+
+    public InGame() {
+        this.canvas = canvas;
+    }
 
     public Scene create(Stage stage) {
 

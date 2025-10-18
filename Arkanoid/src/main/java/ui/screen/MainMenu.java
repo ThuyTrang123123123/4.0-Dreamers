@@ -1,5 +1,6 @@
 package ui.screen;
 
+import core.Game;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -12,7 +13,11 @@ public class MainMenu {
         root.setStyle("-fx-background-color: #" + colorToHex(Colors.BACKGROUND) + "; -fx-alignment: center;");
 
         ButtonUI playBtn = new ButtonUI("Play");
-        playBtn.setOnAction(e -> stage.setScene(new ui.screen.InGame().create(stage)));
+        playBtn.setOnAction(e -> {
+            Game game = new Game();
+            stage.setScene(game.createGamescene(stage));
+            stage.show();
+        });
 
         ButtonUI exitBtn = new ButtonUI("Exit");
         exitBtn.setOnAction(e -> stage.close());
