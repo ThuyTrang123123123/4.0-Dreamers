@@ -15,3 +15,6 @@ A - TUẦN 1:
 - Giao diện theo tông pastel, nhẹ nhàng, giống My Talking Angela. (Hồng)
 
 - Chạy thử được Canvas gameplay + UI trong 1 Scene.
+
++ Merge với Nhi
+  
