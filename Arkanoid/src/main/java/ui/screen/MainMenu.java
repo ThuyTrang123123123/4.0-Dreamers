@@ -1,39 +1,27 @@
 package ui.screen;
 
-import core.Game;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
+import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import ui.theme.Colors;
+import ui.widgets.ButtonUI;
 
 public class MainMenu {
-    private final Game game;
+    public Scene create(Stage stage) {
+        VBox root = new VBox(20);
+        root.setStyle("-fx-background-color: #" + colorToHex(Colors.BACKGROUND) + "; -fx-alignment: center;");
 
-    public MainMenu(Game game) {
-        this.game = game;
+        ButtonUI playBtn = new ButtonUI("Play");
+        playBtn.setOnAction(e -> stage.setScene(new ui.screen.InGame().create(stage)));
+
+        ButtonUI exitBtn = new ButtonUI("Exit");
+        exitBtn.setOnAction(e -> stage.close());
+
+        root.getChildren().addAll(playBtn, exitBtn);
+        return new Scene(root, 800, 600);
     }
 
-    /**
-     * Tạo và trả về layout cho màn hình menu.
-     * @return Một Parent node chứa toàn bộ giao diện của menu.
-     */
-    public Parent createContent() {
-        VBox root = new VBox(20); // Layout xếp dọc, khoảng cách 20
-        root.setAlignment(Pos.CENTER);
-        root.setStyle("-fx-background-color: #FFC0CB;"); // Màu hồng pastel
-
-        Button playButton = new Button("Bắt Đầu");
-        playButton.setFont(Font.font("Arial", 24));
-        playButton.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill: #E06487;");
-
-        // Xử lý sự kiện khi nhấn nút
-        playButton.setOnAction(event -> {
-            InGame inGameScreen = new InGame(game);
-            game.setScreen(inGameScreen.createContent()); // Chuyển sang màn hình InGame
-        });
-
-        root.getChildren().add(playButton);
-        return root;
+    private String colorToHex(javafx.scene.paint.Color color) {
+        return color.toString().substring(2, 8);
     }
 }
