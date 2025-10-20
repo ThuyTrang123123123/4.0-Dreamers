@@ -1,5 +1,6 @@
 package ui.screen;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -69,5 +70,22 @@ public class InGame {
 
     private String colorToHex(javafx.scene.paint.Color color) {
         return color.toString().substring(2, 8);
+    }
+
+    public HBox createHUD() {
+        scoreLabel = new Label("Score: " + score);
+        scoreLabel.setFont(Fonts.main(18));
+        scoreLabel.setTextFill(Colors.TEXT);
+
+        livesLabel = new Label("Lives: " + lives);
+        livesLabel.setFont(Fonts.main(18));
+        livesLabel.setTextFill(Colors.TEXT);
+
+        HBox hudBar = new HBox(40, scoreLabel, livesLabel);
+        hudBar.setAlignment(Pos.TOP_LEFT);
+        hudBar.setPadding(new Insets(10));
+        hudBar.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 8;");
+        hudBar.setMouseTransparent(true); // không chặn input cho gameplay
+        return hudBar;
     }
 }

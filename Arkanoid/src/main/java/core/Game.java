@@ -5,12 +5,15 @@ import entities.Ball;
 import entities.bricks.Brick;
 import entities.Paddle;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import ui.screen.InGame;
 import ui.screen.MainMenu;
 
 import java.util.ArrayList;
@@ -39,10 +42,15 @@ public class Game extends Application {
             }
         }
 
-        Scene scene = new Scene(new StackPane(canvas));
+        InGame hudLayer = new InGame();
+        HBox hud = hudLayer.createHUD();
+
+        StackPane root = new StackPane(canvas, hud);
+        StackPane.setAlignment(hud, Pos.TOP_LEFT); // HUD ở trên cùng góc trái
+
+        Scene scene = new Scene(root, 800, 600);
         scene.setOnKeyPressed(e -> paddle.onKeyPressed(e.getCode()));
         scene.setOnKeyReleased(e -> paddle.onKeyReleased(e.getCode()));
-
 
         new GameLoop(this).start();
 
