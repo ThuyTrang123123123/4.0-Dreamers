@@ -1,6 +1,5 @@
 package ui.screen;
 
-public class MainMenu {
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -26,4 +25,3 @@ public class MainMenu {
         return color.toString().substring(2, 8);
     }
 }
-
