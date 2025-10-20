@@ -1,51 +1,91 @@
 package core;
 
+import engine.GameLoop;
+import entities.Ball;
+import entities.bricks.Brick;
+import entities.Paddle;
 import javafx.application.Application;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import ui.screen.MainMenu; // Import màn hình menu chính
+import ui.screen.MainMenu;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Game extends Application {
-    private Stage primaryStage;
+    private Canvas canvas;
+    private GraphicsContext gc;
+    private Paddle paddle;
+    private Ball ball;
+    private List<Brick> bricks;
 
-    @Override
-    public void start(Stage stage) {
-        this.primaryStage = stage;
-        primaryStage.setTitle("Arkanoid - 4.0 Dreamers");
+    public Scene createGamescene(Stage stage) {
 
-        // Bắt đầu game bằng cách hiển thị MainMenu
-        MainMenu mainMenu = new MainMenu(this);
-        setScreen(mainMenu.createContent()); // Lấy layout từ MainMenu và hiển thị
+        canvas = new Canvas(800, 600);
+        gc = canvas.getGraphicsContext2D();
 
-        primaryStage.show();
+        paddle = new Paddle(350, 550, 100, 15);
+        ball = new Ball(395, 530, 10, 200);
+        bricks = new ArrayList<>();
+
+        // Tạo hàng gạch
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 10; col++) {
+                bricks.add(new Brick(60 + col * 70, 50 + row * 30, 60, 20));
+            }
+        }
+
+        Scene scene = new Scene(new StackPane(canvas));
+        scene.setOnKeyPressed(e -> paddle.onKeyPressed(e.getCode()));
+        scene.setOnKeyReleased(e -> paddle.onKeyReleased(e.getCode()));
+
+
+        new GameLoop(this).start();
+
+        return scene;
     }
 
-    /**
-     * Hàm quan trọng để đổi màn hình (Scene).
-     * @param screenNode Layout gốc của màn hình mới (ví dụ: VBox, AnchorPane).
-     */
-    public void setScreen(Parent screenNode) {
-        Scene scene = new Scene(screenNode, 800, 600);
-        primaryStage.setScene(scene);
-        screenNode.requestFocus();
-    }
-
-    /**cần viết định nghĩa hàm update,renđer để  có thể gọi trong GameLoop
-     *
-     *
-     */
     public void update(double deltaTime) {
-        // Cập nhật game
+        paddle.update(deltaTime);
+        ball.update(deltaTime);
+
+        // Va chạm tường
+        if (ball.getX() <= 0 || ball.getX() + ball.getRadius() * 2 >= 800)
+            ball.reverseX();
+        if (ball.getY() <= 0)
+            ball.reverseY();
+
+        // Va chạm paddle
+        if (ball.getBounds().intersects(paddle.getBounds()))
+            ball.reverseY();
+
+        // Va chạm gạch
+        bricks.removeIf(brick -> {
+            if (ball.getBounds().intersects(brick.getBounds())) {
+                ball.reverseY();
+                return true;
+            }
+            return false;
+        });
     }
 
     public void render() {
-        // Vẽ game
-    }
+        // Vẽ nền đen
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-    public static void main(String[] args) {
-        launch(args); // Phương thức chuẩn để khởi chạy ứng dụng JavaFX
+        paddle.render(gc);
+        ball.render(gc);
+        bricks.forEach(brick -> brick.render(gc));
+    }
+    @Override
+    public void start(Stage stage) {
+        stage.setTitle("Arkanoid");
+        stage.setScene(new ui.screen.MainMenu().create(stage));
+        stage.show();
     }
 }
