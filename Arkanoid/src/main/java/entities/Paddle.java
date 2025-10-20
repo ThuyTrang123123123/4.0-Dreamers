@@ -10,18 +10,22 @@ public class Paddle {
     private boolean moveLeft, moveRight;
 
     public Paddle(double x, double y, double width, double height) {
-        this.x = x; this.y = y; this.width = width; this.height = height;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
     public void update(double deltaTime) {
         if (moveLeft) x -= speed * deltaTime;
         if (moveRight) x += speed * deltaTime;
+
         if (x < 0) x = 0;
         if (x + width > 800) x = 800 - width;
     }
 
     public void render(GraphicsContext gc) {
-        gc.setFill(Color.LIGHTBLUE);
+        gc.setFill(Color.CYAN);
         gc.fillRect(x, y, width, height);
     }
 
@@ -38,4 +42,9 @@ public class Paddle {
     public Rectangle2D getBounds() {
         return new Rectangle2D(x, y, width, height);
     }
+
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getWidth() { return width; }
+    public double getHeight() { return height; }
 }

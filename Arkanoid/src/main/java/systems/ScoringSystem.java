@@ -21,3 +21,4 @@ public class ScoringSystem {
     public void addScore(int points) { this.score.set(this.score.get() + points); }
     public void loseLife() { this.lives.set(this.lives.get() - 1); }
 }
+

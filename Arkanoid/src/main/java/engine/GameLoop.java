@@ -1,6 +1,5 @@
 // engin/GameLoop.java
 package engine;
-
 import javafx.animation.AnimationTimer;
 import core.Game;
 
