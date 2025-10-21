@@ -9,5 +9,6 @@ public class Colors {
     public static final Color HUD_BG = Color.web("#FFFF88"); // Đen xám
     public static final Color BUTTON = Color.web("#FFD7CC"); //Hồng vừa
     public static final Color SECONDARY = Color.web("#FFB6A4");
+    public static final Color BRICKS = Color.OLIVE;
 //    public static final Color BUTTON = Color.web("#FFB6A4");
 }

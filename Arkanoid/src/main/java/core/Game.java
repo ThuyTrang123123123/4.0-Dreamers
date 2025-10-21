@@ -15,8 +15,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -34,11 +32,11 @@ public class Game extends Application {
     private Ball ball;
     private List<Brick> bricks;
 
-    private World world = new World();
+    private final World world = new World();
 
     public Scene createGamescene(Stage stage) {
 
-        canvas = new Canvas(800, 600);
+        canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         gc = canvas.getGraphicsContext2D();
 
         world.init(canvas);
@@ -74,7 +72,7 @@ public class Game extends Application {
     }
 
     public void render() {
-        gc.setFill(Color.BLACK);
+        gc.setFill(Colors.PRIMARY);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         world.getPaddle().render(gc);

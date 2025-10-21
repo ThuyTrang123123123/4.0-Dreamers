@@ -3,6 +3,7 @@ package entities.bricks;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import ui.theme.Colors;
 
 public class Brick {
     private double x, y, width, height;
@@ -18,7 +19,7 @@ public class Brick {
     // Vẽ gạch
     public void render(GraphicsContext gc) {
         if (!destroyed) {
-            gc.setFill(Color.ORANGE);
+            gc.setFill(Colors.BRICKS);
             gc.fillRect(x, y, width, height);
             gc.setStroke(Color.DARKRED);
             gc.strokeRect(x, y, width, height);
