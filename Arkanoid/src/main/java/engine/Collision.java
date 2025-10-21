@@ -10,16 +10,30 @@ public class Collision {
 
     // Va chạm biên màn hình
     public static void checkWallCollision(Ball ball, double screenWidth, double screenHeight) {
-        if (ball.getLeft() <= 0 || ball.getRight() >= screenWidth) {
+        // Trái
+        if (ball.getLeft() <= 0) {
+            ball.setX(ball.getRadius()); // đẩy ra khỏi tường
             ball.reverseX();
         }
+
+        // Phải
+        if (ball.getRight() >= screenWidth) {
+            ball.setX(screenWidth - ball.getRadius()); // đẩy ra khỏi tường
+            ball.reverseX();
+        }
+
+        // Trên
         if (ball.getTop() <= 0) {
+            ball.setY(ball.getRadius());
             ball.reverseY();
         }
+
+        // Dưới
         if (ball.getBottom() >= screenHeight) {
             ball.setLost(true);
         }
     }
+
 
     // Va chạm với paddle
     public static void checkPaddleCollision(Ball ball, Paddle paddle) {
