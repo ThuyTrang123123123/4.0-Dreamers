@@ -11,6 +11,7 @@ public class Ball {
     private double velocityY;     // vận tốc theo trục Y
     private boolean lost = false; // đánh dấu bóng rơi ra khỏi màn chơi
 
+    // ===== Constructor =====
     public Ball(double x, double y, double radius, double speed) {
         this.x = x;
         this.y = y;
@@ -19,50 +20,45 @@ public class Ball {
         this.velocityY = -speed;
     }
 
-    // Cập nhật vị trí
+    // ===== Getters & Setters =====
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getRadius() { return radius; }
+    public double getVelocityX() { return velocityX; }
+    public double getVelocityY() { return velocityY; }
+    public boolean isLost() { return lost; }
+
+    public void setX(double x) { this.x = x; }
+    public void setY(double y) { this.y = y; }
+    public void setRadius(double radius) { this.radius = radius; }
+    public void setVelocityX(double velocityX) { this.velocityX = velocityX; }
+    public void setVelocityY(double velocityY) { this.velocityY = velocityY; }
+    public void setLost(boolean lost) { this.lost = lost; }
+
+    // ===== Update & Render =====
     public void update(double deltaTime) {
         x += velocityX * deltaTime;
         y += velocityY * deltaTime;
     }
 
-    // Vẽ bóng
     public void render(GraphicsContext gc) {
         gc.setFill(Color.WHITE);
-        gc.fillOval(x, y, radius * 2, radius * 2);
+        gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
     }
 
-    public double getX() { return x; }
-    public double getY() { return y; }
+    // ===== Collision & Bounds =====
+    public Rectangle2D getBounds() {
+        return new Rectangle2D(x - radius, y - radius, radius * 2, radius * 2);
+    }
 
-    // Trả về đường kính
+    public double getLeft()   { return x - radius; }
+    public double getRight()  { return x + radius; }
+    public double getTop()    { return y - radius; }
+    public double getBottom() { return y + radius; }
+
+    // ===== Utility =====
     public double getDiameter() { return radius * 2; }
 
-    // Tọa độ các cạnh của quả bóng
-    public double getLeft() { return x; }
-    public double getRight() { return x + radius * 2; }
-    public double getTop() { return y; }
-    public double getBottom() { return y + radius * 2; }
-
-    // Đảo hướng di chuyển
     public void reverseX() { velocityX = -velocityX; }
     public void reverseY() { velocityY = -velocityY; }
-
-    // Đặt vận tốc theo trục X (chỉ hình thức)
-    public void setVelocityX(double velocityX) {
-        this.velocityX = velocityX;
-    }
-
-    // Đánh dấu bóng đã rơi
-    public void setLost(boolean lost) {
-        this.lost = lost;
-    }
-
-    public boolean isLost() {
-        return lost;
-    }
-
-    // Kiểm tra va chạm
-    public Rectangle2D getBounds() {
-        return new Rectangle2D(x, y, radius * 2, radius * 2);
-    }
 }
