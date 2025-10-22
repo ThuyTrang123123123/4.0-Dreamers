@@ -13,9 +13,27 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+<<<<<<< HEAD
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 3
 }]]></component>
+=======
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "ThuyTrang123123123"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/ThuyTrang123123123/4.0-Dreamers.git",
+    "accountId": "00cf25d9-4776-43b8-a9f2-81dab91b1a04"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+>>>>>>> Trang
   <component name="ProjectId" id="33pr5zJQOrpZTbHj1bs0k0V0G7L" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -26,7 +44,11 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+<<<<<<< HEAD
     "git-widget-placeholder": "MABranch",
+=======
+    "git-widget-placeholder": "master",
+>>>>>>> Trang
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/IntelliJ/4.0-Dreamers",
     "project.structure.last.edited": "SDKs",

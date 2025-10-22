@@ -1,9 +1,11 @@
 package core;
 
+import engine.Collision;
 import engine.GameLoop;
 import entities.Ball;
-import entities.bricks.Brick;
 import entities.Paddle;
+import entities.bricks.Brick;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -11,105 +13,87 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.geometry.Pos;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import ui.screen.InGame;
+import ui.screen.MainMenu;
+import ui.theme.Colors;
+import ui.theme.Fonts;
 
 public class Game extends Application {
     private Canvas canvas;
     private GraphicsContext gc;
-
     private Paddle paddle;
     private Ball ball;
     private List<Brick> bricks;
 
-    private int score = 0;
+    private final World world = new World();
 
-    @Override
-    public void start(Stage primaryStage) {
-        canvas = new Canvas(800, 600);
+    public Scene createGamescene(Stage stage) {
+
+        canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         gc = canvas.getGraphicsContext2D();
 
-        paddle = new Paddle(350, 550, 100, 15);
-        ball = new Ball(395, 530, 10, 250);
-        bricks = new ArrayList<>();
+        world.init(canvas);
 
-        // Tạo hàng gạch
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 10; col++) {
-                bricks.add(new Brick(60 + col * 70, 50 + row * 30, 60, 20));
-            }
-        }
+        InGame hudLayer = new InGame();
+        HBox hud = hudLayer.createHUD();
 
-        Scene scene = new Scene(new StackPane(canvas));
+        StackPane root = new StackPane(canvas, hud);
+        StackPane.setAlignment(hud, Pos.TOP_LEFT); // HUD ở trên cùng góc trái
+
+        Scene scene = new Scene(root, 800, 600);
         scene.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ESCAPE) primaryStage.close();
-            paddle.onKeyPressed(e.getCode());
+            if (e.getCode() == KeyCode.ESCAPE) stage.close();
+            world.getPaddle().onKeyPressed(e.getCode());
         });
-        scene.setOnKeyReleased(e -> paddle.onKeyReleased(e.getCode()));
-
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Arkanoid");
-        primaryStage.show();
+        scene.setOnKeyReleased(e -> world.getPaddle().onKeyReleased(e.getCode()));
 
         new GameLoop(this).start();
+
+        return scene;
     }
 
-    public void update(double deltaTime) {
-        if (ball.isLost()) return; // nếu bóng đã rơi thì ngừng
+    public void update(double dt) {
+        Ball ball = world.getBall();
+        if (ball.isLost()) return;
 
-        paddle.update(deltaTime);
-        ball.update(deltaTime);
+        world.getPaddle().update(dt);
+        ball.update(dt);
 
-        // Va chạm tường
-        if (ball.getLeft() <= 0 || ball.getRight() >= canvas.getWidth())
-            ball.reverseX();
-        if (ball.getTop() <= 0)
-            ball.reverseY();
-
-        // Bóng rơi xuống dưới game over
-        if (ball.getBottom() >= canvas.getHeight()) {
-            ball.setLost(true);
-            System.out.println("GAME OVER!");
-        }
-
-        // Va chạm paddle
-        if (ball.getBounds().intersects(paddle.getBounds())) {
-            ball.reverseY();
-            // Góc đập nhẹ theo vị trí tương đối
-            double hitPos = (ball.getX() + ball.getDiameter()/2) - (paddle.getX() + paddle.getWidth()/2);
-            ball.setVelocityX(hitPos * 2); // thay đổi hướng tùy theo vị trí va chạm
-        }
-
-        // Va chạm gạch
-        for (Brick brick : bricks) {
-            if (!brick.isDestroyed() && ball.getBounds().intersects(brick.getBounds())) {
-                brick.hit();
-                ball.reverseY();
-                score += 10;
-                break;
-            }
-        }
+        Collision.checkWallCollision(ball, canvas.getWidth(), canvas.getHeight());
+        Collision.checkPaddleCollision(ball, world.getPaddle());
+        Collision.checkBrickCollision(ball, world.getBricks());
     }
 
     public void render() {
-        gc.setFill(Color.BLACK);
+        gc.setFill(Colors.PRIMARY);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        // Vẽ các thực thể
-        paddle.render(gc);
-        ball.render(gc);
-        bricks.forEach(brick -> brick.render(gc));
+        world.getPaddle().render(gc);
+        world.getBall().render(gc);
+        world.getBricks().forEach(b -> b.render(gc));
 
-        // Vẽ điểm
-        gc.setFill(Color.WHITE);
-        gc.fillText("Score: " + score, 10, 20);
-
-        // Vẽ thông báo nếu bóng rơi
-        if (ball.isLost()) {
-            gc.setFill(Color.RED);
+        if (world.getBall().isLost()) {
+            gc.setFill(Colors.TEXT);
+            gc.setFont(Fonts.main(18));
             gc.fillText("GAME OVER", 360, 300);
         }
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
+    }
+
+    @Override
+    public void start(Stage stage) {
+        stage.setTitle("Arkanoid");
+        stage.setScene(new ui.screen.MainMenu().create(stage));
+        stage.show();
     }
 }
