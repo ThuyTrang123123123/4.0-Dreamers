@@ -38,6 +38,7 @@ public class Collision {
     // Va chạm với paddle
     public static void checkPaddleCollision(Ball ball, Paddle paddle) {
         if (ball.getBounds().intersects(paddle.getBounds())) {
+            ball.setY(paddle.getY()-paddle.getHeight()/2 - ball.getRadius());
             ball.reverseY();
             double hitPos = (ball.getX() + ball.getDiameter()/2) - (paddle.getX() + paddle.getWidth()/2);
             ball.setVelocityX(hitPos * 2); // thay đổi hướng tùy theo vị trí va chạm
@@ -55,22 +56,48 @@ public class Collision {
         }
     }
 
-    // Xác định hướng phản xạ bóng sau va chạm với gạch
     private static void reflectBall(Ball ball, Brick brick) {
-        double overlapLeft = ball.getRight() - brick.getX();
-        double overlapRight = brick.getX() + brick.getWidth() - ball.getLeft();
-        double overlapTop = ball.getBottom() - brick.getY();
-        double overlapBottom = brick.getY() + brick.getHeight() - ball.getTop();
+        double ballLeft = ball.getLeft();
+        double ballRight = ball.getRight();
+        double ballTop = ball.getTop();
+        double ballBottom = ball.getBottom();
 
-        boolean fromLeft = overlapLeft < overlapRight && overlapLeft < overlapTop && overlapLeft < overlapBottom;
-        boolean fromRight = overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom;
-        boolean fromTop = overlapTop < overlapBottom && overlapTop < overlapLeft && overlapTop < overlapRight;
-        boolean fromBottom = overlapBottom < overlapTop && overlapBottom < overlapLeft && overlapBottom < overlapRight;
+        double brickLeft = brick.getX() - brick.getWidth() / 2;
+        double brickRight = brick.getX() + brick.getWidth() / 2;
+        double brickTop = brick.getY() - brick.getHeight() / 2;
+        double brickBottom = brick.getY() + brick.getHeight() / 2;
 
-        if (fromLeft || fromRight) {
+        // Tính phần giao nhau
+        double overlapLeft = ballRight - brickLeft;
+        double overlapRight = brickRight - ballLeft;
+        double overlapTop = ballBottom - brickTop;
+        double overlapBottom = brickBottom - ballTop;
+
+        double minOverlapX = Math.min(overlapLeft, overlapRight);
+        double minOverlapY = Math.min(overlapTop, overlapBottom);
+
+        // Nếu va chạm theo phương ngang
+        if (minOverlapX < minOverlapY) {
             ball.reverseX();
-        } else if (fromTop || fromBottom) {
+
+            if (overlapLeft < overlapRight) {
+                // Va chạm từ bên trái viên gạch
+                ball.setX(brickLeft - ball.getRadius());
+            } else {
+                // Va chạm từ bên phải viên gạch
+                ball.setX(brickRight + ball.getRadius());
+            }
+        } else {
             ball.reverseY();
+
+            if (overlapTop < overlapBottom) {
+                // Va chạm từ trên xuống
+                ball.setY(brickTop - ball.getRadius());
+            } else {
+                // Va chạm từ dưới lên
+                ball.setY(brickBottom + ball.getRadius());
+            }
         }
     }
+
 }
