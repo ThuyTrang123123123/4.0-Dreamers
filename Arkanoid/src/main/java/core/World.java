@@ -59,7 +59,7 @@ public class World {
         // == tao bonus coin
         bonusCoin = new BonusCoin(
                 Config.SCREEN_WIDTH / 2.0,           // x: giữa màn hình
-                0,           // y: cách đáy 70px (trên paddle)
+                10,
                 Config.BONUSCOIN_RADIUS,                  // bán kính
                 Config.BONUSCOIN_SPEED                    // tốc độ
         );
