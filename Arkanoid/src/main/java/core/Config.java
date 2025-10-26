@@ -5,7 +5,7 @@ public class Config {
     public static final int SCREEN_HEIGHT = 600;
 
     public static final int BRICK_ROWS = 5;
-    public static final int BRICK_COLS = 10;
+    public static final int BRICK_COLS = 1;
 
     public static final double PADDLE_WIDTH = 100;
     public static final double PADDLE_HEIGHT = 15;
