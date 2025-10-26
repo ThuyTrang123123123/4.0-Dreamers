@@ -10,7 +10,6 @@ public class Brick {
     private double width, height;
     private boolean destroyed = false; // Trạng thái gạch (đã bị vỡ hay chưa)
 
-    // ===== Constructor =====
     public Brick(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
@@ -18,7 +17,6 @@ public class Brick {
         this.height = height;
     }
 
-    // ===== Getter / Setter =====
     public double getX() { return x; }
     public void setX(double x) { this.x = x; }
 
@@ -34,7 +32,7 @@ public class Brick {
     public boolean isDestroyed() { return destroyed; }
     public void setDestroyed(boolean destroyed) { this.destroyed = destroyed; }
 
-    // ===== Logic =====
+    // Logic
 
     // Khi trúng
     public void hit() {
