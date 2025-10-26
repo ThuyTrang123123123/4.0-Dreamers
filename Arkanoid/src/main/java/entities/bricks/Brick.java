@@ -9,16 +9,12 @@ public class Brick {
     private double x, y;         // Tọa độ tâm viên gạch
     private double width, height;
     private boolean destroyed = false; // Trạng thái gạch (đã bị vỡ hay chưa)
-
-    // ===== Constructor =====
     public Brick(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
     }
-
-    // ===== Getter / Setter =====
     public double getX() { return x; }
     public void setX(double x) { this.x = x; }
 
@@ -34,19 +30,13 @@ public class Brick {
     public boolean isDestroyed() { return destroyed; }
     public void setDestroyed(boolean destroyed) { this.destroyed = destroyed; }
 
-    // ===== Logic =====
-
-    // Khi trúng
     public void hit() {
         destroyed = true;
     }
-
-    // Vùng bao quanh gạch (dùng cho va chạm)
     public Rectangle2D getBounds() {
         return new Rectangle2D(x - width / 2, y - height / 2, width, height);
     }
 
-    // Vẽ gạch từ tâm
     public void render(GraphicsContext gc) {
         if (!destroyed) {
             double drawX = x - width / 2;

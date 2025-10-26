@@ -6,6 +6,7 @@ module core {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
+    requires java.desktop;
 
     // Cho phép JavaFX truy cập các class controller
     opens core to javafx.fxml;
