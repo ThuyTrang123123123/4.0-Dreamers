@@ -7,9 +7,14 @@ import entities.bricks.Brick;
 
 import java.util.List;
 
+/**
+ * Collision - Xử lý va chạm trong game
+ */
 public class Collision {
 
-    // Va chạm biên màn hình
+    /**
+     * Va chạm với biên màn hình
+     */
     public static void checkWallCollision(Ball ball, double screenWidth, double screenHeight) {
         // Trái
         if (ball.getLeft() <= 0) {
@@ -29,44 +34,57 @@ public class Collision {
             ball.reverseY();
         }
 
-        // Dưới
+        // Dưới (bóng rơi)
         if (ball.getBottom() >= screenHeight) {
             ball.setLost(true);
         }
     }
 
-    // Va chạm với paddle
+    /**
+     * Va chạm với paddle
+     */
     public static void checkPaddleCollision(Ball ball, Paddle paddle) {
         if (ball.getBounds().intersects(paddle.getBounds())) {
-            // Đẩy bóng lên trên paddle
-            ball.setY(paddle.getY() - paddle.getHeight() / 2 - ball.getRadius());
+            ball.setY(paddle.getY() - ball.getDiameter());
             ball.reverseY();
 
-            // Thay đổi góc dựa vào vị trí va chạm
-            double hitPos = (ball.getX()) - (paddle.getX());
+            // Thay đổi hướng bóng tùy vị trí va chạm
+            double hitPos = (ball.getX() + ball.getDiameter()/2) - (paddle.getX() + paddle.getWidth()/2);
             ball.setVelocityX(hitPos * 2);
         }
     }
 
-    // Va chạm với gạch - có tích hợp scoring
+    /**
+     * Va chạm với gạch
+     * ⭐ QUAN TRỌNG: Truyền thêm World để cập nhật scoring và achievements
+     */
     public static void checkBrickCollision(Ball ball, List<Brick> bricks, World world) {
         for (Brick brick : bricks) {
             if (!brick.isDestroyed() && ball.getBounds().intersects(brick.getBounds())) {
+                // Phá gạch
                 brick.hit();
 
-                // Cộng điểm: 1 gạch = 1 điểm
-                world.getScoring().addScore(1);
+                // ⭐ Cộng điểm và tăng số gạch đã phá
+                world.getScoring().addScore(1);                    // +10 điểm mỗi gạch
+                world.getScoring().incrementBricksDestroyed();      // +1 gạch phá
 
-                // Tăng số gạch đã phá (tự động thưởng mạng mỗi 3 gạch)
-                world.getScoring().incrementBricksDestroyed();
+                // ⭐ Kiểm tra thành tựu ngay sau khi phá gạch
+                world.getAchievements().checkAchievements(
+                        world.getScoring(),
+                        world.getLevel().getCurrentLevel()
+                );
 
+                // Phản xạ bóng
                 reflectBall(ball, brick);
-                break;
+
+                break; // Chỉ xử lý 1 gạch mỗi frame
             }
         }
     }
 
-    // Xác định hướng phản xạ bóng
+    /**
+     * Xác định hướng phản xạ bóng sau va chạm với gạch
+     */
     private static void reflectBall(Ball ball, Brick brick) {
         double overlapLeft = ball.getRight() - brick.getX();
         double overlapRight = brick.getX() + brick.getWidth() - ball.getLeft();

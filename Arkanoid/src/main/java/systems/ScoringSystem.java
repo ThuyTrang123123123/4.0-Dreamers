@@ -79,7 +79,7 @@ public class ScoringSystem {
      * Tăng số lượng gạch đã phá lên 1
      * Gọi mỗi khi phá được 1 viên gạch
      *
-     * ⭐ Cơ chế thưởng mạng: Cứ mỗi 3 viên gạch phá → +1 mạng
+     * Cơ chế thưởng mạng: Cứ mỗi 3 viên gạch phá → +1 mạng
      */
     public void incrementBricksDestroyed() {
         int currentBricks = this.bricksDestroyed.get();

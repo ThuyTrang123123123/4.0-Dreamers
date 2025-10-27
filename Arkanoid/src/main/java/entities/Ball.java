@@ -7,9 +7,13 @@ import javafx.scene.paint.Color;
 public class Ball {
     private double x, y;
     private double radius;
-    private double velocityX;     // vận tốc theo trục X
-    private double velocityY;     // vận tốc theo trục Y
-    private boolean lost = false; // đánh dấu bóng rơi ra khỏi màn chơi
+    private double velocityX;
+    private double velocityY;
+    private boolean lost = false;
+
+    // Trạng thái dính với paddle
+    private boolean stickToPaddle = true;  // Bắt đầu với trạng thái dính
+    private double stickOffsetX = 0;        // Khoảng cách từ tâm paddle
 
     // ===== Constructor =====
     public Ball(double x, double y, double radius, double speed) {
@@ -27,6 +31,7 @@ public class Ball {
     public double getVelocityX() { return velocityX; }
     public double getVelocityY() { return velocityY; }
     public boolean isLost() { return lost; }
+    public boolean isStickToPaddle() { return stickToPaddle; }
 
     public void setX(double x) { this.x = x; }
     public void setY(double y) { this.y = y; }
@@ -34,11 +39,83 @@ public class Ball {
     public void setVelocityX(double velocityX) { this.velocityX = velocityX; }
     public void setVelocityY(double velocityY) { this.velocityY = velocityY; }
     public void setLost(boolean lost) { this.lost = lost; }
+    public void setStickToPaddle(boolean stick) { this.stickToPaddle = stick; }
 
     // ===== Update & Render =====
     public void update(double deltaTime) {
+        // Nếu đang dính với paddle thì KHÔNG di chuyển
+        if (stickToPaddle) {
+            return;
+        }
+
+        // Di chuyển bình thường
         x += velocityX * deltaTime;
         y += velocityY * deltaTime;
+
+        // Giữ tốc độ ổn định
+        normalizeSpeed();
+    }
+
+    /**
+     * Giữ tốc độ bóng ổn định
+     * Đảm bảo tốc độ không tăng/giảm sau nhiều va chạm
+     */
+    private void normalizeSpeed() {
+        double currentSpeed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+        double targetSpeed = core.Config.BALL_SPEED;
+
+        // Nếu tốc độ sai lệch > 10%, điều chỉnh lại
+        if (Math.abs(currentSpeed - targetSpeed) > targetSpeed * 0.1) {
+            double ratio = targetSpeed / currentSpeed;
+            velocityX *= ratio;
+            velocityY *= ratio;
+        }
+    }
+
+    /**
+     *Cập nhật vị trí bóng khi dính với paddle
+     * Gọi method này từ Game.java khi bóng đang stick
+     */
+    public void updateStickPosition(double paddleX, double paddleY) {
+        if (stickToPaddle) {
+            this.x = paddleX + stickOffsetX;
+            this.y = paddleY - radius - 5;  // Đặt bóng trên paddle (cách 5px)
+        }
+    }
+
+    /**
+     * Bắn bóng (gọi khi nhấn SPACE)
+     */
+    public void launch() {
+        if (stickToPaddle) {
+            stickToPaddle = false;
+
+            // Luôn dùng tốc độ cố định từ Config
+            double speed = core.Config.BALL_SPEED;  // Lấy từ Config
+
+            // Bắn bóng lên trên với góc ngẫu nhiên nhẹ
+            double angle = -75 + (Math.random() * 30);  // Góc từ -75° đến -45°
+            velocityX = speed * Math.sin(Math.toRadians(angle));
+            velocityY = speed * Math.cos(Math.toRadians(angle));
+
+            System.out.println("🚀 Bóng đã được bắn! Tốc độ: " + speed);
+        }
+    }
+
+    /**
+     * Reset bóng về trạng thái stick (khi mất mạng hoặc chuyển level)
+     * Bóng sẽ DÍNH trên paddle và KHÔNG tự động bay
+     */
+    public void resetToStick(double paddleX, double paddleY) {
+        stickToPaddle = true;      // Bật chế độ dính
+        stickOffsetX = 0;           // Dính ở giữa paddle
+        this.x = paddleX;
+        this.y = paddleY - radius - 5;
+        this.lost = false;
+
+        // Không cần set velocity ở đây, launch() sẽ xử lý
+
+        System.out.println("⚪ Bóng đã reset về trạng thái STICK - Nhấn SPACE để bắn!");
     }
 
     public void render(GraphicsContext gc) {
