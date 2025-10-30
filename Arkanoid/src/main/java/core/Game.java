@@ -20,39 +20,28 @@ import ui.screen.MainMenu;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 
-/**
- * Game - Class chính điều khiển toàn bộ game
- */
 public class Game extends Application {
     private Canvas canvas;
     private GraphicsContext gc;
     private final World world = new World();
     private InGame hudLayer;
     private boolean gamePaused = false;
+    private boolean gameWon = false;  // ⭐ THÊM: Trạng thái thắng game
 
-    /**
-     * Tạo scene gameplay (màn chơi chính)
-     */
     public Scene createGamescene(Stage stage) {
-        // === Khởi tạo Canvas ===
         canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         gc = canvas.getGraphicsContext2D();
 
-        // === Khởi tạo world ===
         world.init(canvas);
 
-        // === Tạo HUD ===
         hudLayer = new InGame(world.getScoring(), world.getAchievements());
         HBox hud = hudLayer.createHUD();
 
-        // === Ghép Canvas và HUD thành StackPane ===
         StackPane root = new StackPane(canvas, hud);
         StackPane.setAlignment(hud, Pos.TOP_LEFT);
 
-        // === Khởi tạo Notification System ===
         world.getAchievements().initNotificationSystem(root);
 
-        // === Đăng ký listeners ===
         world.getAchievements().addListener(achievement -> {
             System.out.println("🎉 THÀNH TỰU MỞ KHÓA: " + achievement.getName());
             System.out.println("   " + achievement.getDescription());
@@ -65,23 +54,20 @@ public class Game extends Application {
             System.out.println("   Điểm hiện tại: " + score);
         });
 
-        // === Tạo Scene và xử lý input ===
         Scene scene = new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
 
         scene.setOnKeyPressed(e -> {
-            // ESC: Pause và quay về menu
             if (e.getCode() == KeyCode.ESCAPE) {
                 gamePaused = true;
                 stage.setScene(new MainMenu().create(stage));
             }
 
-            // R: Restart game
+            // ⭐ R: Restart (cả khi game over hoặc thắng game)
             if (e.getCode() == KeyCode.R &&
-                    (world.getBall().isLost() || world.getScoring().isGameOver())) {
+                    (world.getBall().isLost() || world.getScoring().isGameOver() || gameWon)) {
                 restartGame();
             }
 
-            //SPACE: Bắn bóng
             if (e.getCode() == KeyCode.SPACE) {
                 world.getBall().launch();
             }
@@ -91,73 +77,64 @@ public class Game extends Application {
 
         scene.setOnKeyReleased(e -> world.getPaddle().onKeyReleased(e.getCode()));
 
-        // Phát nhạc nền
         AudioSystem.getInstance().playBackgroundMusic("background.wav");
 
-        // === Khởi động game loop ===
         new GameLoop(this).start();
 
         return scene;
     }
 
-    /**
-     * Update - Cập nhật logic game mỗi frame
-     */
     public void update(double dt) {
-        if (gamePaused) return;
+        if (gamePaused || gameWon) return;  // ⭐ Dừng update nếu thắng game
 
         Ball ball = world.getBall();
 
-        // Nếu bóng đang dính với paddle, cập nhật vị trí theo paddle
         if (ball.isStickToPaddle()) {
             ball.updateStickPosition(world.getPaddle().getX(), world.getPaddle().getY());
         }
 
-        // ===== Xử lý khi bóng rơi xuống đáy =====
         if (ball.isLost()) {
             world.getScoring().loseLife();
 
             if (world.getScoring().isGameOver()) {
                 return;
             } else {
-                // Reset bóng về trạng thái stick trên paddle
                 ball.resetToStick(world.getPaddle().getX(), world.getPaddle().getY());
             }
         }
 
-        // ===== Update vị trí các đối tượng =====
         world.getPaddle().update(dt);
-        ball.update(dt);  // Chỉ di chuyển nếu không stick
+        ball.update(dt);
 
-        //Chỉ kiểm tra va chạm khi bóng đã được bắn
         if (!ball.isStickToPaddle()) {
             Collision.checkWallCollision(ball, canvas.getWidth(), canvas.getHeight());
             Collision.checkPaddleCollision(ball, world.getPaddle());
             Collision.checkBrickCollision(ball, world.getBricks(), world);
         }
 
-        // ===== Kiểm tra điều kiện thắng level =====
+        // ⭐ Kiểm tra điều kiện thắng level
         if (world.getLevel().isComplete()) {
-            // Chuyển sang level mới - bóng sẽ tự động stick
-            world.nextLevel();
-
-            // KHÔNG cần set gì thêm, nextLevel() đã xử lý:
-            // - ball.resetToStick() → bóng dính
-            // - stickToPaddle = true → chờ nhấn SPACE
+            // ⭐ Kiểm tra xem đã hoàn thành TẤT CẢ 12 level chưa
+            if (world.getLevel().isGameComplete()) {
+                gameWon = true;
+                System.out.println("🏆🎉 CHÚC MỪNG! BẠN ĐÃ HOÀN THÀNH TẤT CẢ 12 LEVEL!");
+            } else {
+                // Chưa hết game, chuyển level tiếp theo
+                world.nextLevel();
+            }
         }
     }
 
-    /**
-     * Render - Vẽ tất cả mọi thứ lên màn hình
-     */
     public void render() {
         gc.setFill(Colors.PRIMARY);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         gc.setFill(Colors.TEXT);
         gc.setFont(Fonts.main(20));
-        gc.fillText("Level " + world.getLevel().getCurrentLevel(),
-                Config.SCREEN_WIDTH - 120, 30);
+
+        // ⭐ Hiển thị level hiện tại / tổng số level
+        gc.fillText("Level " + world.getLevel().getCurrentLevel() + " / " + world.getLevel().getMaxLevel(),
+                Config.SCREEN_WIDTH - 150, 30);
 
         world.getPaddle().render(gc);
         world.getBall().render(gc);
@@ -166,11 +143,22 @@ public class Game extends Application {
                 .filter(b -> !b.isDestroyed())
                 .forEach(b -> b.render(gc));
 
-        // Hiển thị hướng dẫn khi bóng đang stick
         if (world.getBall().isStickToPaddle()) {
             gc.setFill(Colors.TEXT);
             gc.setFont(Fonts.main(18));
             gc.fillText("Press SPACE to launch ball", 260, 400);
+        }
+
+        // ⭐ Hiển thị màn hình thắng game
+        if (gameWon) {
+            gc.setFill(Colors.TEXT);
+            gc.setFont(Fonts.main(32));
+            gc.fillText("🏆 YOU WIN! 🏆", 280, 260);
+            gc.setFont(Fonts.main(20));
+            gc.fillText("Hoàn thành tất cả 12 level!", 250, 300);
+            gc.setFont(Fonts.main(16));
+            gc.fillText("Final Score: " + world.getScoring().getScore(), 310, 340);
+            gc.fillText("Press R to Restart", 310, 370);
         }
 
         if (world.getScoring().isGameOver()) {
@@ -182,12 +170,10 @@ public class Game extends Application {
         }
     }
 
-    /**
-     * Restart toàn bộ game
-     */
     private void restartGame() {
         world.reset();
         gamePaused = false;
+        gameWon = false;  // ⭐ Reset trạng thái thắng game
     }
 
     public Canvas getCanvas() {
@@ -196,11 +182,10 @@ public class Game extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage.setTitle("Arkanoid");
+        stage.setTitle("Arkanoid - 12 Levels");
         stage.setScene(new MainMenu().create(stage));
         stage.show();
 
-        // Cleanup khi đóng game
         stage.setOnCloseRequest(e -> {
             AudioSystem.getInstance().dispose();
         });

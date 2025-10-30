@@ -113,8 +113,6 @@ public class Ball {
         this.y = paddleY - radius - 5;
         this.lost = false;
 
-        // Không cần set velocity ở đây, launch() sẽ xử lý
-
         System.out.println("⚪ Bóng đã reset về trạng thái STICK - Nhấn SPACE để bắn!");
     }
 
