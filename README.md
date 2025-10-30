@@ -11,4 +11,8 @@ A - TUẦN 1:
 - HiệN HUD
 
 - Vẽ bằng canvas
+
+B - Tuần 2 :
+
+
   
