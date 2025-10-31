@@ -3,45 +3,55 @@ package entities.powerups;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import systems.ScoringSystem;
 
 /**
- * Lớp cơ sở cho tất cả Power-Up
+ * PowerUp cơ bản (rơi xuống khi phá gạch, va vào paddle để kích hoạt).
  */
-public abstract class PowerUp {
+public class PowerUp {
     protected double x, y;
-    protected double width = 20;
-    protected double height = 20;
-    protected double speed = 100;   // pixel / giây
-    protected boolean active = false; // đang rơi hay đã bị ăn
+    protected double radius = 10;
+    protected double speed = 3;
+    protected boolean active = true;
 
     public PowerUp(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    // Logic cơ bản
-    public void update(double deltaTime) {
-        if (!active) return;
-        y += speed * deltaTime; // Rơi xuống
+    public void update() {
+        y += speed;
     }
 
     public void render(GraphicsContext gc) {
         if (!active) return;
-        gc.setFill(getColor());
-        gc.fillOval(x - width / 2, y - height / 2, width, height);
-        gc.setStroke(Color.BLACK);
-        gc.strokeOval(x - width / 2, y - height / 2, width, height);
+        gc.setFill(Color.GOLD);
+        gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
+        gc.setStroke(Color.ORANGE);
+        gc.strokeOval(x - radius, y - radius, radius * 2, radius * 2);
     }
 
     public Rectangle2D getBounds() {
-        return new Rectangle2D(x - width / 2, y - height / 2, width, height);
+        return new Rectangle2D(x - radius, y - radius, radius * 2, radius * 2);
     }
 
-    // Trạng thái
-    public void activate() { active = true; }
-    public void deactivate() { active = false; }
-    public boolean isActive() { return active; }
+    public boolean isActive() {
+        return active;
+    }
 
-    public abstract void applyEffect(Object target); // target có thể là paddle, ball, v.v.
-    protected abstract Color getColor();             // mỗi loại power-up 1 màu riêng
+    public void deactivate() {
+        active = false;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    /**
+     * Hiệu ứng mặc định: tăng mạng
+     */
+    public void applyEffect(ScoringSystem scoring) {
+        scoring.addLife();
+        deactivate();
+    }
 }

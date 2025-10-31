@@ -19,9 +19,9 @@ public class NormalBrick extends Brick {
         if (!isDestroyed()) {
             double drawX = getX() - getWidth() / 2;
             double drawY = getY() - getHeight() / 2;
-            gc.setFill(Color.BLUE);
+            gc.setFill(Color.ORANGE);
             gc.fillRect(drawX, drawY, getWidth(), getHeight());
-            gc.setStroke(Color.DARKBLUE);
+            gc.setStroke(Color.DARKORANGE);
             gc.strokeRect(drawX, drawY, getWidth(), getHeight());
         }
     }

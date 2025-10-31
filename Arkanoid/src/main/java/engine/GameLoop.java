@@ -13,11 +13,16 @@ public class GameLoop extends AnimationTimer {
 
     @Override
     public void handle(long now) {
-        if (lastTime > 0) {
+        final double frameRate = 60.0;
+        final double interval = 1_000_000_000.0 / frameRate; // nanoseconds per frame
+
+        if (now - lastTime >= interval) {
             double deltaTime = (now - lastTime) / 1_000_000_000.0;
             game.update(deltaTime);
             game.render();
+            lastTime = now;
         }
-        lastTime = now;
     }
+
+
 }

@@ -57,6 +57,7 @@ public class Ball {
     public double getBottom() { return y + radius; }
 
     // ===== Utility =====
+    //Diameter : duong kink
     public double getDiameter() { return radius * 2; }
 
     public void reverseX() { velocityX = -velocityX; }
