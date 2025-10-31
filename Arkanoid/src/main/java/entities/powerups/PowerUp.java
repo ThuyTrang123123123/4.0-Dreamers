@@ -1,57 +1,79 @@
 package entities.powerups;
 
-import javafx.geometry.Rectangle2D;
+import core.Config;
+import core.World;
+import entities.Paddle;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import systems.ScoringSystem;
 
 /**
- * PowerUp cơ bản (rơi xuống khi phá gạch, va vào paddle để kích hoạt).
+ * PowerUp - Lớp cơ sở cho tất cả các vật phẩm rơi xuống (Bonus, Buff,...)
+ * Có thể được mở rộng để tạo nhiều loại khác nhau như BonusCoin, ExtraLife,...
  */
-public class PowerUp {
-    protected double x, y;
-    protected double radius = 10;
-    protected double speed = 3;
-    protected boolean active = true;
+public abstract class PowerUp {
+    protected double x, y;           // Tọa độ
+    protected double width, height;  // Kích thước
+    protected double velocityY = 100; // Tốc độ rơi
+    protected Color color;           // Màu hiển thị
+    protected boolean collected = false; // Đã được ăn chưa
+    protected boolean active = true;     // Còn tồn tại trên màn hình không
 
-    public PowerUp(double x, double y) {
+    public PowerUp(double x, double y, double width, double height, Color color) {
         this.x = x;
         this.y = y;
-    }
-
-    public void update() {
-        y += speed;
-    }
-
-    public void render(GraphicsContext gc) {
-        if (!active) return;
-        gc.setFill(Color.GOLD);
-        gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
-        gc.setStroke(Color.ORANGE);
-        gc.strokeOval(x - radius, y - radius, radius * 2, radius * 2);
-    }
-
-    public Rectangle2D getBounds() {
-        return new Rectangle2D(x - radius, y - radius, radius * 2, radius * 2);
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void deactivate() {
-        active = false;
-    }
-
-    public double getY() {
-        return y;
+        this.width = width;
+        this.height = height;
+        this.color = color;
     }
 
     /**
-     * Hiệu ứng mặc định: tăng mạng
+     * Cập nhật vị trí của power-up mỗi frame
      */
-    public void applyEffect(ScoringSystem scoring) {
-        scoring.addLife();
-        deactivate();
+    public void update(double dt) {
+        if (!active) return;
+        y += velocityY * dt;
+        if (y > Config.SCREEN_HEIGHT) {
+            active = false; // rơi ra khỏi màn hình thì biến mất
+        }
     }
+
+    /**
+     * Vẽ power-up
+     */
+    public void render(GraphicsContext gc) {
+        if (!active) return;
+        gc.setFill(color);
+        gc.fillOval(x, y, width, height);
+    }
+
+    /**
+     * Kiểm tra va chạm với paddle
+     */
+    public boolean intersects(Paddle paddle) {
+        return paddle.getX() < x + width && paddle.getX() + paddle.getWidth() > x &&
+                paddle.getY() < y + height && paddle.getY() + paddle.getHeight() > y;
+    }
+
+    /**
+     * Khi paddle ăn được power-up
+     */
+    public void collect(World world) {
+        if (!collected) {
+            collected = true;
+            active = false;
+            onCollected(world);
+        }
+    }
+
+    /**
+     * Hành vi riêng của từng loại power-up khi được ăn
+     */
+    public abstract void onCollected(World world);
+
+    // === Getter / Setter ===
+    public boolean isActive() { return active; }
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getWidth() { return width; }
+    public double getHeight() { return height; }
 }
