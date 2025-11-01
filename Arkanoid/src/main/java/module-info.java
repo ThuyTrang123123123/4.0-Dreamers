@@ -15,12 +15,16 @@ module core {
 
     // Cho phép các package được sử dụng từ bên ngoài module
     exports core;
-    /**
-    exports data;
-    exports engine;
-    exports entities;
-    exports net;
-    exports systems;
-    exports ui;
-    exports util;**/
+    requires javafx.media;
+    requires javafx.graphics;
+
+
+/**
+exports data;
+exports engine;
+exports entities;
+exports net;
+exports systems;
+exports ui;
+exports util;**/
 }

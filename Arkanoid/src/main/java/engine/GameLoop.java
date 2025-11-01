@@ -11,6 +11,10 @@ public class GameLoop extends AnimationTimer {
         this.game = game;
     }
 
+    public Game getGame() {
+        return game;
+    }
+
     @Override
     public void handle(long now) {
         final double frameRate = 60.0;
