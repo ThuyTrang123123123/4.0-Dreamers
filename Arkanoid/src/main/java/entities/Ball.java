@@ -1,8 +1,12 @@
 package entities;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Ball {
     private double x, y;
@@ -10,7 +14,6 @@ public class Ball {
     private double velocityX;
     private double velocityY;
     private boolean lost = false;
-
     // Trạng thái dính với paddle
     private boolean stickToPaddle = true;  // Bắt đầu với trạng thái dính
     private double stickOffsetX = 0;        // Khoảng cách từ tâm paddle
@@ -120,6 +123,7 @@ public class Ball {
         gc.setFill(Color.WHITE);
         gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
     }
+
 
     // ===== Collision & Bounds =====
     public Rectangle2D getBounds() {
