@@ -1,29 +1,46 @@
 package ui.screen;
 
+import core.Config;
 import core.Game;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import systems.AudioSystem;
 import ui.theme.Colors;
 import ui.widgets.ButtonUI;
 
 public class MainMenu {
+    public static Scene cachedScene;
+    private Game currentGame;
+
     public Scene create(Stage stage) {
         VBox root = new VBox(20);
         root.setStyle("-fx-background-color: #" + colorToHex(Colors.BACKGROUND) + "; -fx-alignment: center;");
 
         ButtonUI playBtn = new ButtonUI("Play");
         playBtn.setOnAction(e -> {
-            Game game = new Game();
-            stage.setScene(game.createGamescene(stage));
+            if (currentGame == null) currentGame = new Game();
+            stage.setScene(currentGame.createGamescene(stage));
             stage.show();
+        });
+
+        ButtonUI settingsBtn = new ButtonUI("Settings");
+        settingsBtn.setOnAction(e -> {
+            AudioSystem audio = AudioSystem.getInstance();
+            Config cfg = new Config();
+
+            Settings settings = new Settings(audio, cfg, () -> {
+                stage.setScene(create(stage));
+            });
+
+            stage.setScene(settings.create(stage));
         });
 
         ButtonUI exitBtn = new ButtonUI("Exit");
         exitBtn.setOnAction(e -> stage.close());
 
-        root.getChildren().addAll(playBtn, exitBtn);
-        return new Scene(root, 800, 600);
+        root.getChildren().addAll(playBtn, settingsBtn, exitBtn);
+        return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
     }
 
     private String colorToHex(javafx.scene.paint.Color color) {

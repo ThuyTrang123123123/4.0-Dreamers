@@ -1,27 +1,39 @@
 package core;
 
-import engine.Collision;
-import engine.GameLoop;
-import entities.Ball;
-import entities.Paddle;
-import entities.powerups.PowerUp;
-import systems.AudioSystem;
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.StackPane;
-import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import engine.Collision;
+import engine.GameLoop;
+import engine.*;
+
+import entities.Ball;
+import entities.Paddle;
+import entities.bricks.Brick;
+import entities.powerups.BonusCoin;
+import entities.powerups.EnlargePaddle;
+import entities.powerups.ExtraLife;
+import entities.powerups.PowerUp;
+
+import systems.AchievementSystem;
+import systems.AudioSystem;
+import systems.ScoringSystem;
+
 import ui.screen.InGame;
 import ui.screen.MainMenu;
+import ui.screen.Pause;
 import ui.theme.Colors;
 import ui.theme.Fonts;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Game extends Application {
     private Canvas canvas;
@@ -30,6 +42,11 @@ public class Game extends Application {
     private InGame hudLayer;
     private boolean gamePaused = false;
     private boolean gameWon = false;
+    private Stage stage;
+    private Scene inGameScene;
+    private Scene pauseScene;
+    private Scene mainMenuScene;
+    private GameLoop loop;
 
     public Scene createGamescene(Stage stage) {
         canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
@@ -37,7 +54,7 @@ public class Game extends Application {
 
         world.init(canvas);
 
-        hudLayer = new InGame(world.getScoring(), world.getAchievements());
+        hudLayer = new InGame(this, world.getScoring(), world.getAchievements());
         HBox hud = hudLayer.createHUD();
 
         StackPane root = new StackPane(canvas, hud);
@@ -54,33 +71,75 @@ public class Game extends Application {
         });
 
         Scene scene = new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
+        this.inGameScene = scene;
 
         scene.setOnKeyPressed(e -> {
+            // ESC: Pause
             if (e.getCode() == KeyCode.ESCAPE) {
-                gamePaused = true;
-                stage.setScene(new MainMenu().create(stage));
+                showPause();
+                return;
             }
 
-            if (e.getCode() == KeyCode.R &&
-                    (world.getBall().isLost() || world.getScoring().isGameOver() || gameWon)) {
+            //C: Resume game
+            if (e.getCode() == KeyCode.C) {
+                resumeGame();
+                return;
+            }
+
+            // R: Restart game
+            if (e.getCode() == KeyCode.R ||
+                    (world.getBall().isLost() || world.getScoring().isGameOver())) {
                 restartGame();
+                return;
             }
 
+            //SPACE: Bắn bóng
             if (e.getCode() == KeyCode.SPACE) {
                 world.getBall().launch();
+                return;
             }
 
             world.getPaddle().onKeyPressed(e.getCode());
         });
-
         scene.setOnKeyReleased(e -> world.getPaddle().onKeyReleased(e.getCode()));
 
-        AudioSystem.getInstance().playBackgroundMusic("background.wav");
 
-        new GameLoop(this).start();
+        AudioSystem audio = AudioSystem.getInstance();
+        audio.playIfChanged(audio.getSelectedMusicOrDefault(Config.DEFAULT_MUSIC));
+
+        loop = new GameLoop(this);
+        loop.start();
 
         return scene;
     }
+
+    public void showPause() {
+        gamePaused = true;
+        stage.setScene(pauseScene);
+    }
+
+    public void resumeGame() {
+        gamePaused = false;
+        stage.setScene(inGameScene);
+        inGameScene.getRoot().requestFocus();
+    }
+
+    private void restartGameFromPause() {
+        restartGame();
+        stage.setScene(inGameScene);
+    }
+
+    public void showMainMenu() {
+        gamePaused = false;
+        stage.setScene(mainMenuScene);
+    }
+    public Scene getOrCreateGameScene(Stage stage) {
+        if (inGameScene == null) {
+            inGameScene = createGamescene(stage); // hàm bạn đã có
+        }
+        return inGameScene;
+    }
+
 
     public void update(double dt) {
         if (gamePaused || gameWon) return;
@@ -196,10 +255,14 @@ public class Game extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage.setTitle("Arkanoid - 12 Levels");
+        this.stage = stage;
+        stage.setTitle("Arkanoid");
         stage.setScene(new MainMenu().create(stage));
         stage.show();
 
-        stage.setOnCloseRequest(e -> AudioSystem.getInstance().dispose());
+        // Cleanup khi đóng game
+        stage.setOnCloseRequest(e -> {
+            AudioSystem.getInstance().dispose();
+        });
     }
 }

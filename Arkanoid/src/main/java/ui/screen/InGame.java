@@ -1,5 +1,7 @@
 package ui.screen;
 
+import core.Config;
+import core.Game;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,17 +19,16 @@ import ui.theme.Fonts;
 import ui.widgets.ButtonUI;
 
 public class InGame {
-    // ===== UI Components =====
-    private Label scoreLabel;                    // Hiển thị điểm số
-    private Label livesLabel;                    // Hiển thị mạng sống
-    private Label bricksLabel;                   // Hiển thị số gạch đã phá
-    private Label rankLabel;                     // Hiển thị rank hiện tại
+    private Label scoreLabel;
+    private Label livesLabel;
+    private Label bricksLabel;
+    private Label rankLabel;
+    private final Game game;
+    private final ScoringSystem scoring;
+    private final AchievementSystem achievements;
 
-    // ===== Data =====
-    private final ScoringSystem scoring;         // Hệ thống quản lý điểm (được truyền từ Game)
-    private final AchievementSystem achievements; // Hệ thống thành tựu và rank
-
-    public InGame(ScoringSystem scoring, AchievementSystem achievements) {
+    public InGame(Game game, ScoringSystem scoring, AchievementSystem achievements) {
+        this.game = game;
         this.scoring = scoring;
         this.achievements = achievements;
     }
@@ -37,10 +38,10 @@ public class InGame {
         root.setStyle("-fx-background-color: #" + colorToHex(Colors.BACKGROUND) + ";");
 
         // === Canvas gameplay ===
-        Canvas canvas = new Canvas(800, 600);
+        Canvas canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.LIGHTGRAY);
-        gc.fillRect(0, 0, 800, 600); // tạm vẽ nền gameplay
+        gc.fillRect(0, 0, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT); // tạm vẽ nền gameplay
 
         // === HUD (score, lives, bricks, pause button) ===
         scoreLabel = new Label("Score: 0");
@@ -60,7 +61,7 @@ public class InGame {
         rankLabel.setTextFill(Colors.TEXT);
 
         ButtonUI pauseBtn = new ButtonUI("Pause");
-        pauseBtn.setOnAction(e -> stage.setScene(new MainMenu().create(stage)));
+        pauseBtn.setOnAction(e -> game.showPause());
 
         HBox hudBar = new HBox(30, scoreLabel, livesLabel, bricksLabel, rankLabel, pauseBtn);
         hudBar.setAlignment(Pos.CENTER);

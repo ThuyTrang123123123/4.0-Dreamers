@@ -4,23 +4,28 @@ import engine.*;
 import entities.Ball;
 import entities.Paddle;
 import entities.bricks.Brick;
+import systems.ScoringSystem;
+import systems.AchievementSystem;
 import entities.powerups.BonusCoin;
 import entities.powerups.EnlargePaddle;
 import entities.powerups.ExtraLife;
 import entities.powerups.PowerUp;
-import systems.ScoringSystem;
-import systems.AchievementSystem;
 import javafx.scene.canvas.Canvas;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * World - Thế giới game
+ * Quản lý tất cả các đối tượng trong game
+ */
 public class World {
     private Paddle paddle;
     private Ball ball;
     private final List<PowerUp> powerUps = new ArrayList<>();
     private final PowerUpPool powerUpPool = new PowerUpPool();
     private Level level;
+    // Khai báo thuộc tính (fields) chỉ giữ lại 1 lần
     private final ScoringSystem scoring;
     private final AchievementSystem achievements;
 
@@ -32,14 +37,14 @@ public class World {
 
     public void init(Canvas canvas) {
         paddle = new Paddle(
-                Config.SCREEN_WIDTH / 2.0,
+                (Config.SCREEN_WIDTH - Config.PADDLE_WIDTH) / 2,
                 Config.SCREEN_HEIGHT - 50,
                 Config.PADDLE_WIDTH,
                 Config.PADDLE_HEIGHT
         );
 
         ball = new Ball(
-                Config.SCREEN_WIDTH / 2.0,
+                (Config.SCREEN_WIDTH - Config.BALL_RADIUS * 2) / 2,
                 Config.SCREEN_HEIGHT - 70,
                 Config.BALL_RADIUS,
                 Config.BALL_SPEED

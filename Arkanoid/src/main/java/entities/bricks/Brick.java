@@ -27,12 +27,16 @@ public class Brick {
     public double getHeight() { return height; }
     public void setHeight(double height) { this.height = height; }
 
+    // Kiểm tra trạng thái gạch
     public boolean isDestroyed() { return destroyed; }
     public void setDestroyed(boolean destroyed) { this.destroyed = destroyed; }
 
+    // Khi trúng
     public void hit() {
         destroyed = true;
     }
+
+    // Vùng bao quanh gạch
     public Rectangle2D getBounds() {
         return new Rectangle2D(x - width / 2, y - height / 2, width, height);
     }

@@ -4,6 +4,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import java.net.URL;
+import java.util.Objects;
 
 /**
  * AudioSystem - Hệ thống phát nhạc nền đơn giản
@@ -20,16 +21,12 @@ public class AudioSystem {
     // ===== Settings =====
     private double volume = 0.3;  // Âm lượng (0.0 - 1.0)
     private boolean enabled = true;
+    private String currentMusic = null;
+    private String selectedMusic = null;
 
-    /**
-     * Private constructor (Singleton)
-     */
     private AudioSystem() {
     }
 
-    /**
-     * Lấy instance duy nhất
-     */
     public static AudioSystem getInstance() {
         if (instance == null) {
             instance = new AudioSystem();
@@ -59,8 +56,7 @@ public class AudioSystem {
 
             Media music = new Media(musicUrl.toString());
             musicPlayer = new MediaPlayer(music);
-            musicPlayer.setVolume(volume);
-            musicPlayer.setCycleCount(MediaPlayer.INDEFINITE);  // Lặp vô hạn
+            musicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             musicPlayer.play();
 
             System.out.println("🎵 Đang phát nhạc: " + fileName);
@@ -81,37 +77,22 @@ public class AudioSystem {
         }
     }
 
-    /**
-     * Tạm dừng nhạc nền
-     */
     public void pauseMusic() {
         if (musicPlayer != null) {
             musicPlayer.pause();
         }
     }
 
-    /**
-     * Tiếp tục phát nhạc
-     */
     public void resumeMusic() {
         if (musicPlayer != null && enabled) {
             musicPlayer.play();
         }
     }
 
-    /**
-     * Đặt âm lượng (0.0 - 1.0)
-     */
-    public void setVolume(double volume) {
-        this.volume = Math.max(0.0, Math.min(1.0, volume));
-        if (musicPlayer != null) {
-            musicPlayer.setVolume(this.volume);
-        }
+    public void playBrickHit() {
+        playEffectOneShot("break.wav");   // <- chỉ 1 nhạc hiệu ứng
     }
 
-    /**
-     * Bật/tắt nhạc
-     */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         if (!enabled) {
@@ -119,9 +100,20 @@ public class AudioSystem {
         }
     }
 
-    /**
-     * Toggle nhạc (bật/tắt)
-     */
+    private void playEffectOneShot(String fileName) {
+        try {
+            URL url = Objects.requireNonNull(
+                    getClass().getResource("/sounds/" + fileName),
+                    "Không tìm thấy hiệu ứng: " + fileName
+            );
+            MediaPlayer fx = new MediaPlayer(new Media(url.toString()));
+            fx.setOnEndOfMedia(fx::dispose);
+            fx.play();
+        } catch (Exception ex) {
+            System.err.println("⚠️ Lỗi phát hiệu ứng " + fileName + ": " + ex.getMessage());
+        }
+    }
+
     public void toggleMusic() {
         if (musicPlayer != null && musicPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
             pauseMusic();
@@ -130,18 +122,33 @@ public class AudioSystem {
         }
     }
 
-    /**
-     * Kiểm tra nhạc có đang phát không
-     */
     public boolean isPlaying() {
         return musicPlayer != null && musicPlayer.getStatus() == MediaPlayer.Status.PLAYING;
     }
 
-    /**
-     * Cleanup khi thoát game
-     */
     public void dispose() {
         stopMusic();
         instance = null;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public String getCurrentMusic() {
+        return currentMusic;
+    }
+
+    public void setSelectedMusic(String fileName) { this.selectedMusic = fileName; }
+    public String getSelectedMusic() { return selectedMusic; }
+
+    public String getSelectedMusicOrDefault(String def) {
+        return (selectedMusic == null || selectedMusic.isEmpty()) ? def : selectedMusic;
+    }
+
+    public void playIfChanged(String fileName) {
+        if (!Objects.equals(currentMusic, fileName)) {
+            playBackgroundMusic(fileName);
+        }
     }
 }

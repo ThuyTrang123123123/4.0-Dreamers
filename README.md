@@ -1,20 +1,24 @@
 "BTL OOP 11"
 
-Nhom 4.0-Dreamers
+Nhóm 4.0-Dreamers
+
+ERC = pause
+B = back to menu khi setting
+C = resume
+R = Restart
+SPACE = bắn bóng
 
 A - TUẦN 1:
 
-1.	Trang (Thành viên C) : UI cơ bản + hệ thống màu, chữ:
+- Chạy được level 1: Chỉnh sửa va chạm với biên, đá, vợt mượt
 
-- MainMenu và InGame có thể chuyển qua lại (Menu → Game).
+- Chuyển màn từ start sang level
 
-- Tạo được 3 widget cơ bản: ButtonUI, SliderUI, DialogUI. (Đổi tên thêm UI vì kế thừa từ các lớp có sẵn)
+- HiệN HUD
 
-- Làm theme màu và font trong /ui/theme/Colors.java và Fonts.java.
+- Vẽ bằng canvas
 
-- Giao diện theo tông pastel, nhẹ nhàng, giống My Talking Angela. (Hồng)
+B - Tuần 2 :
 
-- Chạy thử được Canvas gameplay + UI trong 1 Scene.
 
-+ Merge với Nhi
   
