@@ -377,6 +377,7 @@ public class AchievementSystem {
                 .orElse(null);
     }
 
+    // ===== NOTIFICATION SYSTEM (TÍCH HỢP) =====
 
     /**
      * Hiển thị notification thành tựu
@@ -565,6 +566,8 @@ public class AchievementSystem {
         isShowingNotification = false;
     }
 
+    // ===== LISTENERS =====
+
     public void addListener(AchievementListener listener) {
         listeners.add(listener);
     }
@@ -597,6 +600,8 @@ public class AchievementSystem {
         clearNotifications();
     }
 
+    // ===== GETTERS =====
+
     public List<Achievement> getAllAchievements() { return new ArrayList<>(achievements); }
     public List<Achievement> getUnlockedAchievements() {
         return achievements.stream().filter(Achievement::isUnlocked).toList();
@@ -624,6 +629,8 @@ public class AchievementSystem {
     public StringProperty currentRankNameProperty() { return currentRankName; }
     public StringProperty currentRankIconProperty() { return currentRankIcon; }
     public IntegerProperty pointsToNextRankProperty() { return pointsToNextRank; }
+
+    // ===== INNER CLASSES =====
 
     public static class Rank {
         private final String name;

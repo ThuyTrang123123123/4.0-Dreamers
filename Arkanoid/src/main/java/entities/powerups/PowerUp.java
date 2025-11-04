@@ -80,9 +80,9 @@ public abstract class PowerUp {
      * Khi paddle ăn được power-up
      */
     public void collect(World world) {
-        collected = true;
-        active = false;
-        onCollected(world);
+            collected = true;
+            active = false;
+            onCollected(world);
     }
 
     /**

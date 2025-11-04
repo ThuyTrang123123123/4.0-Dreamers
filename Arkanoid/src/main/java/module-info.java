@@ -7,6 +7,8 @@ module core {
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
     requires java.desktop;
+    requires javafx.media;
+    requires javafx.graphics;
 
     // Cho phép JavaFX truy cập các class controller
     opens core to javafx.fxml;
@@ -15,16 +17,13 @@ module core {
 
     // Cho phép các package được sử dụng từ bên ngoài module
     exports core;
-    requires javafx.media;
-    requires javafx.graphics;
-
 
 /**
- exports data;
- exports engine;
- exports entities;
- exports net;
- exports systems;
- exports ui;
- exports util;**/
+exports data;
+exports engine;
+exports entities;
+exports net;
+exports systems;
+exports ui;
+exports util;**/
 }
