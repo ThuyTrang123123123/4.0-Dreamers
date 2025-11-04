@@ -65,7 +65,7 @@ public class Level {
             for (int col = 0; col < 6; col++) {
                 double x = startX + col * (brickWidth + gap);
                 double y = startY + row * (brickHeight + gap);
-                bricks.add(new HardBrick(x, y, brickWidth, brickHeight));
+                bricks.add(new Brick(x, y, brickWidth, brickHeight));
             }
         }
     }

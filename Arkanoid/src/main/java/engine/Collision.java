@@ -67,12 +67,10 @@ public class Collision {
                 world.getScoring().incrementBricksDestroyed();
 
                 new Physics().reflectBall(ball, brick);
-
                 if (brick.isDestroyed()) {
                     double chance = Math.random();
                     if (chance < 0.9) {
                         Class<? extends PowerUp> type;
-                        /**
                         double r = Math.random();
 
                         if (r < 1.0 / 7) {
@@ -89,8 +87,7 @@ public class Collision {
                             type = SlowBall.class;
                         } else {
                             type = SpeedBall.class;
-                        }**/
-                        type = SpeedBall.class;
+                        }
 
                         PowerUp pu = world.getPowerUpPool().acquire(type, brick.getX(), brick.getY());
                         world.getPowerUps().add(pu);
