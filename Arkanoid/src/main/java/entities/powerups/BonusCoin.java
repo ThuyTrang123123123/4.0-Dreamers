@@ -20,7 +20,12 @@ public class BonusCoin extends PowerUp {
         super(x, y, radius * 2, radius * 2, null); // width & height từ bán kính
         this.radius = radius;
         this.speed = speed;
-        image= new Image(getClass().getResourceAsStream("/images/bonusCoin.png"));
+        try {
+            image = new Image(getClass().getResource("/images/bonusCoin.png").toExternalForm());
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh bonusCoin: " + e.getMessage());
+            image = null;
+        }
     }
 
     public int getValue() {

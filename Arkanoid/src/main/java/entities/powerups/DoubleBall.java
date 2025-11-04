@@ -14,7 +14,12 @@ public class DoubleBall extends PowerUp {
 
     public DoubleBall(double x, double y) {
         super(x, y, 18, 18, Color.GOLD);
-        image = new Image(getClass().getResource("/images/DoubleBall.png").toExternalForm());
+        try {
+            image = new Image(getClass().getResource("/images/DoubleBall.png").toExternalForm());
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh DoubleBall: " + e.getMessage());
+            image = null;
+        }
     }
 
     @Override
@@ -25,10 +30,9 @@ public class DoubleBall extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
-        if (image.isError()) {
-            System.out.println("Không thể tải ảnh: /images/DoubleBall.png");
-            return;
-        }
+
+        double drawX = getX() - getWidth() / 2;
+        double drawY = getY() - getHeight() / 2;
 
         gc.drawImage(image, x - width / 2, y - height / 2, width, height);
     }

@@ -14,11 +14,15 @@ import javafx.scene.paint.Color;
 public class ShootPaddle extends PowerUp {
 
     private final double duration = 10.0; // 10 giây
-    private final Image image;
 
     public ShootPaddle(double x, double y) {
         super(x, y, 18, 18, Color.RED);
-        image = new Image(getClass().getResource("/images/ShootPaddle.png").toExternalForm());
+        try {
+            image = new Image(getClass().getResource("/images/ShootPaddle.png").toExternalForm());
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh ShootPaddle: " + e.getMessage());
+            image = null;
+        }
     }
 
     @Override
@@ -29,6 +33,8 @@ public class ShootPaddle extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
+        double drawX = getX() - getWidth() / 2;
+        double drawY = getY() - getHeight() / 2;
         gc.drawImage(image, x - width / 2, y - height / 2, width, height);
     }
 

@@ -17,18 +17,17 @@ public class EnlargePaddle extends PowerUp {
 
     public EnlargePaddle(double x, double y) {
         super(x, y, 18, 18, Color.LIGHTBLUE);
-        image = new Image(getClass().getResource("/images/EnlargePaddle.png").toExternalForm());
-
+        try {
+            image = new Image(getClass().getResource("/images/EnlargePaddle.png").toExternalForm());
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh EnlargePaddle: " + e.getMessage());
+            image = null;
+        }
     }
 
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
-
-        if (image.isError()) {
-            System.out.println("Không thể tải ảnh: /images/EnlargePaddle.png");
-            return;
-        }
 
         double drawX = getX() - getWidth() / 2;
         double drawY = getY() - getHeight() / 2;
@@ -54,10 +53,10 @@ public class EnlargePaddle extends PowerUp {
         new Thread(() -> {
             try {
                 Thread.sleep((long) (duration * 1000));
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
             paddle.setWidth(originalWidth);
         }).start();
-
 
 
     }

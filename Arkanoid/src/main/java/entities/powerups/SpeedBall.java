@@ -14,11 +14,15 @@ import javafx.scene.paint.Color;
 public class SpeedBall extends PowerUp {
     private final double speedFactor =1.5 ; // tăng tốc
     private final double duration = 8.0;
-    private final Image image;
 
     public SpeedBall(double x, double y) {
         super(x, y, 18, 18, Color.ORANGE);
-        image = new Image(getClass().getResource("/images/SpeedBall.png").toExternalForm());
+        try {
+            image = new Image(getClass().getResource("/images/SpeedBall.png").toExternalForm());
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh SpeedBall: " + e.getMessage());
+            image = null;
+        }
     }
 
     @Override
@@ -29,6 +33,10 @@ public class SpeedBall extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
+
+        double drawX = getX() - getWidth() / 2;
+        double drawY = getY() - getHeight() / 2;
+
         gc.drawImage(image, x - width / 2, y - height / 2, width, height);
     }
 
