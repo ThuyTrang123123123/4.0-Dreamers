@@ -73,7 +73,7 @@ public class AudioSystem {
     }
 
     public void playBrickHit() {
-        playEffectOneShot("break.wav");   // <- chỉ 1 nhạc hiệu ứng
+        playEffectOneShot("break.wav");
     }
 
     public void setEnabled(boolean enabled) {
@@ -122,8 +122,13 @@ public class AudioSystem {
         return currentMusic;
     }
 
-    public void setSelectedMusic(String fileName) { this.selectedMusic = fileName; }
-    public String getSelectedMusic() { return selectedMusic; }
+    public void setSelectedMusic(String fileName) {
+        this.selectedMusic = fileName;
+    }
+
+    public String getSelectedMusic() {
+        return selectedMusic;
+    }
 
     public String getSelectedMusicOrDefault(String def) {
         return (selectedMusic == null || selectedMusic.isEmpty()) ? def : selectedMusic;
