@@ -63,6 +63,9 @@ public class Collision {
         for (Brick brick : bricks) {
             if (isBallTouchingBrick(ball, brick)) {
                 brick.hit();
+
+                systems.AudioSystem.getInstance().playBrickHit();
+
                 world.getScoring().addScore(1);
                 world.getScoring().incrementBricksDestroyed();
 
