@@ -10,6 +10,10 @@ public class Paddle {
     private double width, height;
     private double speed = 400;
     private boolean moveLeft, moveRight;
+    private boolean shooting = false;
+    private long lastShotTime = 0;
+    private final long shootDelay = 400; // 0.4s giữa 2 viên
+
 
     public Paddle(double x, double y, double width, double height) {
         this.x = x;
@@ -25,6 +29,9 @@ public class Paddle {
     public double getSpeed() { return speed; }
     public boolean isMoveLeft() { return moveLeft; }
     public boolean isMoveRight() { return moveRight; }
+
+    public boolean isShooting() { return shooting; }
+    public void setShooting(boolean shooting) { this.shooting = shooting; }
 
     public void setX(double x) { this.x = x; }
     public void setY(double y) { this.y = y; }
@@ -61,4 +68,23 @@ public class Paddle {
     public Rectangle2D getBounds() {
         return new Rectangle2D(x - width / 2, y - height / 2, width, height);
     }
+
+    public Bullet tryShoot() {
+        long now = System.currentTimeMillis();
+        if (shooting && now - lastShotTime >= shootDelay) {
+            lastShotTime = now;
+
+            double bulletWidth = 4;
+            double bulletHeight = 12;
+
+            double bulletX = x - bulletWidth / 2;
+            double bulletY = y - height / 2 - bulletHeight;
+
+            return new Bullet(bulletX, bulletY);
+        }
+        return null;
+    }
+
+
+
 }

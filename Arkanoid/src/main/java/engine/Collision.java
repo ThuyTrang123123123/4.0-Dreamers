@@ -2,6 +2,7 @@ package engine;
 
 import core.World;
 import entities.Ball;
+import entities.Bullet;
 import entities.Paddle;
 import entities.bricks.Brick;
 import entities.bricks.ExplodingBrick;
@@ -115,4 +116,31 @@ public class Collision {
     public static void handlePowerUpCollision(PowerUp pu, Paddle paddle, World world) {
         pu.collect(world);
     }
+
+    public static void handleBulletBrickCollision(List<Bullet> bullets, List<Brick> bricks, World world) {
+        for (Bullet bullet : bullets) {
+            if (!bullet.isActive()) continue;
+
+            for (Brick brick : bricks) {
+                if (!brick.isDestroyed() && bullet.getBounds().intersects(brick.getBounds())) {
+
+                    // Xử lý brick
+                    if (brick instanceof ExplodingBrick exploding) {
+                        exploding.hit();
+                        exploding.explodeNearby(bricks);
+                    } else {
+                        brick.hit();
+                    }
+
+                    world.getScoring().addScore(1);
+                    world.getScoring().incrementBricksDestroyed();
+
+                    // Viên đạn biến mất
+                    bullet.deactivate();
+                    break;
+                }
+            }
+        }
+    }
+
 }

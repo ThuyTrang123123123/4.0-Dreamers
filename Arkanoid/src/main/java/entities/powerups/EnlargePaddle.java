@@ -3,11 +3,12 @@ package entities.powerups;
 import core.World;
 import entities.Paddle;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
 
 /**
- * PowerUp loại: Enlarge Paddle — làm paddle to hơn trong vài giây.
+ * PowerUp: Enlarge Paddle — làm paddle to hơn trong vài giây.
  */
 public class EnlargePaddle extends PowerUp {
 
@@ -16,13 +17,23 @@ public class EnlargePaddle extends PowerUp {
 
     public EnlargePaddle(double x, double y) {
         super(x, y, 18, 18, Color.LIGHTBLUE);
+        image = new Image(getClass().getResource("/images/EnlargePaddle.png").toExternalForm());
+
     }
 
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
-        gc.setFill(Color.LIGHTBLUE);
-        gc.fillOval(getX(), getY(), getWidth(), getHeight());
+
+        if (image.isError()) {
+            System.out.println("Không thể tải ảnh: /images/EnlargePaddle.png");
+            return;
+        }
+
+        double drawX = getX() - getWidth() / 2;
+        double drawY = getY() - getHeight() / 2;
+
+        gc.drawImage(image, drawX, drawY, getWidth(), getHeight());
     }
 
     @Override

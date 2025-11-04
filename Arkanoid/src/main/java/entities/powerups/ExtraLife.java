@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 import javafx.geometry.Rectangle2D;
 
 /**
- * PowerUp loại: Extra Life — tăng 1 mạng khi ăn.
+ * PowerUp: Extra Life — tăng 1 mạng khi ăn.
  */
 public class ExtraLife extends PowerUp {
 

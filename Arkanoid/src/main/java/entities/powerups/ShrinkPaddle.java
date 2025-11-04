@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
 
 /**
- * PowerUp loại: Shrink Paddle — làm paddle nhỏ đi.
+ * PowerUp: Shrink Paddle — làm paddle nhỏ đi.
  */
 public class ShrinkPaddle extends PowerUp {
 
@@ -43,7 +43,7 @@ public class ShrinkPaddle extends PowerUp {
 
     @Override
     public void onCollected(World world) {
-        //kiem tra xem trang thai bóng truoc
+        //kiem tra xem trang thai bong truoc
         boolean hasFlyingBall = world.getBalls().stream().anyMatch(ball -> !ball.isStickToPaddle());
         if (!hasFlyingBall) return;
 

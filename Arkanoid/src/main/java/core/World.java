@@ -2,6 +2,7 @@ package core;
 
 import engine.*;
 import entities.Ball;
+import entities.Bullet;
 import entities.Paddle;
 import entities.bricks.Brick;
 import systems.ScoringSystem;
@@ -29,6 +30,9 @@ public class World {
     // Khai báo thuộc tính (fields) chỉ giữ lại 1 lần
     private final ScoringSystem scoring;
     private final AchievementSystem achievements;
+    private final List<Bullet> bullets = new ArrayList<>();
+
+
 
     public World() {
         this.scoring = new ScoringSystem();
@@ -123,4 +127,6 @@ public class World {
     public PowerUpPool getPowerUpPool() { return powerUpPool; }
 
     public List<Ball> getBalls() { return balls; }
+    public List<Bullet> getBullets() { return bullets; }
+
 }
