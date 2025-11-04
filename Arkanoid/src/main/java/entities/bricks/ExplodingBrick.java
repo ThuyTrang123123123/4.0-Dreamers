@@ -14,6 +14,7 @@ public class ExplodingBrick extends Brick {
     @Override
     public void hit() {
         super.hit();
+
     }
 
     /**

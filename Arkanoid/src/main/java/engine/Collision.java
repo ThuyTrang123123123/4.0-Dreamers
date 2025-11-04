@@ -4,6 +4,7 @@ import core.World;
 import entities.Ball;
 import entities.Paddle;
 import entities.bricks.Brick;
+import entities.bricks.ExplodingBrick;
 import entities.powerups.*;
 
 import java.util.List;
@@ -62,7 +63,15 @@ public class Collision {
     public static void handleBallBrickCollision(Ball ball, List<Brick> bricks, World world) {
         for (Brick brick : bricks) {
             if (isBallTouchingBrick(ball, brick)) {
-                brick.hit();
+                // Nếu là ExplodingBrick → gọi hit + explodeNearby
+                if (brick instanceof ExplodingBrick exploding) {
+                    exploding.hit();
+                    exploding.explodeNearby(bricks);
+                } else {
+                    brick.hit(); // gạch thường or gạch hard
+                }
+
+
                 world.getScoring().addScore(1);
                 world.getScoring().incrementBricksDestroyed();
 
