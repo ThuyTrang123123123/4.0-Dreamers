@@ -1,10 +1,7 @@
 package engine;
 
 import core.Config;
-import entities.powerups.BonusCoin;
-import entities.powerups.EnlargePaddle;
-import entities.powerups.ExtraLife;
-import entities.powerups.PowerUp;
+import entities.powerups.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +41,20 @@ public class PowerUpPool {
         if (type == EnlargePaddle.class) {
             return new EnlargePaddle(x, y);
         }
+        if (type == DoubleBall.class) {
+            return new DoubleBall(x, y);
+        }
+        if (type == SpeedBall.class) {
+            return new SpeedBall(x, y);
+        }
+        if (type == SlowBall.class) {
+            return new SlowBall(x, y);
+        }
+        if (type==ShrinkPaddle.class){
+            return new ShrinkPaddle(x,y);
+        }
+
+
         throw new IllegalArgumentException("Unknown PowerUp type: " + type.getSimpleName());
     }
 }

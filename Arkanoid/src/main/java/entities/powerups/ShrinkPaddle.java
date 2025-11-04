@@ -43,6 +43,10 @@ public class ShrinkPaddle extends PowerUp {
 
     @Override
     public void onCollected(World world) {
+        //kiem tra xem trang thai bóng truoc
+        boolean hasFlyingBall = world.getBalls().stream().anyMatch(ball -> !ball.isStickToPaddle());
+        if (!hasFlyingBall) return;
+
         Paddle paddle = world.getPaddle();
         double originalWidth = paddle.getWidth();
         paddle.setWidth(originalWidth * ShrinkFactor);

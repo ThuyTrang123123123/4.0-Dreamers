@@ -37,11 +37,13 @@ public class DoubleBall extends PowerUp {
     public void onCollected(World world) {
         var newBalls = new java.util.ArrayList<Ball>();
         for (Ball ball : world.getBalls()) {
+            if (ball.isStickToPaddle()) continue; // bỏ qua bóng đang gắn paddle
             // Tạo 1 bóng mới sao chép trạng thái
             Ball clone = new Ball(ball.getX(), ball.getY(), ball.getRadius(),
                     Math.sqrt(ball.getVelocityX() * ball.getVelocityX() + ball.getVelocityY() * ball.getVelocityY()));
             clone.setVelocityX(-ball.getVelocityX()); // đi ngược hướng
             clone.setVelocityY(ball.getVelocityY());
+            clone.setStickToPaddle(false);
             newBalls.add(clone);
         }
         world.getBalls().addAll(newBalls);

@@ -21,7 +21,8 @@ import java.util.List;
  */
 public class World {
     private Paddle paddle;
-    private Ball ball;
+    //private Ball ball;
+    private final List<Ball> balls = new ArrayList<>();
     private final List<PowerUp> powerUps = new ArrayList<>();
     private final PowerUpPool powerUpPool = new PowerUpPool();
     private Level level;
@@ -42,19 +43,29 @@ public class World {
                 Config.PADDLE_WIDTH,
                 Config.PADDLE_HEIGHT
         );
+        balls.clear();
 
-        ball = new Ball(
+        Ball ball = new Ball(
                 (Config.SCREEN_WIDTH - Config.BALL_RADIUS * 2) / 2,
                 Config.SCREEN_HEIGHT - 70,
                 Config.BALL_RADIUS,
                 Config.BALL_SPEED
         );
 
+        balls.add(ball);
         powerUps.clear(); // danh sách trống, không sinh sẵn
         ball.setStickToPaddle(true);
     }
 
     public void reset() {
+        balls.clear();
+        Ball ball = new Ball(
+                Config.SCREEN_WIDTH / 2.0,
+                Config.SCREEN_HEIGHT - 70,
+                Config.BALL_RADIUS,
+                Config.BALL_SPEED
+        );
+        balls.add(ball);
         ball.setX(Config.SCREEN_WIDTH / 2.0);
         ball.setY(Config.SCREEN_HEIGHT - 70);
         ball.setVelocityX(Config.BALL_SPEED);
@@ -82,6 +93,15 @@ public class World {
             powerUpPool.release(pu);
         }
         powerUps.clear();
+
+        balls.clear();
+        Ball ball = new Ball(
+                Config.SCREEN_WIDTH / 2.0,
+                Config.SCREEN_HEIGHT - 70,
+                Config.BALL_RADIUS,
+                Config.BALL_SPEED
+        );
+        balls.add(ball);
         ball.setX(Config.SCREEN_WIDTH / 2.0);
         ball.resetToStick(paddle.getX(), paddle.getY());
         ball.setY(Config.SCREEN_HEIGHT - 70);
@@ -94,11 +114,13 @@ public class World {
 
     // Getters
     public Paddle getPaddle() { return paddle; }
-    public Ball getBall() { return ball; }
+    public Ball getBall() { return balls.isEmpty() ? null : balls.get(0); }
     public List<PowerUp> getPowerUps() { return powerUps; }
     public List<Brick> getBricks() { return level.getBricks(); }
     public ScoringSystem getScoring() { return scoring; }
     public Level getLevel() { return level; }
     public AchievementSystem getAchievements() { return achievements; }
     public PowerUpPool getPowerUpPool() { return powerUpPool; }
+
+    public List<Ball> getBalls() { return balls; }
 }

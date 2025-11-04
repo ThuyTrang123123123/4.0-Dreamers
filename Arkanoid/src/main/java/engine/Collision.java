@@ -70,17 +70,36 @@ public class Collision {
 
                 if (brick.isDestroyed()) {
                     double chance = Math.random();
-                    if (chance < 0.3) {
+                    if (chance < 0.9) {
                         Class<? extends PowerUp> type;
+                        /**
                         double r = Math.random();
-                        if (r < 0.33) type = BonusCoin.class;
-                        else if (r < 0.66) type = ExtraLife.class;
-                        else type = EnlargePaddle.class;
+
+                        if (r < 1.0 / 7) {
+                            type = BonusCoin.class;
+                        } else if (r < 2.0 / 7) {
+                            type = ExtraLife.class;
+                        } else if (r < 3.0 / 7) {
+                            type = EnlargePaddle.class;
+                        } else if (r < 4.0 / 7) {
+                            type = DoubleBall.class;
+                        } else if (r < 5.0 / 7) {
+                            type = ShrinkPaddle.class;
+                        } else if (r < 6.0 / 7) {
+                            type = SlowBall.class;
+                        } else {
+                            type = SpeedBall.class;
+                        }**/
+                        type = SpeedBall.class;
 
                         PowerUp pu = world.getPowerUpPool().acquire(type, brick.getX(), brick.getY());
                         world.getPowerUps().add(pu);
                     }
                 }
+
+
+
+
 
                 break;
             }

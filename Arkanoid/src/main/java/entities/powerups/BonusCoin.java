@@ -71,7 +71,12 @@ public class BonusCoin extends PowerUp {
 
     @Override
     public void onCollected(World world) {
-        world.getScoring().addScore(value);
+        boolean hasFlyingBall = world.getBalls().stream().anyMatch(ball -> !ball.isStickToPaddle());
+        if (hasFlyingBall) {
+            world.getScoring().addScore(value);
+        }
+
+
     }
 
     @Override

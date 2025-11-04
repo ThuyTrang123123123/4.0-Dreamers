@@ -51,7 +51,6 @@ public class Game extends Application {
     public Scene createGamescene(Stage stage) {
         canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         gc = canvas.getGraphicsContext2D();
-
         world.init(canvas);
 
         hudLayer = new InGame(this, world.getScoring(), world.getAchievements());
@@ -59,50 +58,31 @@ public class Game extends Application {
 
         StackPane root = new StackPane(canvas, hud);
         StackPane.setAlignment(hud, Pos.TOP_LEFT);
-
         world.getAchievements().initNotificationSystem(root);
-
-        world.getAchievements().addListener(achievement -> {
-            // println removed
-        });
-
-        world.getAchievements().addRankListener((oldRank, newRank, score) -> {
-            // println removed
-        });
 
         Scene scene = new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         this.inGameScene = scene;
 
         scene.setOnKeyPressed(e -> {
-            // ESC: Pause
             if (e.getCode() == KeyCode.ESCAPE) {
-                showPause();
-                return;
+                showPause(); return;
             }
-
-            //C: Resume game
             if (e.getCode() == KeyCode.C) {
-                resumeGame();
-                return;
+                resumeGame(); return;
             }
-
-            // R: Restart game
-            if (e.getCode() == KeyCode.R ||
-                    (world.getBall().isLost() || world.getScoring().isGameOver())) {
-                restartGame();
-                return;
+            if (e.getCode() == KeyCode.R || world.getScoring().isGameOver()) {
+                restartGame(); return;
             }
-
-            //SPACE: Bắn bóng
             if (e.getCode() == KeyCode.SPACE) {
-                world.getBall().launch();
+                for (Ball ball : world.getBalls()) {
+                    if (ball.isStickToPaddle()) ball.launch();
+                }
                 return;
             }
-
             world.getPaddle().onKeyPressed(e.getCode());
         });
-        scene.setOnKeyReleased(e -> world.getPaddle().onKeyReleased(e.getCode()));
 
+        scene.setOnKeyReleased(e -> world.getPaddle().onKeyReleased(e.getCode()));
 
         AudioSystem audio = AudioSystem.getInstance();
         audio.playIfChanged(audio.getSelectedMusicOrDefault(Config.DEFAULT_MUSIC));
@@ -113,76 +93,63 @@ public class Game extends Application {
         return scene;
     }
 
-    public void showPause() {
-        gamePaused = true;
-        stage.setScene(pauseScene);
-    }
-
-    public void resumeGame() {
-        gamePaused = false;
-        stage.setScene(inGameScene);
-        inGameScene.getRoot().requestFocus();
-    }
-
-    private void restartGameFromPause() {
-        restartGame();
-        stage.setScene(inGameScene);
-    }
-
-    public void showMainMenu() {
-        gamePaused = false;
-        stage.setScene(mainMenuScene);
-    }
-    public Scene getOrCreateGameScene(Stage stage) {
-        if (inGameScene == null) {
-            inGameScene = createGamescene(stage); // hàm bạn đã có
-        }
-        return inGameScene;
-    }
-
-
     public void update(double dt) {
         if (gamePaused || gameWon) return;
 
-        Ball ball = world.getBall();
         Paddle paddle = world.getPaddle();
+        List<Ball> balls = world.getBalls();
 
-        if (ball.isStickToPaddle()) {
-            ball.updateStickPosition(paddle.getX(), paddle.getY());
+        List<Ball> lostBalls = new ArrayList<>();
+
+        for (Ball ball : balls) {
+            if (ball.isStickToPaddle()) {
+                ball.updateStickPosition(paddle.getX(), paddle.getY());
+            }
+
+            if (ball.isLost()) {
+                lostBalls.add(ball);
+                continue;
+            }
+
+            ball.update(dt);
+
+            if (!ball.isStickToPaddle()) {
+                Collision.handleBallWallCollision(ball, canvas.getWidth(), canvas.getHeight());
+                if (Collision.isBallTouchingPaddle(ball, paddle)) {
+                    Collision.handleBallPaddleCollision(ball, paddle);
+                }
+                Collision.handleBallBrickCollision(ball, world.getBricks(), world);
+            }
         }
 
-        if (ball.isLost()) {
+        world.getBalls().removeAll(lostBalls);
+        if (!lostBalls.isEmpty() && world.getBalls().isEmpty()) {
             world.getScoring().loseLife();
-            if (world.getScoring().isGameOver()) return;
-            ball.resetToStick(paddle.getX(), paddle.getY());
+        }
+
+        if (world.getBalls().isEmpty() && !world.getScoring().isGameOver()) {
+            Ball newBall = new Ball(
+                    Config.SCREEN_WIDTH / 2.0,
+                    Config.SCREEN_HEIGHT - 70,
+                    Config.BALL_RADIUS,
+                    Config.BALL_SPEED
+            );
+            newBall.setStickToPaddle(true);
+            world.getBalls().add(newBall);
         }
 
         paddle.update(dt);
-        ball.update(dt);
 
         List<PowerUp> toRemove = new ArrayList<>();
         for (PowerUp pu : world.getPowerUps()) {
             pu.update(dt);
-
-            if (!ball.isStickToPaddle()) {
-                if (Collision.isPowerUpTouchingPaddle(pu, paddle)) {
-                    Collision.handlePowerUpCollision(pu, paddle, world);
-                    world.getPowerUpPool().release(pu);
-                    toRemove.add(pu);
-                }
+            if (Collision.isPowerUpTouchingPaddle(pu, paddle)) {
+                Collision.handlePowerUpCollision(pu, paddle, world);
+                world.getPowerUpPool().release(pu);
+                toRemove.add(pu);
             }
         }
         world.getPowerUps().removeAll(toRemove);
-
-        if (!ball.isStickToPaddle()) {
-            Collision.handleBallWallCollision(ball, canvas.getWidth(), canvas.getHeight());
-
-            if (Collision.isBallTouchingPaddle(ball, paddle)) {
-                Collision.handleBallPaddleCollision(ball, paddle);
-            }
-
-            Collision.handleBallBrickCollision(ball, world.getBricks(), world);
-        }
 
         if (world.getLevel().isComplete()) {
             if (world.getLevel().isGameComplete()) {
@@ -203,17 +170,20 @@ public class Game extends Application {
                 Config.SCREEN_WIDTH - 150, 30);
 
         world.getPaddle().render(gc);
-        world.getBall().render(gc);
 
-        world.getBricks().stream()
-                .filter(b -> !b.isDestroyed())
-                .forEach(b -> b.render(gc));
+        for (Ball ball : world.getBalls()) {
+            ball.render(gc);
+        }
+
+        for (Brick b : world.getBricks()) {
+            if (!b.isDestroyed()) b.render(gc);
+        }
 
         for (PowerUp pu : world.getPowerUps()) {
             pu.render(gc);
         }
 
-        if (world.getBall().isStickToPaddle()) {
+        if (world.getBalls().stream().anyMatch(Ball::isStickToPaddle)) {
             gc.setFill(Colors.TEXT);
             gc.setFont(Fonts.main(18));
             gc.fillText("Press SPACE to launch ball", 260, 400);
@@ -239,10 +209,38 @@ public class Game extends Application {
         }
     }
 
+    public void showPause() {
+        gamePaused = true;
+        stage.setScene(pauseScene);
+    }
+
+    public void resumeGame() {
+        gamePaused = false;
+        stage.setScene(inGameScene);
+        inGameScene.getRoot().requestFocus();
+    }
+
+    private void restartGameFromPause() {
+        restartGame();
+        stage.setScene(inGameScene);
+    }
+
     private void restartGame() {
         world.reset();
         gamePaused = false;
         gameWon = false;
+    }
+
+    public void showMainMenu() {
+        gamePaused = false;
+        stage.setScene(mainMenuScene);
+    }
+
+    public Scene getOrCreateGameScene(Stage stage) {
+        if (inGameScene == null) {
+            inGameScene = createGamescene(stage);
+        }
+        return inGameScene;
     }
 
     public Canvas getCanvas() {
@@ -260,9 +258,6 @@ public class Game extends Application {
         stage.setScene(new MainMenu().create(stage));
         stage.show();
 
-        // Cleanup khi đóng game
-        stage.setOnCloseRequest(e -> {
-            AudioSystem.getInstance().dispose();
-        });
+        stage.setOnCloseRequest(e -> AudioSystem.getInstance().dispose());
     }
 }

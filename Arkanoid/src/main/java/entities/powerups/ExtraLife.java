@@ -45,7 +45,11 @@ public class ExtraLife extends PowerUp {
 
     @Override
     public void onCollected(World world) {
+        boolean hasFlyingBall = world.getBalls().stream().anyMatch(ball -> !ball.isStickToPaddle());
+        if (!hasFlyingBall) return;
+
         world.getScoring().addLife();
         System.out.println(" da add life");
+
     }
 }

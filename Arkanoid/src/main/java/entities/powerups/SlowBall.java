@@ -39,17 +39,20 @@ public class SlowBall extends PowerUp {
 
     @Override
     public void onCollected(World world) {
+        boolean hasFlyingBall = world.getBalls().stream().anyMatch(ball -> !ball.isStickToPaddle());
+        if (!hasFlyingBall) return;
+
         for (Ball ball : world.getBalls()) {
-            ball.setVelocityX(ball.getVelocityX() * slowFactor);
-            ball.setVelocityY(ball.getVelocityY() * slowFactor);
+            ball.setSpeedMultiplier(slowFactor);
         }
+
         new Thread(() -> {
             try {
                 Thread.sleep((long) (duration * 1000));
             } catch (InterruptedException ignored) {}
+
             for (Ball ball : world.getBalls()) {
-                ball.setVelocityX(ball.getVelocityX() / slowFactor);
-                ball.setVelocityY(ball.getVelocityY() / slowFactor);
+                ball.setSpeedMultiplier(1.0);
             }
         }).start();
     }
