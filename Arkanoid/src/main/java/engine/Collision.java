@@ -70,7 +70,7 @@ public class Collision {
                 } else {
                     brick.hit(); // gạch thường or gạch hard
                 }
-
+                systems.AudioSystem.getInstance().playBrickHit();
 
                 world.getScoring().addScore(1);
                 world.getScoring().incrementBricksDestroyed();
