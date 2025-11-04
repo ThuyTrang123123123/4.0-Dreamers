@@ -1,17 +1,14 @@
 package entities.powerups;
 
+import core.World;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import core.World;
 import javafx.scene.image.Image;
 
-
-public class BonusCoin {
-    private double x, y;
+public class BonusCoin extends PowerUp {
     private double radius;
     private double speed;
-    private boolean collected = false;
+    private boolean firstUpdate = true;
 
     private double zigzagTimer = 0;
     private double zigzagInterval = 1; // đổi hướng mỗi ziczagInterval giây
@@ -19,21 +16,13 @@ public class BonusCoin {
 
     private int value = 10; // điểm thưởng khi ăn coin
 
-    // ===== Constructor =====
     public BonusCoin(double x, double y, double radius, double speed) {
-        this.x = x;
-        this.y = y;
+        super(x, y, radius * 2, radius * 2, null); // width & height từ bán kính
         this.radius = radius;
         this.speed = speed;
+        image= new Image(getClass().getResourceAsStream("/images/bonusCoin.png"));
     }
 
-    public double getX() {return x;}
-    public void setX(double x) {this.x = x;}
-    public double getY() {return y;}
-    public void setY(double y) {this.y = y;}
-    public void setCollected(boolean collected) {
-        this.collected = collected;
-    }
     public int getValue() {
         return value;
     }
@@ -42,31 +31,56 @@ public class BonusCoin {
         this.value = value;
     }
 
-    // ===== Update =====
-    public void update(double deltaTime) {
-        x += directionX * 2* speed * deltaTime;
-        y += speed * deltaTime;
+    public boolean isCollected() {
+        return collected;
+    }
 
-        zigzagTimer += deltaTime;
+    public void setCollected(boolean collected) {
+        this.collected = collected;
+        this.active = false;
+    }
+
+    @Override
+    public void update(double dt) {
+        if (!active || collected) return;
+
+        if (firstUpdate) {
+            firstUpdate = false;
+            return;
+        }
+
+        x += directionX * 2 * speed * dt;
+        y += speed * dt;
+
+        zigzagTimer += dt;
         if (zigzagTimer >= zigzagInterval) {
             directionX *= -1;
             zigzagTimer = 0;
         }
-    }
 
-    // ===== Render =====
-    public void render(GraphicsContext gc) {
-        if (!collected) {
-            Image coinImage = new Image("file:/D:/IntelliJ/4.0-Dreamers/Arkanoid/src/main/resources/images/bonusCoin.png");
-            gc.drawImage(coinImage, x - radius, y - radius, radius * 2, radius * 2);
+        if (y > core.Config.SCREEN_HEIGHT) {
+            active = false;
         }
     }
 
-    public Rectangle2D getBounds() {
-        return new Rectangle2D(x - radius, y - radius, radius * 2, radius * 2);
+    @Override
+    public void render(GraphicsContext gc) {
+        if (!active || collected) return;
+        gc.drawImage(image, x - radius, y - radius, radius * 2, radius * 2);
     }
 
-    public boolean isCollected() {
-        return collected;
+    @Override
+    public void onCollected(World world) {
+        boolean hasFlyingBall = world.getBalls().stream().anyMatch(ball -> !ball.isStickToPaddle());
+        if (hasFlyingBall) {
+            world.getScoring().addScore(value);
+        }
+
+
+    }
+
+    @Override
+    public Rectangle2D getBounds() {
+        return new Rectangle2D(x - radius, y - radius, radius * 2, radius * 2);
     }
 }

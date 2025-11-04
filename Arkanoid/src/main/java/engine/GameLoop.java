@@ -2,27 +2,55 @@
 package engine;
 import javafx.animation.AnimationTimer;
 import core.Game;
+import javafx.application.Platform;
 
-public class GameLoop extends AnimationTimer {
-    private Game game;
-    private long lastTime = 0;
+public class GameLoop implements Runnable {
+    private volatile boolean running;
+    private final int FPS = 60;
+    private final long FRAME_TIME = 1000 / FPS; // ~16ms
 
-    public GameLoop(Game game) {
+    private final core.Game game;
+
+    public GameLoop(core.Game game) {
         this.game = game;
     }
 
-    @Override
-    public void handle(long now) {
-        final double frameRate = 60.0;
-        final double interval = 1_000_000_000.0 / frameRate; // nanoseconds per frame
-
-        if (now - lastTime >= interval) {
-            double deltaTime = (now - lastTime) / 1_000_000_000.0;
-            game.update(deltaTime);
-            game.render();
-            lastTime = now;
-        }
+    public void start() {
+        running = true;
+        new Thread(this).start();
     }
 
+    public void stop() {
+        running = false;
+    }
 
+    @Override
+    public void run() {
+        long lastTime = System.currentTimeMillis();
+
+        while (running) {
+            long startTime = System.currentTimeMillis();
+            double deltaTime = (startTime - lastTime) / 1000.0;
+
+            // Bước 1: Cập nhật logic game
+            game.update(deltaTime);
+
+            // Bước 2: Vẽ game
+            Platform.runLater(() -> game.render());
+
+
+            // Bước 3: Ngủ để duy trì FPS
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            long sleepTime = FRAME_TIME - elapsedTime;
+            if (sleepTime > 0) {
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+            lastTime = startTime;
+        }
+    }
 }

@@ -4,77 +4,115 @@ import core.World;
 import entities.Ball;
 import entities.Paddle;
 import entities.bricks.Brick;
-import engine.Physics;
 import entities.bricks.ExplodingBrick;
-import entities.powerups.BonusCoin;
+import entities.powerups.*;
 
 import java.util.List;
 
 public class Collision {
 
-    // Va chạm biên màn hình
-    public static void checkWallCollision(Ball ball, double screenWidth, double screenHeight) {
-        // Trái
+
+    public static boolean isBallTouchingWall(Ball ball, double screenWidth, double screenHeight) {
+        return ball.getLeft() <= 0 ||
+                ball.getRight() >= screenWidth ||
+                ball.getTop() <= 0 ||
+                ball.getBottom() >= screenHeight;
+    }
+
+    public static boolean isBallTouchingPaddle(Ball ball, Paddle paddle) {
+        return ball.getBounds().intersects(paddle.getBounds());
+    }
+
+    public static boolean isBallTouchingBrick(Ball ball, Brick brick) {
+        return !brick.isDestroyed() && ball.getBounds().intersects(brick.getBounds());
+    }
+
+    public static boolean isPowerUpTouchingPaddle(PowerUp pu, Paddle paddle) {
+        return pu.isActive() && pu.getBounds().intersects(paddle.getBounds());
+    }
+
+
+    public static void handleBallWallCollision(Ball ball, double screenWidth, double screenHeight) {
         if (ball.getLeft() <= 0) {
-            ball.setX(ball.getRadius()); // đẩy ra khỏi tường
+            ball.setX(ball.getRadius());
             ball.reverseX();
         }
 
-        // Phải
         if (ball.getRight() >= screenWidth) {
-            ball.setX(screenWidth - ball.getRadius()); // đẩy ra khỏi tường
+            ball.setX(screenWidth - ball.getRadius());
             ball.reverseX();
         }
 
-        // Trên
         if (ball.getTop() <= 0) {
             ball.setY(ball.getRadius());
             ball.reverseY();
         }
 
-        // Dưới
         if (ball.getBottom() >= screenHeight) {
             ball.setLost(true);
         }
     }
 
-
-    // Bóng Va chạm với paddle
-    public static void checkPaddleCollision(Ball ball, Paddle paddle) {
-        if (ball.getBounds().intersects(paddle.getBounds())) {
-            ball.setY(paddle.getY()-paddle.getHeight()/2 - ball.getRadius());
-            ball.reverseY();
-            double hitPos = (ball.getX() + ball.getDiameter()/2) - (paddle.getX() + paddle.getWidth()/2);
-            ball.setVelocityX(hitPos * 2); // thay đổi hướng tùy theo vị trí va chạm
-        }
+    public static void handleBallPaddleCollision(Ball ball, Paddle paddle) {
+        ball.setY(paddle.getY() - paddle.getHeight() / 2 - ball.getRadius());
+        ball.reverseY();
+        double hitPos = (ball.getX() + ball.getDiameter() / 2) - (paddle.getX() + paddle.getWidth() / 2);
+        ball.setVelocityX(hitPos * 2);
     }
-    // Va chạm với gạch
-    public static void checkBrickCollision(Ball ball, List<Brick> bricks, World world) {
+
+    public static void handleBallBrickCollision(Ball ball, List<Brick> bricks, World world) {
         for (Brick brick : bricks) {
-            if (!brick.isDestroyed() && ball.getBounds().intersects(brick.getBounds())) {
-                brick.hit();
-                // Cộng điểm: 1 gạch = 1 điểm
-                world.getScoring().addScore(1);
-                // Nếu là ExplodingBrick thì nổ lan
-                if (brick instanceof ExplodingBrick explodingBrick) {
-                    explodingBrick.explodeNearby(bricks);
+            if (isBallTouchingBrick(ball, brick)) {
+                // Nếu là ExplodingBrick → gọi hit + explodeNearby
+                if (brick instanceof ExplodingBrick exploding) {
+                    exploding.hit();
+                    exploding.explodeNearby(bricks);
+                } else {
+                    brick.hit(); // gạch thường or gạch hard
                 }
+                systems.AudioSystem.getInstance().playBrickHit();
+
+                world.getScoring().addScore(1);
                 world.getScoring().incrementBricksDestroyed();
-                // Tăng số gạch đã phá (tự động thưởng mạng mỗi 3 gạch)
-                world.getScoring().incrementBricksDestroyed();
-                Physics physics=new Physics();
-                physics.reflectBall(ball,brick);
-                break; // chỉ xử lý 1 gạch mỗi frame
+
+                new Physics().reflectBall(ball, brick);
+                if (brick.isDestroyed()) {
+                    double chance = Math.random();
+                    if (chance < 0.9) {
+                        Class<? extends PowerUp> type;
+                        double r = Math.random();
+
+                        if (r < 1.0 / 7) {
+                            type = BonusCoin.class;
+                        } else if (r < 2.0 / 7) {
+                            type = ExtraLife.class;
+                        } else if (r < 3.0 / 7) {
+                            type = EnlargePaddle.class;
+                        } else if (r < 4.0 / 7) {
+                            type = DoubleBall.class;
+                        } else if (r < 5.0 / 7) {
+                            type = ShrinkPaddle.class;
+                        } else if (r < 6.0 / 7) {
+                            type = SlowBall.class;
+                        } else {
+                            type = SpeedBall.class;
+                        }
+
+                        PowerUp pu = world.getPowerUpPool().acquire(type, brick.getX(), brick.getY());
+                        world.getPowerUps().add(pu);
+                    }
+                }
+
+
+
+
+
+                break;
             }
         }
     }
-    // Bomus Coin và paddle
-    public static void checkPaddleCollision(BonusCoin bonusCoin, Paddle paddle,World world) {
-        if (!bonusCoin.isCollected()&&bonusCoin.getBounds().intersects(paddle.getBounds())) {
-            bonusCoin.setCollected(true);
-            world.getScoring().addScore(bonusCoin.getValue());
-        }
+
+    public static void handlePowerUpCollision(PowerUp pu, Paddle paddle, World world) {
+        pu.collect(world);
     }
-
-
 }

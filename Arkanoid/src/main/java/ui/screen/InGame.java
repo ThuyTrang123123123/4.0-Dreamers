@@ -1,5 +1,7 @@
 package ui.screen;
 
+import core.Config;
+import core.Game;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,21 +13,24 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import systems.ScoringSystem;
+import systems.AchievementSystem;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 import ui.widgets.ButtonUI;
 
 public class InGame {
-    // ===== UI Components =====
-    private Label scoreLabel;                    // Hiển thị điểm số
-    private Label livesLabel;                    // Hiển thị mạng sống
-    private Label bricksLabel;                   // Hiển thị số gạch đã phá
+    private Label scoreLabel;
+    private Label livesLabel;
+    private Label bricksLabel;
+    private Label rankLabel;
+    private final Game game;
+    private final ScoringSystem scoring;
+    private final AchievementSystem achievements;
 
-    // ===== Data =====
-    private final ScoringSystem scoring;         // Hệ thống quản lý điểm (được truyền từ Game)
-
-    public InGame(ScoringSystem scoring) {
+    public InGame(Game game, ScoringSystem scoring, AchievementSystem achievements) {
+        this.game = game;
         this.scoring = scoring;
+        this.achievements = achievements;
     }
 
     public Scene create(Stage stage) {
@@ -33,10 +38,10 @@ public class InGame {
         root.setStyle("-fx-background-color: #" + colorToHex(Colors.BACKGROUND) + ";");
 
         // === Canvas gameplay ===
-        Canvas canvas = new Canvas(800, 600);
+        Canvas canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.LIGHTGRAY);
-        gc.fillRect(0, 0, 800, 600); // tạm vẽ nền gameplay
+        gc.fillRect(0, 0, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT); // tạm vẽ nền gameplay
 
         // === HUD (score, lives, bricks, pause button) ===
         scoreLabel = new Label("Score: 0");
@@ -51,10 +56,14 @@ public class InGame {
         bricksLabel.setFont(Fonts.main(18));
         bricksLabel.setTextFill(Colors.TEXT);
 
-        ButtonUI pauseBtn = new ButtonUI("Pause");
-        pauseBtn.setOnAction(e -> stage.setScene(new MainMenu().create(stage)));
+        rankLabel = new Label("🥉 Đồng");
+        rankLabel.setFont(Fonts.main(18));
+        rankLabel.setTextFill(Colors.TEXT);
 
-        HBox hudBar = new HBox(30, scoreLabel, livesLabel, bricksLabel, pauseBtn);
+        ButtonUI pauseBtn = new ButtonUI("Pause");
+        pauseBtn.setOnAction(e -> game.showPause());
+
+        HBox hudBar = new HBox(30, scoreLabel, livesLabel, bricksLabel, rankLabel, pauseBtn);
         hudBar.setAlignment(Pos.CENTER);
         hudBar.setStyle("-fx-padding: 10; -fx-background-color: #" + colorToHex(Colors.SECONDARY) + ";");
 
@@ -82,8 +91,12 @@ public class InGame {
         bricksLabel.setFont(Fonts.main(18));
         bricksLabel.setTextFill(Colors.TEXT);
 
+        rankLabel = new Label("🥉 Đồng");
+        rankLabel.setFont(Fonts.main(18));
+        rankLabel.setTextFill(Colors.TEXT);
+
         // Tạo thanh HUD
-        HBox hudBar = new HBox(40, scoreLabel, livesLabel, bricksLabel);
+        HBox hudBar = new HBox(40, scoreLabel, livesLabel, bricksLabel, rankLabel);
         hudBar.setAlignment(Pos.TOP_LEFT);
         hudBar.setPadding(new Insets(10));
         hudBar.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 8;");
@@ -96,8 +109,8 @@ public class InGame {
     }
 
     /**
-     * Binding HUD với ScoringSystem để tự động cập nhật
-     * Khi scoring thay đổi → Label tự động cập nhật, không cần gọi updateHUD()
+     * Binding HUD với ScoringSystem và AchievementSystem để tự động cập nhật
+     * Khi scoring hoặc rank thay đổi → Label tự động cập nhật, không cần gọi updateHUD()
      */
     private void bindHUDWithScoring() {
         // Bind điểm số
@@ -114,6 +127,13 @@ public class InGame {
         bricksLabel.textProperty().bind(
                 scoring.bricksDestroyedProperty().asString("Bricks: %d")
         );
+
+        // Bind rank hiện tại (tự động cập nhật khi rank thay đổi)
+        rankLabel.textProperty().bind(
+                achievements.currentRankIconProperty()
+                        .concat(" ")
+                        .concat(achievements.currentRankNameProperty())
+        );
     }
 
     @Deprecated
@@ -122,6 +142,7 @@ public class InGame {
         // Nhưng giữ lại để code cũ không bị lỗi
         System.out.println("⚠️ updateHUD() deprecated - HUD tự động cập nhật qua binding!");
     }
+
 
     private String colorToHex(javafx.scene.paint.Color color) {
         return color.toString().substring(2, 8);
