@@ -1,116 +1,111 @@
 package core;
 
+import engine.*;
 import entities.Ball;
+import entities.Bullet;
 import entities.Paddle;
 import entities.bricks.Brick;
 import systems.ScoringSystem;
 import systems.AchievementSystem;
+import entities.powerups.BonusCoin;
+import entities.powerups.EnlargePaddle;
+import entities.powerups.ExtraLife;
+import entities.powerups.PowerUp;
 import javafx.scene.canvas.Canvas;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * World - Thế giới game
- * Quản lý tất cả các đối tượng trong game:
- * - Paddle (thanh chắn)
- * - Ball (bóng)
- * - Level (quản lý level và gạch)
- * - ScoringSystem (hệ thống điểm)
- * - AchievementSystem (hệ thống thành tựu và rank)
+ * Quản lý tất cả các đối tượng trong game
  */
 public class World {
-    private Paddle paddle;                        // Thanh chắn
-    private Ball ball;                            // Quả bóng
-    private Level level;                          // Quản lý level
-    private final ScoringSystem scoring;          // Hệ thống điểm
-    private final AchievementSystem achievements; // Hệ thống thành tựu
+    private Paddle paddle;
+    //private Ball ball;
+    private final List<Ball> balls = new ArrayList<>();
+    private final List<PowerUp> powerUps = new ArrayList<>();
+    private final PowerUpPool powerUpPool = new PowerUpPool();
+    private Level level;
+    // Khai báo thuộc tính (fields) chỉ giữ lại 1 lần
+    private final ScoringSystem scoring;
+    private final AchievementSystem achievements;
+    private final List<Bullet> bullets = new ArrayList<>();
 
-    /**
-     * Constructor - Khởi tạo World
-     * Tạo sẵn ScoringSystem, Level và AchievementSystem để sử dụng xuyên suốt game
-     */
+
+
     public World() {
         this.scoring = new ScoringSystem();
         this.level = new Level(Config.BRICK_ROWS, Config.BRICK_COLS);
         this.achievements = new AchievementSystem();
-
-        // ===== Listener cho thành tựu =====
-        achievements.addListener(achievement -> {
-            System.out.println("🎉 ACHIEVEMENT UNLOCKED: " + achievement.getName());
-        });
-
-        // ===== Listener cho rank up =====
-        achievements.addRankListener((oldRank, newRank, score) -> {
-            System.out.println("⬆️ " + oldRank.getIcon() + oldRank.getName() +
-                    " → " + newRank.getIcon() + newRank.getName());
-        });
     }
 
-    /**
-     * Khởi tạo tất cả đối tượng trong world
-     * Được gọi khi bắt đầu game hoặc chuyển level mới
-     *
-     * @param canvas Canvas để lấy kích thước màn hình
-     */
     public void init(Canvas canvas) {
-        // === Tạo Paddle ở giữa đáy màn hình ===
-        // Tọa độ (x,y) là TÂM của paddle
         paddle = new Paddle(
-                Config.SCREEN_WIDTH / 2.0,           // x: giữa màn hình
-                Config.SCREEN_HEIGHT - 50,           // y: cách đáy 50px
-                Config.PADDLE_WIDTH,                 // chiều rộng
-                Config.PADDLE_HEIGHT                 // chiều cao
+                (Config.SCREEN_WIDTH - Config.PADDLE_WIDTH) / 2,
+                Config.SCREEN_HEIGHT - 50,
+                Config.PADDLE_WIDTH,
+                Config.PADDLE_HEIGHT
+        );
+        balls.clear();
+
+        Ball ball = new Ball(
+                (Config.SCREEN_WIDTH - Config.BALL_RADIUS * 2) / 2,
+                Config.SCREEN_HEIGHT - 70,
+                Config.BALL_RADIUS,
+                Config.BALL_SPEED
         );
 
-        // === Tạo Ball ngay trên paddle ===
-        // Tọa độ (x,y) là TÂM của ball
-        ball = new Ball(
-                Config.SCREEN_WIDTH / 2.0,           // x: giữa màn hình
-                Config.SCREEN_HEIGHT - 70,           // y: cách đáy 70px (trên paddle)
-                Config.BALL_RADIUS,                  // bán kính
-                Config.BALL_SPEED                    // tốc độ
-        );
-
-        // ⭐ ĐẢM BẢO bóng ở trạng thái STICK ngay từ đầu
+        balls.add(ball);
+        powerUps.clear(); // danh sách trống, không sinh sẵn
         ball.setStickToPaddle(true);
-
     }
 
-    /**
-     * Reset world về trạng thái ban đầu
-     * Được gọi khi người chơi nhấn R để restart toàn bộ game
-     */
     public void reset() {
-        // === Reset vị trí và vận tốc bóng ===
+        balls.clear();
+        Ball ball = new Ball(
+                Config.SCREEN_WIDTH / 2.0,
+                Config.SCREEN_HEIGHT - 70,
+                Config.BALL_RADIUS,
+                Config.BALL_SPEED
+        );
+        balls.add(ball);
         ball.setX(Config.SCREEN_WIDTH / 2.0);
         ball.setY(Config.SCREEN_HEIGHT - 70);
         ball.setVelocityX(Config.BALL_SPEED);
-        ball.setVelocityY(-Config.BALL_SPEED);     // bay lên trên (âm)
-        ball.setLost(false);                        // chưa rơi
+        ball.setVelocityY(-Config.BALL_SPEED);
+        ball.setLost(false);
 
-        // === Reset vị trí paddle ===
-        paddle.setX(Config.SCREEN_WIDTH / 2.0);     // về giữa màn hình
-// ⭐ Reset bóng về trạng thái STICK trên paddle
+        paddle.setX(Config.SCREEN_WIDTH / 2.0);
         ball.resetToStick(paddle.getX(), paddle.getY());
-        // === Reset về level 1 ===
+
+        // Thu hồi tất cả PowerUp đang dùng
+        for (PowerUp pu : powerUps) {
+            powerUpPool.release(pu);
+        }
+        powerUps.clear();
+
         level.reset();
-
-        // === Reset điểm số, mạng về ban đầu ===
         scoring.reset();
-
-        // === Reset thành tựu và rank ===
         achievements.resetAll();
     }
 
-    /**
-     * Chuyển sang level tiếp theo
-     * Được gọi khi người chơi phá hết gạch trong level hiện tại
-     * ⭐ QUAN TRỌNG: Điểm số và mạng KHÔNG bị reset
-     */
     public void nextLevel() {
-        // === Tạo lại gạch mới cho level tiếp theo ===
         level.regenerate();
+        // Thu hồi tất cả PowerUp đang dùng
+        for (PowerUp pu : powerUps) {
+            powerUpPool.release(pu);
+        }
+        powerUps.clear();
 
-        // === Reset vị trí bóng và paddle ===
+        balls.clear();
+        Ball ball = new Ball(
+                Config.SCREEN_WIDTH / 2.0,
+                Config.SCREEN_HEIGHT - 70,
+                Config.BALL_RADIUS,
+                Config.BALL_SPEED
+        );
+        balls.add(ball);
         ball.setX(Config.SCREEN_WIDTH / 2.0);
         ball.resetToStick(paddle.getX(), paddle.getY());
         ball.setY(Config.SCREEN_HEIGHT - 70);
@@ -119,27 +114,19 @@ public class World {
         ball.setLost(false);
 
         paddle.setX(Config.SCREEN_WIDTH / 2.0);
-
-        // ⚠️ LƯU Ý: KHÔNG gọi scoring.reset() → giữ nguyên điểm và mạng
     }
 
-    // ===== Getters - Cho phép các class khác truy cập =====
-
-    /** Lấy thanh chắn */
+    // Getters
     public Paddle getPaddle() { return paddle; }
-
-    /** Lấy quả bóng */
-    public Ball getBall() { return ball; }
-
-    /** Lấy danh sách gạch từ Level */
+    public Ball getBall() { return balls.isEmpty() ? null : balls.get(0); }
+    public List<PowerUp> getPowerUps() { return powerUps; }
     public List<Brick> getBricks() { return level.getBricks(); }
-
-    /** Lấy hệ thống điểm */
     public ScoringSystem getScoring() { return scoring; }
-
-    /** Lấy Level */
     public Level getLevel() { return level; }
-
-    /** Lấy hệ thống thành tựu */
     public AchievementSystem getAchievements() { return achievements; }
+    public PowerUpPool getPowerUpPool() { return powerUpPool; }
+
+    public List<Ball> getBalls() { return balls; }
+    public List<Bullet> getBullets() { return bullets; }
+
 }

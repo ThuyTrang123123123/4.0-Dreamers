@@ -1,22 +1,38 @@
 package core;
 
-import engine.Collision;
-import engine.GameLoop;
-import entities.Ball;
-import systems.AudioSystem;
+import java.util.ArrayList;
+import java.util.List;
 
+import entities.Bullet;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.StackPane;
-import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import engine.Collision;
+import engine.GameLoop;
+import engine.*;
+
+import entities.Ball;
+import entities.Paddle;
+import entities.bricks.Brick;
+import entities.powerups.BonusCoin;
+import entities.powerups.EnlargePaddle;
+import entities.powerups.ExtraLife;
+import entities.powerups.PowerUp;
+
+import systems.AchievementSystem;
+import systems.AudioSystem;
+import systems.ScoringSystem;
 
 import ui.screen.InGame;
 import ui.screen.MainMenu;
+import ui.screen.Pause;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 
@@ -26,100 +42,134 @@ public class Game extends Application {
     private final World world = new World();
     private InGame hudLayer;
     private boolean gamePaused = false;
-    private boolean gameWon = false;  // ⭐ THÊM: Trạng thái thắng game
+    private boolean gameWon = false;
+    private Stage stage;
+    private Scene inGameScene;
+    private Scene pauseScene;
+    private Scene mainMenuScene;
+    private GameLoop loop;
 
     public Scene createGamescene(Stage stage) {
         canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         gc = canvas.getGraphicsContext2D();
-
         world.init(canvas);
 
-        hudLayer = new InGame(world.getScoring(), world.getAchievements());
+        hudLayer = new InGame(this, world.getScoring(), world.getAchievements());
         HBox hud = hudLayer.createHUD();
 
         StackPane root = new StackPane(canvas, hud);
         StackPane.setAlignment(hud, Pos.TOP_LEFT);
-
         world.getAchievements().initNotificationSystem(root);
 
-        world.getAchievements().addListener(achievement -> {
-            System.out.println("🎉 THÀNH TỰU MỞ KHÓA: " + achievement.getName());
-            System.out.println("   " + achievement.getDescription());
-        });
-
-        world.getAchievements().addRankListener((oldRank, newRank, score) -> {
-            System.out.println("🎖️ RANK UP!");
-            System.out.println("   " + oldRank.getIcon() + " " + oldRank.getName() +
-                    " → " + newRank.getIcon() + " " + newRank.getName());
-            System.out.println("   Điểm hiện tại: " + score);
-        });
-
         Scene scene = new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
+        this.inGameScene = scene;
 
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
-                gamePaused = true;
-                stage.setScene(new MainMenu().create(stage));
+                showPause(); return;
             }
-
-            // ⭐ R: Restart (cả khi game over hoặc thắng game)
-            if (e.getCode() == KeyCode.R &&
-                    (world.getBall().isLost() || world.getScoring().isGameOver() || gameWon)) {
-                restartGame();
+            if (e.getCode() == KeyCode.C) {
+                resumeGame(); return;
             }
-
+            if (e.getCode() == KeyCode.R || world.getScoring().isGameOver()) {
+                restartGame(); return;
+            }
             if (e.getCode() == KeyCode.SPACE) {
-                world.getBall().launch();
+                for (Ball ball : world.getBalls()) {
+                    if (ball.isStickToPaddle()) ball.launch();
+                }
+                return;
             }
-
             world.getPaddle().onKeyPressed(e.getCode());
         });
 
         scene.setOnKeyReleased(e -> world.getPaddle().onKeyReleased(e.getCode()));
 
-        AudioSystem.getInstance().playBackgroundMusic("background.wav");
+        AudioSystem audio = AudioSystem.getInstance();
+        audio.playIfChanged(audio.getSelectedMusicOrDefault(Config.DEFAULT_MUSIC));
 
-        new GameLoop(this).start();
+        loop = new GameLoop(this);
+        loop.start();
 
         return scene;
     }
 
     public void update(double dt) {
-        if (gamePaused || gameWon) return;  // ⭐ Dừng update nếu thắng game
+        if (gamePaused || gameWon) return;
 
-        Ball ball = world.getBall();
+        Paddle paddle = world.getPaddle();
+        List<Ball> balls = world.getBalls();
 
-        if (ball.isStickToPaddle()) {
-            ball.updateStickPosition(world.getPaddle().getX(), world.getPaddle().getY());
-        }
+        List<Ball> lostBalls = new ArrayList<>();
 
-        if (ball.isLost()) {
-            world.getScoring().loseLife();
+        for (Ball ball : balls) {
+            if (ball.isStickToPaddle()) {
+                ball.updateStickPosition(paddle.getX(), paddle.getY());
+            }
 
-            if (world.getScoring().isGameOver()) {
-                return;
-            } else {
-                ball.resetToStick(world.getPaddle().getX(), world.getPaddle().getY());
+            if (ball.isLost()) {
+                lostBalls.add(ball);
+                continue;
+            }
+
+            ball.update(dt);
+
+            if (!ball.isStickToPaddle()) {
+                Collision.handleBallWallCollision(ball, canvas.getWidth(), canvas.getHeight());
+                if (Collision.isBallTouchingPaddle(ball, paddle)) {
+                    Collision.handleBallPaddleCollision(ball, paddle);
+                }
+                Collision.handleBallBrickCollision(ball, world.getBricks(), world);
             }
         }
 
-        world.getPaddle().update(dt);
-        ball.update(dt);
-
-        if (!ball.isStickToPaddle()) {
-            Collision.checkWallCollision(ball, canvas.getWidth(), canvas.getHeight());
-            Collision.checkPaddleCollision(ball, world.getPaddle());
-            Collision.checkBrickCollision(ball, world.getBricks(), world);
+        world.getBalls().removeAll(lostBalls);
+        if (!lostBalls.isEmpty() && world.getBalls().isEmpty()) {
+            world.getScoring().loseLife();
         }
 
-        // ⭐ Kiểm tra điều kiện thắng level
+        if (world.getBalls().isEmpty() && !world.getScoring().isGameOver()) {
+            Ball newBall = new Ball(
+                    Config.SCREEN_WIDTH / 2.0,
+                    Config.SCREEN_HEIGHT - 70,
+                    Config.BALL_RADIUS,
+                    Config.BALL_SPEED
+            );
+            newBall.setStickToPaddle(true);
+            world.getBalls().add(newBall);
+        }
+
+        paddle.update(dt);
+
+        List<Bullet> bullets = world.getBullets();
+
+        Bullet b = paddle.tryShoot();
+        if (b != null) bullets.add(b);
+
+        bullets.removeIf(bu -> {
+            bu.update(dt);
+            return !bu.isActive();
+        });
+        // Xử lý đạn bắn trúng gạch
+        Collision.handleBulletBrickCollision(world.getBullets(), world.getBricks(), world);
+
+
+
+        List<PowerUp> toRemove = new ArrayList<>();
+        for (PowerUp pu : world.getPowerUps()) {
+            pu.update(dt);
+            if (Collision.isPowerUpTouchingPaddle(pu, paddle)) {
+                Collision.handlePowerUpCollision(pu, paddle, world);
+                world.getPowerUpPool().release(pu);
+                toRemove.add(pu);
+            }
+        }
+        world.getPowerUps().removeAll(toRemove);
+
         if (world.getLevel().isComplete()) {
-            // ⭐ Kiểm tra xem đã hoàn thành TẤT CẢ 12 level chưa
             if (world.getLevel().isGameComplete()) {
                 gameWon = true;
-                System.out.println("🏆🎉 CHÚC MỪNG! BẠN ĐÃ HOÀN THÀNH TẤT CẢ 12 LEVEL!");
             } else {
-                // Chưa hết game, chuyển level tiếp theo
                 world.nextLevel();
             }
         }
@@ -131,29 +181,39 @@ public class Game extends Application {
 
         gc.setFill(Colors.TEXT);
         gc.setFont(Fonts.main(20));
-
-        // ⭐ Hiển thị level hiện tại / tổng số level
         gc.fillText("Level " + world.getLevel().getCurrentLevel() + " / " + world.getLevel().getMaxLevel(),
                 Config.SCREEN_WIDTH - 150, 30);
 
         world.getPaddle().render(gc);
-        world.getBall().render(gc);
 
-        world.getBricks().stream()
-                .filter(b -> !b.isDestroyed())
-                .forEach(b -> b.render(gc));
+        for (Ball ball : world.getBalls()) {
+            ball.render(gc);
+        }
 
-        if (world.getBall().isStickToPaddle()) {
+        for (Brick b : world.getBricks()) {
+            if (!b.isDestroyed()) b.render(gc);
+        }
+
+        // Vẽ bullet
+        for (Bullet b : world.getBullets()) {
+            b.render(gc);
+        }
+
+
+        for (PowerUp pu : world.getPowerUps()) {
+            pu.render(gc);
+        }
+
+        if (world.getBalls().stream().anyMatch(Ball::isStickToPaddle)) {
             gc.setFill(Colors.TEXT);
             gc.setFont(Fonts.main(18));
             gc.fillText("Press SPACE to launch ball", 260, 400);
         }
 
-        // ⭐ Hiển thị màn hình thắng game
         if (gameWon) {
             gc.setFill(Colors.TEXT);
             gc.setFont(Fonts.main(32));
-            gc.fillText("🏆 YOU WIN! 🏆", 280, 260);
+            gc.fillText("YOU WIN!", 280, 260);
             gc.setFont(Fonts.main(20));
             gc.fillText("Hoàn thành tất cả 12 level!", 250, 300);
             gc.setFont(Fonts.main(16));
@@ -170,24 +230,55 @@ public class Game extends Application {
         }
     }
 
+    public void showPause() {
+        gamePaused = true;
+        stage.setScene(pauseScene);
+    }
+
+    public void resumeGame() {
+        gamePaused = false;
+        stage.setScene(inGameScene);
+        inGameScene.getRoot().requestFocus();
+    }
+
+    private void restartGameFromPause() {
+        restartGame();
+        stage.setScene(inGameScene);
+    }
+
     private void restartGame() {
         world.reset();
         gamePaused = false;
-        gameWon = false;  // ⭐ Reset trạng thái thắng game
+        gameWon = false;
+    }
+
+    public void showMainMenu() {
+        gamePaused = false;
+        stage.setScene(mainMenuScene);
+    }
+
+    public Scene getOrCreateGameScene(Stage stage) {
+        if (inGameScene == null) {
+            inGameScene = createGamescene(stage);
+        }
+        return inGameScene;
     }
 
     public Canvas getCanvas() {
         return canvas;
     }
 
+    public boolean getGamestatus() {
+        return !gamePaused;
+    }
+
     @Override
     public void start(Stage stage) {
-        stage.setTitle("Arkanoid - 12 Levels");
+        this.stage = stage;
+        stage.setTitle("Arkanoid");
         stage.setScene(new MainMenu().create(stage));
         stage.show();
 
-        stage.setOnCloseRequest(e -> {
-            AudioSystem.getInstance().dispose();
-        });
+        stage.setOnCloseRequest(e -> AudioSystem.getInstance().dispose());
     }
 }
