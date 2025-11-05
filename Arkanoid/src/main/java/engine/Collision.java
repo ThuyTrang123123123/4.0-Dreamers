@@ -106,7 +106,7 @@ public class Collision {
                         } else if (r < 7.0 / 9) {
                             type = SpeedBall.class;
                         } else if (r < 8.0 / 9) {
-                            type = EnLargeBall.class;
+                         type = EnLargeBall.class;
                         } else {
                             type = ShootPaddle.class;
                         }

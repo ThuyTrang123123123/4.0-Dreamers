@@ -6,6 +6,7 @@ module core {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
+    requires java.desktop;
     requires javafx.media;
     requires javafx.graphics;
 
@@ -16,12 +17,13 @@ module core {
 
     // Cho phép các package được sử dụng từ bên ngoài module
     exports core;
-    /**
-    exports data;
-    exports engine;
-    exports entities;
-    exports net;
-    exports systems;
-    exports ui;
-    exports util;**/
+
+/**
+exports data;
+exports engine;
+exports entities;
+exports net;
+exports systems;
+exports ui;
+exports util;**/
 }
