@@ -3,6 +3,7 @@ package core;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.Bullet;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -140,6 +141,20 @@ public class Game extends Application {
 
         paddle.update(dt);
 
+        List<Bullet> bullets = world.getBullets();
+
+        Bullet b = paddle.tryShoot();
+        if (b != null) bullets.add(b);
+
+        bullets.removeIf(bu -> {
+            bu.update(dt);
+            return !bu.isActive();
+        });
+        // Xử lý đạn bắn trúng gạch
+        Collision.handleBulletBrickCollision(world.getBullets(), world.getBricks(), world);
+
+
+
         List<PowerUp> toRemove = new ArrayList<>();
         for (PowerUp pu : world.getPowerUps()) {
             pu.update(dt);
@@ -178,6 +193,12 @@ public class Game extends Application {
         for (Brick b : world.getBricks()) {
             if (!b.isDestroyed()) b.render(gc);
         }
+
+        // Vẽ bullet
+        for (Bullet b : world.getBullets()) {
+            b.render(gc);
+        }
+
 
         for (PowerUp pu : world.getPowerUps()) {
             pu.render(gc);

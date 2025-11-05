@@ -17,4 +17,8 @@ public class Config {
 
     public static final double BONUSCOIN_RADIUS = 15;
     public static final double BONUSCOIN_SPEED = 100;
+
+    public static final double POWERUP_WIDTH = 24;
+    public static final double POWERUP_HEIGHT = 24;
+
 }

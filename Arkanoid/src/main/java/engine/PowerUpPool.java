@@ -53,6 +53,12 @@ public class PowerUpPool {
         if (type==ShrinkPaddle.class){
             return new ShrinkPaddle(x,y);
         }
+        if (type==EnLargeBall.class){
+            return new EnLargeBall(x,y);
+        }
+        if (type==ShootPaddle.class){
+            return new ShootPaddle(x,y);
+        }
 
 
         throw new IllegalArgumentException("Unknown PowerUp type: " + type.getSimpleName());

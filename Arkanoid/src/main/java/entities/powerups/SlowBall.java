@@ -1,5 +1,6 @@
 package entities.powerups;
 
+import core.Config;
 import core.World;
 import entities.Ball;
 import javafx.scene.canvas.GraphicsContext;
@@ -8,7 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
 
 /**
- * PowerUp loại: Slow Ball — giảm tốc độ bóng.
+ * PowerUp: Slow Ball — giảm tốc độ bóng.
  */
 public class SlowBall extends PowerUp {
 
@@ -16,8 +17,13 @@ public class SlowBall extends PowerUp {
     private final double duration = 8.0;
 
     public SlowBall(double x, double y) {
-        super(x, y, 18, 18, Color.PURPLE);
-        image = new Image(getClass().getResource("/images/SlowBall.png").toExternalForm());
+        super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.PURPLE);
+        try {
+            image = new Image(getClass().getResource("/images/SlowBall.png").toExternalForm());
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh SlowBall: " + e.getMessage());
+            image = null;
+        }
     }
 
     @Override
@@ -28,11 +34,8 @@ public class SlowBall extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
-
-        if (image.isError()) {
-            System.out.println("Không thể tải ảnh: /images/SlowBall.png");
-            return;
-        }
+        double drawX = getX() - getWidth() / 2;
+        double drawY = getY() - getHeight() / 2;
 
         gc.drawImage(image, x - width / 2, y - height / 2, width, height);
     }
@@ -49,7 +52,8 @@ public class SlowBall extends PowerUp {
         new Thread(() -> {
             try {
                 Thread.sleep((long) (duration * 1000));
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
 
             for (Ball ball : world.getBalls()) {
                 ball.setSpeedMultiplier(1.0);

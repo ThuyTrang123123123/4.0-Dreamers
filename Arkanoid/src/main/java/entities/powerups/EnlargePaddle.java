@@ -1,13 +1,15 @@
 package entities.powerups;
 
 import core.World;
+import core.Config;
 import entities.Paddle;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
 
 /**
- * PowerUp loại: Enlarge Paddle — làm paddle to hơn trong vài giây.
+ * PowerUp: Enlarge Paddle — làm paddle to hơn trong vài giây.
  */
 public class EnlargePaddle extends PowerUp {
 
@@ -15,14 +17,23 @@ public class EnlargePaddle extends PowerUp {
     private final double duration = 8.0; // giây
 
     public EnlargePaddle(double x, double y) {
-        super(x, y, 18, 18, Color.LIGHTBLUE);
+        super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.LIGHTBLUE);
+        try {
+            image = new Image(getClass().getResource("/images/EnlargePaddle.png").toExternalForm());
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh EnlargePaddle: " + e.getMessage());
+            image = null;
+        }
     }
 
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
-        gc.setFill(Color.LIGHTBLUE);
-        gc.fillOval(getX(), getY(), getWidth(), getHeight());
+
+        double drawX = getX() - getWidth() / 2;
+        double drawY = getY() - getHeight() / 2;
+
+        gc.drawImage(image, drawX, drawY, getWidth(), getHeight());
     }
 
     @Override
@@ -43,10 +54,10 @@ public class EnlargePaddle extends PowerUp {
         new Thread(() -> {
             try {
                 Thread.sleep((long) (duration * 1000));
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
             paddle.setWidth(originalWidth);
         }).start();
-
 
 
     }
