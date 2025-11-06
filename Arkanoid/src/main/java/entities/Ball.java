@@ -18,7 +18,7 @@ public class Ball {
     private boolean stickToPaddle = true;  // Bắt đầu với trạng thái dính
     private double stickOffsetX = 0;        // Khoảng cách từ tâm paddle
 
-    // ===== Constructor =====
+    // Constructor
     public Ball(double x, double y, double radius, double speed) {
         this.x = x;
         this.y = y;
@@ -27,7 +27,7 @@ public class Ball {
         this.velocityY = -speed;
     }
 
-    // ===== Getters & Setters =====
+    // Getters & Setters
     public double getX() { return x; }
     public double getY() { return y; }
     public double getRadius() { return radius; }
@@ -49,7 +49,7 @@ public class Ball {
     public void setLost(boolean lost) { this.lost = lost; }
     public void setStickToPaddle(boolean stick) { this.stickToPaddle = stick; }
 
-    // ===== Update & Render =====
+    //  Update & Render
     public void update(double deltaTime) {
         // Nếu đang dính với paddle thì KHÔNG di chuyển
         if (stickToPaddle) {
@@ -104,10 +104,9 @@ public class Ball {
             // Luôn dùng tốc độ cố định từ Config
             double speed = core.Config.BALL_SPEED;  // Lấy từ Config
 
-            // Bắn bóng lên trên với góc ngẫu nhiên nhẹ
-            double angle = -75 + (Math.random() * 30);  // Góc từ -75° đến -45°
-            velocityX = speed * Math.sin(Math.toRadians(angle));
-            velocityY = speed * Math.cos(Math.toRadians(angle));
+            // Bắn thẳng lên
+            velocityX = 0;
+            velocityY = -speed;
 
             System.out.println("Bóng đã được bắn! Tốc độ: " + speed);
         }
@@ -133,7 +132,7 @@ public class Ball {
     }
 
 
-    // ===== Collision & Bounds =====
+    // Collision & Bounds
     public Rectangle2D getBounds() {
         return new Rectangle2D(x - radius, y - radius, radius * 2, radius * 2);
     }
@@ -143,7 +142,7 @@ public class Ball {
     public double getTop()    { return y - radius; }
     public double getBottom() { return y + radius; }
 
-    // ===== Utility =====
+    // Utility
     public double getDiameter() { return radius * 2; }
 
     public void reverseX() { velocityX = -velocityX; }

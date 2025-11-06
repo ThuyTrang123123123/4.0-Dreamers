@@ -3,6 +3,7 @@ package core;
 import entities.bricks.Brick;
 import entities.bricks.ExplodingBrick;
 import entities.bricks.HardBrick;
+import entities.bricks.factory.BrickFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class Level {
     private final List<Brick> bricks;
     private int currentLevel = 1;
     private static final int MAX_LEVEL = 12;
+    private final BrickFactory factory = new BrickFactory();
 
     public Level(int rows, int cols) {
         bricks = new ArrayList<>();
@@ -46,18 +48,18 @@ public class Level {
         System.out.println("Level " + level + " - Số gạch: " + bricks.size());
     }
 
-    // ===== Level 1: 1 hàng đơn giản (5 gạch)
+    // Level 1: 1 hàng đơn giản (5 gạch)
     private void generateLevel1() {
         int startX = 250, startY = 100;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
+        int brickWidth = 60, brickHeight = 20, gap =10;
 
-        for (int col = 0; col < 1; col++) {
+        for (int col = 0; col < 5; col++) {
             double x = startX + col * (brickWidth + gap);
-            bricks.add(new Brick(x, startY, brickWidth, brickHeight));
+            bricks.add(factory.create('N', x, startY, brickWidth, brickHeight));
         }
     }
 
-    // ===== Level 2: 2 hàng (12 gạch)
+    // Level 2: 2 hàng (12 gạch)
     private void generateLevel2() {
         int startX = 180, startY = 80;
         int brickWidth = 60, brickHeight = 20, gap = 10;
@@ -66,12 +68,12 @@ public class Level {
             for (int col = 0; col < 6; col++) {
                 double x = startX + col * (brickWidth + gap);
                 double y = startY + row * (brickHeight + gap);
-                bricks.add(new ExplodingBrick(x, y, brickWidth, brickHeight));
+                bricks.add(factory.create('E', x, y, brickWidth, brickHeight));
             }
         }
     }
 
-    // ===== Level 3: 3 hàng (21 gạch)
+    // Level 3: 3 hàng (21 gạch)
     private void generateLevel3() {
         int startX = 110, startY = 80;
         int brickWidth = 60, brickHeight = 20, gap = 10;
@@ -80,12 +82,12 @@ public class Level {
             for (int col = 0; col < 7; col++) {
                 double x = startX + col * (brickWidth + gap);
                 double y = startY + row * (brickHeight + gap);
-                bricks.add(new Brick(x, y, brickWidth, brickHeight));
+                bricks.add(factory.create('N', x, y, brickWidth, brickHeight));
             }
         }
     }
 
-    // ===== Level 4: Hình kim cương (~28 gạch)
+    // Level 4: Hình kim cương (~28 gạch)
     private void generateLevel4() {
         int startX = 60, startY = 50;
         int brickWidth = 60, brickHeight = 20, gap = 10;
@@ -99,29 +101,31 @@ public class Level {
             for (int col = 0; col < cols; col++) {
                 double x = startX + (offset + col) * (brickWidth + gap);
                 double y = startY + row * (brickHeight + gap);
-                bricks.add(new Brick(x, y, brickWidth, brickHeight));
+                char type = (row == 2) ? 'H' : 'N';
+
+                bricks.add(factory.create('N', x, y, brickWidth, brickHeight));
             }
         }
     }
 
-    // ===== Level 5: Hình chữ T (~16 gạch)
+    // Level 5: Hình chữ T (~16 gạch)
     private void generateLevel5() {
         int startX = 60, startY = 50;
         int brickWidth = 60, brickHeight = 20, gap = 10;
 
         for (int col = 2; col < 9; col++) {
             double x = startX + col * (brickWidth + gap);
-            bricks.add(new Brick(x, startY, brickWidth, brickHeight));
+            bricks.add(factory.create('N', x, startY, brickWidth, brickHeight));
         }
 
         for (int row = 1; row < 4; row++) {
             double x = startX + 5 * (brickWidth + gap);
             double y = startY + row * (brickHeight + gap);
-            bricks.add(new Brick(x, y, brickWidth, brickHeight));
+            bricks.add(factory.create('N', x, y, brickWidth, brickHeight));
         }
     }
 
-    // ===== Level 6: Hình chữ X (10 gạch)
+    // Level 6: Hình chữ X (10 gạch)
     private void generateLevel6() {
         int startX = 60, startY = 50;
         int brickWidth = 60, brickHeight = 20, gap = 10;
@@ -129,16 +133,16 @@ public class Level {
         for (int row = 0; row < 5; row++) {
             double x1 = startX + row * 2 * (brickWidth + gap);
             double y = startY + row * (brickHeight + gap);
-            bricks.add(new Brick(x1, y, brickWidth, brickHeight));
+            bricks.add(factory.create('N', x1, y, brickWidth, brickHeight));
 
             if (row != 2) {
                 double x2 = startX + (8 - row * 2) * (brickWidth + gap);
-                bricks.add(new Brick(x2, y, brickWidth, brickHeight));
+                bricks.add(factory.create('N', x2, y, brickWidth, brickHeight));
             }
         }
     }
 
-    // ===== Level 7: Hình vuông rỗng - khung (~24 gạch)
+    //  Level 7: Hình vuông rỗng - khung (~24 gạch)
     private void generateLevel7() {
         int startX = 60, startY = 50;
         int brickWidth = 60, brickHeight = 20, gap = 10;
@@ -148,13 +152,13 @@ public class Level {
                 if (row == 0 || row == 4 || col == 0 || col == 7) {
                     double x = startX + col * (brickWidth + gap);
                     double y = startY + row * (brickHeight + gap);
-                    bricks.add(new Brick(x, y, brickWidth, brickHeight));
+                    bricks.add(factory.create('N', x, y, brickWidth, brickHeight));
                 }
             }
         }
     }
 
-    // ===== Level 8: Tam giác ngược (~25 gạch)
+    // Level 8: Tam giác ngược (~25 gạch)
     private void generateLevel8() {
         int startX = 60, startY = 50;
         int brickWidth = 60, brickHeight = 20, gap = 10;
@@ -165,12 +169,12 @@ public class Level {
             for (int col = 0; col < cols; col++) {
                 double x = startX + col * (brickWidth + gap);
                 double y = startY + row * (brickHeight + gap);
-                bricks.add(new Brick(x, y, brickWidth, brickHeight));
+                bricks.add(factory.create('N', x, y, brickWidth, brickHeight));
             }
         }
     }
 
-    // ===== Level 9: Lưới cờ vua
+    // Level 9: Lưới cờ vua
     private void generateLevel9() {
         int startX = 60, startY = 50;
         int brickWidth = 60, brickHeight = 20, gap = 10;
@@ -180,7 +184,7 @@ public class Level {
                 if ((row + col) % 2 == 0) {
                     double x = startX + col * (brickWidth + gap);
                     double y = startY + row * (brickHeight + gap);
-                    bricks.add(new Brick(x, y, brickWidth, brickHeight));
+                    bricks.add(factory.create('N', x, y, brickWidth, brickHeight));
                 }
             }
         }
@@ -194,15 +198,15 @@ public class Level {
         for (int row = 0; row < 5; row++) {
             double x1 = startX + 2 * (brickWidth + gap);
             double y = startY + row * (brickHeight + gap);
-            bricks.add(new Brick(x1, y, brickWidth, brickHeight));
+            bricks.add(factory.create('N', x1, y, brickWidth, brickHeight));
 
             double x2 = startX + 7 * (brickWidth + gap);
-            bricks.add(new Brick(x2, y, brickWidth, brickHeight));
+            bricks.add(factory.create('N', x2, y, brickWidth, brickHeight));
 
             if (row == 2) {
                 for (int col = 3; col < 7; col++) {
                     double x = startX + col * (brickWidth + gap);
-                    bricks.add(new Brick(x, y, brickWidth, brickHeight));
+                    bricks.add(factory.create('N', x, y, brickWidth, brickHeight));
                 }
             }
         }
@@ -218,11 +222,11 @@ public class Level {
 
             double x = startX + col * (brickWidth + gap);
             double y = startY + row * (brickHeight + gap);
-            bricks.add(new Brick(x, y, brickWidth, brickHeight));
+            bricks.add(factory.create('N', x, y, brickWidth, brickHeight));
         }
     }
 
-    // ===== Level 12: BOSS LEVEL - Full màn hình (60 gạch)
+    //  Level 12: BOSS LEVEL - Full màn hình (60 gạch)
     private void generateLevel12() {
         int startX = 60, startY = 50;
         int brickWidth = 60, brickHeight = 20, gap = 10;
@@ -231,7 +235,7 @@ public class Level {
             for (int col = 0; col < 10; col++) {
                 double x = startX + col * (brickWidth + gap);
                 double y = startY + row * (brickHeight + gap);
-                bricks.add(new Brick(x, y, brickWidth, brickHeight));
+                bricks.add(factory.create('N', x, y, brickWidth, brickHeight));
             }
         }
     }
