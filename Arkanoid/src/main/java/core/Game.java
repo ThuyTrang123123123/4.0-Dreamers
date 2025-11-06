@@ -49,6 +49,7 @@ public class Game extends Application {
     private GameLoop loop;
 
     public Scene createGamescene(Stage stage) {
+        this.stage = stage;
         canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         gc = canvas.getGraphicsContext2D();
         world.init(canvas);
@@ -211,13 +212,10 @@ public class Game extends Application {
 
     public void showPause() {
         gamePaused = true;
-        stage.setScene(pauseScene);
     }
 
     public void resumeGame() {
         gamePaused = false;
-        stage.setScene(inGameScene);
-        inGameScene.getRoot().requestFocus();
     }
 
     private void restartGameFromPause() {
