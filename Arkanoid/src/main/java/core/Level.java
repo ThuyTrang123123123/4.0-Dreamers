@@ -1,8 +1,6 @@
 package core;
 
-import entities.bricks.Brick;
-import entities.bricks.ExplodingBrick;
-import entities.bricks.HardBrick;
+import entities.bricks.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +78,7 @@ public class Level {
             for (int col = 0; col < 7; col++) {
                 double x = startX + col * (brickWidth + gap);
                 double y = startY + row * (brickHeight + gap);
-                bricks.add(new Brick(x, y, brickWidth, brickHeight));
+                bricks.add(new NormalBrick(x, y, brickWidth, brickHeight));
             }
         }
     }

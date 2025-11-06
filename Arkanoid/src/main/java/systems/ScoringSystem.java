@@ -38,11 +38,13 @@ public class ScoringSystem {
         Platform.runLater(() -> lives.set(lives.get() + 1));
     }
 
-    public void incrementBricksDestroyed() {
+    public void incrementBricksDestroyed(int amount) {
         int currentBricks = bricksDestroyed.get();
-        Platform.runLater(() -> bricksDestroyed.set(currentBricks + 1));
-        if ((currentBricks + 1) % 3 == 0) {
-            addLife();
+        Platform.runLater(() -> bricksDestroyed.set(currentBricks + amount));
+        for (int i = 1; i <= amount; i++) {
+            if ((currentBricks + i) % 3 == 0) {
+                addLife();
+            }
         }
     }
 
