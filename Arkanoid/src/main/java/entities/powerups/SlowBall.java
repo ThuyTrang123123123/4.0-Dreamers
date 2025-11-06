@@ -1,5 +1,6 @@
 package entities.powerups;
 
+import core.Config;
 import core.World;
 import entities.Ball;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,7 +17,7 @@ public class SlowBall extends PowerUp {
     private final double duration = 8.0;
 
     public SlowBall(double x, double y) {
-        super(x, y, 18, 18, Color.PURPLE);
+        super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.PURPLE);
         try {
             image = new Image(getClass().getResource("/images/SlowBall.png").toExternalForm());
         } catch (Exception e) {

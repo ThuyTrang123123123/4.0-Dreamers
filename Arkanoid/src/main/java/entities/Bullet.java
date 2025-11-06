@@ -8,7 +8,7 @@ import javafx.geometry.Rectangle2D;
 public class Bullet {
     private double x, y;
     private final double speed = 500;
-    private final double width = 4, height = 12;
+    private final double width = 12, height = 36;
     private boolean active = true;
 
     private static Image bulletImage = new Image(

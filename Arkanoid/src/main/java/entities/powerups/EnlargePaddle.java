@@ -1,6 +1,7 @@
 package entities.powerups;
 
 import core.World;
+import core.Config;
 import entities.Paddle;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -16,7 +17,7 @@ public class EnlargePaddle extends PowerUp {
     private final double duration = 8.0; // giây
 
     public EnlargePaddle(double x, double y) {
-        super(x, y, 18, 18, Color.LIGHTBLUE);
+        super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.LIGHTBLUE);
         try {
             image = new Image(getClass().getResource("/images/EnlargePaddle.png").toExternalForm());
         } catch (Exception e) {

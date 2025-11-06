@@ -1,5 +1,6 @@
 package entities.powerups;
 
+import core.Config;
 import core.World;
 import entities.Paddle;
 import javafx.application.Platform;
@@ -16,7 +17,7 @@ public class ShootPaddle extends PowerUp {
     private final double duration = 10.0; // 10 giây
 
     public ShootPaddle(double x, double y) {
-        super(x, y, 18, 18, Color.RED);
+        super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.RED);
         try {
             image = new Image(getClass().getResource("/images/ShootPaddle.png").toExternalForm());
         } catch (Exception e) {
@@ -40,15 +41,20 @@ public class ShootPaddle extends PowerUp {
 
     @Override
     public void onCollected(World world) {
-
         Paddle paddle = world.getPaddle();
         paddle.setShooting(true); // bật chế độ bắn
         this.active = false;      // powerup biến mất khỏi màn hình
 
-        // Tắt hiệu ứng sau duration giây
+        // Tắt hiệu ứng
         new Thread(() -> {
             try {
-                Thread.sleep((long) (duration * 1000));
+                long start = System.currentTimeMillis();
+                while (System.currentTimeMillis() - start < duration * 1000) {
+                    boolean hasFlyingBall = world.getBalls().stream().anyMatch(b -> !b.isStickToPaddle());
+                    if (!hasFlyingBall) break;
+                    Thread.sleep(200); // kiểm tra mỗi 200ms
+                }
+
             } catch (InterruptedException ignored) {}
 
             Platform.runLater(() -> {
