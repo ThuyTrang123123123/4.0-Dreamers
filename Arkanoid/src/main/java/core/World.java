@@ -1,11 +1,18 @@
 package core;
 
+import engine.*;
 import entities.Ball;
 import entities.Paddle;
 import entities.bricks.Brick;
 import systems.ScoringSystem;
 import systems.AchievementSystem;
+import entities.powerups.BonusCoin;
+import entities.powerups.EnlargePaddle;
+import entities.powerups.ExtraLife;
+import entities.powerups.PowerUp;
 import javafx.scene.canvas.Canvas;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,92 +21,106 @@ import java.util.List;
  */
 public class World {
     private Paddle paddle;
-    private Ball ball;
+    //private Ball ball;
+    private final List<Ball> balls = new ArrayList<>();
+    private final List<PowerUp> powerUps = new ArrayList<>();
+    private final PowerUpPool powerUpPool = new PowerUpPool();
     private Level level;
+    // Khai báo thuộc tính (fields) chỉ giữ lại 1 lần
     private final ScoringSystem scoring;
     private final AchievementSystem achievements;
 
-    /**
-     * Constructor - Khởi tạo World
-     */
     public World() {
         this.scoring = new ScoringSystem();
         this.level = new Level(Config.BRICK_ROWS, Config.BRICK_COLS);
         this.achievements = new AchievementSystem();
     }
 
-    /**
-     * Khởi tạo tất cả đối tượng trong world
-     */
     public void init(Canvas canvas) {
-        // Tạo Paddle ở giữa đáy màn hình
         paddle = new Paddle(
-                Config.SCREEN_WIDTH / 2.0,
+                (Config.SCREEN_WIDTH - Config.PADDLE_WIDTH) / 2,
                 Config.SCREEN_HEIGHT - 50,
                 Config.PADDLE_WIDTH,
                 Config.PADDLE_HEIGHT
         );
+        balls.clear();
 
-        // Tạo Ball ngay trên paddle
-        ball = new Ball(
+        Ball ball = new Ball(
+                (Config.SCREEN_WIDTH - Config.BALL_RADIUS * 2) / 2,
+                Config.SCREEN_HEIGHT - 70,
+                Config.BALL_RADIUS,
+                Config.BALL_SPEED
+        );
+
+        balls.add(ball);
+        powerUps.clear(); // danh sách trống, không sinh sẵn
+        ball.setStickToPaddle(true);
+    }
+
+    public void reset() {
+        balls.clear();
+        Ball ball = new Ball(
                 Config.SCREEN_WIDTH / 2.0,
                 Config.SCREEN_HEIGHT - 70,
                 Config.BALL_RADIUS,
                 Config.BALL_SPEED
         );
-    }
+        balls.add(ball);
+        ball.setX(Config.SCREEN_WIDTH / 2.0);
+        ball.setY(Config.SCREEN_HEIGHT - 70);
+        ball.setVelocityX(Config.BALL_SPEED);
+        ball.setVelocityY(-Config.BALL_SPEED);
+        ball.setLost(false);
 
-    /**
-     * Reset world về trạng thái ban đầu
-     */
-    public void reset() {
-        // Reset vị trí paddle
         paddle.setX(Config.SCREEN_WIDTH / 2.0);
-
-        // ⭐ Reset bóng về trạng thái stick trên paddle
         ball.resetToStick(paddle.getX(), paddle.getY());
 
-        // Reset về level 1
+        // Thu hồi tất cả PowerUp đang dùng
+        for (PowerUp pu : powerUps) {
+            powerUpPool.release(pu);
+        }
+        powerUps.clear();
+
         level.reset();
-
-        // Reset điểm số, mạng
         scoring.reset();
-
-        // Reset thành tựu và rank
         achievements.resetAll();
     }
 
-    /**
-     * Chuyển sang level tiếp theo
-     * ⭐ QUAN TRỌNG: Điểm số và mạng KHÔNG bị reset
-     * ⭐ Bóng sẽ dính trên paddle, chờ nhấn SPACE để bắn
-     */
     public void nextLevel() {
-        // Tạo lại gạch mới cho level tiếp theo
         level.regenerate();
+        // Thu hồi tất cả PowerUp đang dùng
+        for (PowerUp pu : powerUps) {
+            powerUpPool.release(pu);
+        }
+        powerUps.clear();
 
-        // Reset vị trí paddle về giữa
-        paddle.setX(Config.SCREEN_WIDTH / 2.0);
-
-        // ⭐ Reset bóng về trạng thái STICK trên paddle
-        // Bóng sẽ dính và KHÔNG tự động bay
-        ball.resetToStick(paddle.getX(), paddle.getY());
-
-        // Kiểm tra thành tựu level mới
-        achievements.checkAchievements(
-                scoring,
-                level.getCurrentLevel()
+        balls.clear();
+        Ball ball = new Ball(
+                Config.SCREEN_WIDTH / 2.0,
+                Config.SCREEN_HEIGHT - 70,
+                Config.BALL_RADIUS,
+                Config.BALL_SPEED
         );
+        balls.add(ball);
+        ball.setX(Config.SCREEN_WIDTH / 2.0);
+        ball.resetToStick(paddle.getX(), paddle.getY());
+        ball.setY(Config.SCREEN_HEIGHT - 70);
+        ball.setVelocityX(Config.BALL_SPEED);
+        ball.setVelocityY(-Config.BALL_SPEED);
+        ball.setLost(false);
 
-        System.out.println("🎯 Level " + level.getCurrentLevel() + " - Press SPACE to launch!");
+        paddle.setX(Config.SCREEN_WIDTH / 2.0);
     }
 
-    // ===== Getters =====
-
+    // Getters
     public Paddle getPaddle() { return paddle; }
-    public Ball getBall() { return ball; }
+    public Ball getBall() { return balls.isEmpty() ? null : balls.get(0); }
+    public List<PowerUp> getPowerUps() { return powerUps; }
     public List<Brick> getBricks() { return level.getBricks(); }
     public ScoringSystem getScoring() { return scoring; }
     public Level getLevel() { return level; }
     public AchievementSystem getAchievements() { return achievements; }
+    public PowerUpPool getPowerUpPool() { return powerUpPool; }
+
+    public List<Ball> getBalls() { return balls; }
 }

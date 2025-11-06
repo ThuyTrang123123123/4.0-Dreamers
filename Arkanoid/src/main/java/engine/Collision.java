@@ -4,63 +4,64 @@ import core.World;
 import entities.Ball;
 import entities.Paddle;
 import entities.bricks.Brick;
+import entities.powerups.*;
 
 import java.util.List;
 
-/**
- * Collision - Xử lý va chạm trong game
- */
 public class Collision {
 
-    /**
-     * Va chạm với biên màn hình
-     */
-    public static void checkWallCollision(Ball ball, double screenWidth, double screenHeight) {
-        // Trái
+
+    public static boolean isBallTouchingWall(Ball ball, double screenWidth, double screenHeight) {
+        return ball.getLeft() <= 0 ||
+                ball.getRight() >= screenWidth ||
+                ball.getTop() <= 0 ||
+                ball.getBottom() >= screenHeight;
+    }
+
+    public static boolean isBallTouchingPaddle(Ball ball, Paddle paddle) {
+        return ball.getBounds().intersects(paddle.getBounds());
+    }
+
+    public static boolean isBallTouchingBrick(Ball ball, Brick brick) {
+        return !brick.isDestroyed() && ball.getBounds().intersects(brick.getBounds());
+    }
+
+    public static boolean isPowerUpTouchingPaddle(PowerUp pu, Paddle paddle) {
+        return pu.isActive() && pu.getBounds().intersects(paddle.getBounds());
+    }
+
+
+    public static void handleBallWallCollision(Ball ball, double screenWidth, double screenHeight) {
         if (ball.getLeft() <= 0) {
             ball.setX(ball.getRadius());
             ball.reverseX();
         }
 
-        // Phải
         if (ball.getRight() >= screenWidth) {
             ball.setX(screenWidth - ball.getRadius());
             ball.reverseX();
         }
 
-        // Trên
         if (ball.getTop() <= 0) {
             ball.setY(ball.getRadius());
             ball.reverseY();
         }
 
-        // Dưới (bóng rơi)
         if (ball.getBottom() >= screenHeight) {
             ball.setLost(true);
         }
     }
 
-    /**
-     * Va chạm với paddle
-     */
-    public static void checkPaddleCollision(Ball ball, Paddle paddle) {
-        if (ball.getBounds().intersects(paddle.getBounds())) {
-            ball.setY(paddle.getY() - ball.getDiameter());
-            ball.reverseY();
-
-            // Thay đổi hướng bóng tùy vị trí va chạm
-            double hitPos = (ball.getX() + ball.getDiameter()/2) - (paddle.getX() + paddle.getWidth()/2);
-            ball.setVelocityX(hitPos * 2);
-        }
+    public static void handleBallPaddleCollision(Ball ball, Paddle paddle) {
+        ball.setY(paddle.getY() - paddle.getHeight() / 2 - ball.getRadius());
+        ball.reverseY();
+        double hitPos = (ball.getX() + ball.getDiameter() / 2) - (paddle.getX() + paddle.getWidth() / 2);
+        ball.setVelocityX(hitPos * 2);
     }
 
-    /**
-     * Va chạm với gạch
-     * ⭐ QUAN TRỌNG: Truyền thêm World để cập nhật scoring và achievements
-     */
-    public static void checkBrickCollision(Ball ball, List<Brick> bricks, World world) {
+    public static void handleBallBrickCollision(Ball ball, List<Brick> bricks, World world) {
         for (Brick brick : bricks) {
-            if (!brick.isDestroyed() && ball.getBounds().intersects(brick.getBounds())) {
+            if (isBallTouchingBrick(ball, brick)) {
                 brick.hit();
 
                 systems.AudioSystem.getInstance().playBrickHit();
@@ -68,36 +69,44 @@ public class Collision {
                 world.getScoring().addScore(1);
                 world.getScoring().incrementBricksDestroyed();
 
-                world.getAchievements().checkAchievements(
-                        world.getScoring(),
-                        world.getLevel().getCurrentLevel()
-                );
+                new Physics().reflectBall(ball, brick);
+                if (brick.isDestroyed()) {
+                    double chance = Math.random();
+                    if (chance < 0.9) {
+                        Class<? extends PowerUp> type;
+                        double r = Math.random();
 
-                reflectBall(ball, brick);
+                        if (r < 1.0 / 7) {
+                            type = BonusCoin.class;
+                        } else if (r < 2.0 / 7) {
+                            type = ExtraLife.class;
+                        } else if (r < 3.0 / 7) {
+                            type = EnlargePaddle.class;
+                        } else if (r < 4.0 / 7) {
+                            type = DoubleBall.class;
+                        } else if (r < 5.0 / 7) {
+                            type = ShrinkPaddle.class;
+                        } else if (r < 6.0 / 7) {
+                            type = SlowBall.class;
+                        } else {
+                            type = SpeedBall.class;
+                        }
+
+                        PowerUp pu = world.getPowerUpPool().acquire(type, brick.getX(), brick.getY());
+                        world.getPowerUps().add(pu);
+                    }
+                }
+
+
+
+
 
                 break;
             }
         }
     }
 
-    /**
-     * Xác định hướng phản xạ bóng sau va chạm với gạch
-     */
-    private static void reflectBall(Ball ball, Brick brick) {
-        double overlapLeft = ball.getRight() - brick.getX();
-        double overlapRight = brick.getX() + brick.getWidth() - ball.getLeft();
-        double overlapTop = ball.getBottom() - brick.getY();
-        double overlapBottom = brick.getY() + brick.getHeight() - ball.getTop();
-
-        boolean fromLeft = overlapLeft < overlapRight && overlapLeft < overlapTop && overlapLeft < overlapBottom;
-        boolean fromRight = overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom;
-        boolean fromTop = overlapTop < overlapBottom && overlapTop < overlapLeft && overlapTop < overlapRight;
-        boolean fromBottom = overlapBottom < overlapTop && overlapBottom < overlapLeft && overlapBottom < overlapRight;
-
-        if (fromLeft || fromRight) {
-            ball.reverseX();
-        } else if (fromTop || fromBottom) {
-            ball.reverseY();
-        }
+    public static void handlePowerUpCollision(PowerUp pu, Paddle paddle, World world) {
+        pu.collect(world);
     }
 }

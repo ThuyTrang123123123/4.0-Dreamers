@@ -1,8 +1,12 @@
 package entities;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Ball {
     private double x, y;
@@ -10,7 +14,6 @@ public class Ball {
     private double velocityX;
     private double velocityY;
     private boolean lost = false;
-
     // Trạng thái dính với paddle
     private boolean stickToPaddle = true;  // Bắt đầu với trạng thái dính
     private double stickOffsetX = 0;        // Khoảng cách từ tâm paddle
@@ -30,6 +33,7 @@ public class Ball {
     public double getRadius() { return radius; }
     public double getVelocityX() { return velocityX; }
     public double getVelocityY() { return velocityY; }
+    private double speedMultiplier = 1.0;
     public boolean isLost() { return lost; }
     public boolean isStickToPaddle() { return stickToPaddle; }
 
@@ -38,6 +42,10 @@ public class Ball {
     public void setRadius(double radius) { this.radius = radius; }
     public void setVelocityX(double velocityX) { this.velocityX = velocityX; }
     public void setVelocityY(double velocityY) { this.velocityY = velocityY; }
+    public void setSpeedMultiplier(double multiplier) {
+        this.speedMultiplier = multiplier;
+    }
+
     public void setLost(boolean lost) { this.lost = lost; }
     public void setStickToPaddle(boolean stick) { this.stickToPaddle = stick; }
 
@@ -60,9 +68,11 @@ public class Ball {
      * Giữ tốc độ bóng ổn định
      * Đảm bảo tốc độ không tăng/giảm sau nhiều va chạm
      */
+
     private void normalizeSpeed() {
         double currentSpeed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
-        double targetSpeed = core.Config.BALL_SPEED;
+        double targetSpeed = core.Config.BALL_SPEED* speedMultiplier;
+        ;
 
         // Nếu tốc độ sai lệch > 10%, điều chỉnh lại
         if (Math.abs(currentSpeed - targetSpeed) > targetSpeed * 0.1) {
@@ -72,8 +82,9 @@ public class Ball {
         }
     }
 
+
     /**
-     *Cập nhật vị trí bóng khi dính với paddle
+     * Cập nhật vị trí bóng khi dính với paddle
      * Gọi method này từ Game.java khi bóng đang stick
      */
     public void updateStickPosition(double paddleX, double paddleY) {
@@ -98,7 +109,7 @@ public class Ball {
             velocityX = speed * Math.sin(Math.toRadians(angle));
             velocityY = speed * Math.cos(Math.toRadians(angle));
 
-            System.out.println("🚀 Bóng đã được bắn! Tốc độ: " + speed);
+            System.out.println("Bóng đã được bắn! Tốc độ: " + speed);
         }
     }
 
@@ -113,15 +124,14 @@ public class Ball {
         this.y = paddleY - radius - 5;
         this.lost = false;
 
-        // Không cần set velocity ở đây, launch() sẽ xử lý
-
-        System.out.println("⚪ Bóng đã reset về trạng thái STICK - Nhấn SPACE để bắn!");
+        System.out.println("Bóng đã reset về trạng thái STICK - Nhấn SPACE để bắn!");
     }
 
     public void render(GraphicsContext gc) {
         gc.setFill(Color.WHITE);
         gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
     }
+
 
     // ===== Collision & Bounds =====
     public Rectangle2D getBounds() {

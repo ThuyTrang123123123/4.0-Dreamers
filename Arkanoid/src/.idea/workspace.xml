@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e5b7f965-f427-4ebd-8c67-4da2105903f0" name="Changes" comment="" />
+    <list default="true" id="c79523ad-26a2-463b-9b28-9d2bc58ee256" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
   <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
+  "customColor": "",
+  "associatedIndex": 1
 }]]></component>
-  <component name="ProjectId" id="34znOUop86P0P8vzo0ZFmH5Res1" />
+  <component name="ProjectId" id="34NojAzlF9u8sx6YNGTyJikqwTE" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -20,16 +24,17 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "last_opened_file_path": "D:/Trang/GitHub & Git/4.0-Dreamers/Arkanoid/src"
+    "git-widget-placeholder": "MAbranch",
+    "kotlin-language-version-configured": "true"
   }
 }]]></component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="e5b7f965-f427-4ebd-8c67-4da2105903f0" name="Changes" comment="" />
-      <created>1762225236350</created>
+      <changelist id="c79523ad-26a2-463b-9b28-9d2bc58ee256" name="Changes" comment="" />
+      <created>1761063523519</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1762225236350</updated>
+      <updated>1761063523519</updated>
     </task>
     <servers />
   </component>
