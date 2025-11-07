@@ -206,7 +206,10 @@ public class Game extends Application {
         gc.setFill(Colors.TEXT);
         gc.setFont(Fonts.main(20));
         gc.fillText("Level " + world.getLevel().getCurrentLevel() + " / " + world.getLevel().getMaxLevel(),
-                Config.SCREEN_WIDTH - 150, 30);
+                Config.SCREEN_WIDTH - 170, 30);
+
+        gc.fillText("Pause: press ERC", Config.SCREEN_WIDTH - 170, 60);
+        gc.fillText("Menu: press M", Config.SCREEN_WIDTH - 170, 90);
 
         world.getPaddle().render(gc);
 
@@ -251,6 +254,14 @@ public class Game extends Application {
             gc.fillText("GAME OVER", 320, 280);
             gc.setFont(Fonts.main(16));
             gc.fillText("Press R to Restart", 320, 320);
+        }
+
+        if (gamePaused) {
+            gc.setFill(Colors.TEXT);
+            gc.setFont(Fonts.main(24));
+            gc.fillText("GAME PAUSED", 320, 260);
+            gc.setFont(Fonts.main(16));
+            gc.fillText("Press C to Continue", 330, 300);
         }
     }
 
