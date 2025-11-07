@@ -1,6 +1,7 @@
 package entities.powerups;
 
 import core.World;
+import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -21,12 +22,6 @@ public class BonusCoin extends PowerUp {
         super(x, y, radius * 2, radius * 2, Color.BLACK); // width & height từ bán kính
         this.radius = radius;
         this.speed = speed;
-        try {
-            image = new Image(getClass().getResource("/images/bonusCoin.png").toExternalForm());
-        } catch (Exception e) {
-            System.err.println("Không thể tải ảnh bonusCoin: " + e.getMessage());
-            image = null;
-        }
     }
 
     public int getValue() {
@@ -72,6 +67,14 @@ public class BonusCoin extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!active || collected) return;
+        try {
+            if (image == null && Platform.isFxApplicationThread()) {
+                image = new Image(getClass().getResource("/images/bonusCoin.png").toExternalForm());
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh bonusCoin: " + e.getMessage());
+            image = null;
+        }
         gc.drawImage(image, x - radius, y - radius, radius * 2, radius * 2);
     }
 

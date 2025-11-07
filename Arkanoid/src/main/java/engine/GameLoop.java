@@ -42,7 +42,6 @@ public class GameLoop implements Runnable {
             // Bước 2: Vẽ game
             Platform.runLater(() -> game.render());
 
-
             // Bước 3: Ngủ để duy trì FPS
             long elapsedTime = System.currentTimeMillis() - startTime;
             long sleepTime = FRAME_TIME - elapsedTime;

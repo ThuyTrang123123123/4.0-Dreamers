@@ -9,6 +9,6 @@ public class Fonts {
     public static final Font HUD = Font.font("System", 14);
 
     public static Font main(double size) {
-        return Font.font("Comic Sans MS", size); // hoặc chọn font vui tươi như Angela
+        return Font.font("Comic Sans MS", size);
     }
 }

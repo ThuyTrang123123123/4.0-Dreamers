@@ -212,6 +212,7 @@ public class Game extends Application {
         gc.fillText("Menu: press M", Config.SCREEN_WIDTH - 170, 90);
 
         world.getPaddle().render(gc);
+        hudLayer.updateHUD();
 
         for (Ball ball : world.getBalls()) {
             ball.render(gc);
@@ -264,7 +265,6 @@ public class Game extends Application {
             gc.fillText("Press C to Continue", 330, 300);
         }
     }
-
     public void showPause() {
         gamePaused = true;
     }

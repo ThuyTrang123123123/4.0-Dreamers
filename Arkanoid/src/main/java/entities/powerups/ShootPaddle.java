@@ -8,6 +8,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+
 /**
  * PowerUp: ShootPaddle - bắn 1 viên đạn từ Paddle.
  */
@@ -18,12 +19,6 @@ public class ShootPaddle extends PowerUp {
 
     public ShootPaddle(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.RED);
-        try {
-            image = new Image(getClass().getResource("/images/ShootPaddle.png").toExternalForm());
-        } catch (Exception e) {
-            System.err.println("Không thể tải ảnh ShootPaddle: " + e.getMessage());
-            image = null;
-        }
     }
 
     @Override
@@ -34,6 +29,14 @@ public class ShootPaddle extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
+        try {
+            if (image == null && Platform.isFxApplicationThread()) {
+                image = new Image(getClass().getResource("/images/ShootPaddle.png").toExternalForm());
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh ShootPaddle: " + e.getMessage());
+            image = null;
+        }
         double drawX = getX() - getWidth() / 2;
         double drawY = getY() - getHeight() / 2;
         gc.drawImage(image, x - width / 2, y - height / 2, width, height);
@@ -55,7 +58,8 @@ public class ShootPaddle extends PowerUp {
                     Thread.sleep(200); // kiểm tra mỗi 200ms
                 }
 
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
 
             Platform.runLater(() -> {
                 world.getPaddle().setShooting(false);
