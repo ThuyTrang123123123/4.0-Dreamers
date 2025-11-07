@@ -54,7 +54,6 @@ public class Level {
                 {"N", "N", "H", "", "", "H", "N", "N"},
                 {"H", "N", "", "", "", "", "N", "H"},
                 {"N", "N", "", "", "", "", "N", "N"}
-
         };
         addBricksFromPattern(pattern);
     }
@@ -160,8 +159,8 @@ public class Level {
                 {"H", "N", "N", "", "", "N", "N", "H"},
                 {"N", "H", "", "", "", "", "H", "N"},
                 {"N", "", "H", "H", "H", "H", "", "N"},
-                {"", "", "H", "H", "H", "H", "", ""},
-                {"", "", "H", "H", "H", "H", "", ""},
+                {"", "", "H", "E", "H", "H", "", ""},
+                {"", "", "H", "H", "E", "H", "", ""},
                 {"N", "", "H", "H", "H", "H", "", "N"},
                 {"N", "H", "", "", "", "", "H", "N"},
                 {"H", "N", "N", "", "", "N", "N", "H"}
@@ -187,16 +186,14 @@ public class Level {
 
     private void generateLevel11() {
         String[][] pattern = {
-                {"H", "H", "H", "", "", "H", "H", "H"},
+                {"", "H", "H", "", "", "H", "H", ""},
                 {"H", "H", "H", "H", "H", "H", "H", "H"},
                 {"H", "N", "H", "H", "H", "H", "N", "H"},
                 {"H", "N", "N", "E", "E", "N", "N", "H"},
                 {"H", "H", "H", "H", "H", "H", "H", "H"},
                 {"", "N", "N", "N", "N", "N", "N", ""},
                 {"", "", "N", "N", "N", "N", "", ""},
-                {"", "", "", "N", "N", "", "", ""},
-                {"", "", "", "", "N", "", "", "", ""}
-
+                {"", "", "", "N", "N", "", "", ""}
         };
         addBricksFromPattern(pattern);
     }
@@ -218,7 +215,7 @@ public class Level {
     // Helper: Add bricks using BrickFactory
     private void addBricksFromPattern(String[][] pattern) {
         int brickWidth = 60, brickHeight = 20, gap = 3;
-        int startX = 100, startY = 80;
+        int startX = 185, startY = 80;
         for (int row = 0; row < pattern.length; row++) {
             for (int col = 0; col < pattern[row].length; col++) {
                 String typeStr = pattern[row][col];
