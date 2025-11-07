@@ -8,7 +8,7 @@ public class ExplodingBrick extends Brick {
     private static final int GRID_RANGE = 1; // nổ lan 8 ô xung quanh (1 ô mỗi hướng)
 
     public ExplodingBrick(double x, double y, double width, double height) {
-        super(x, y, width, height);
+        super(x, y, width, height,1);
     }
 
     @Override

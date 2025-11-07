@@ -2,7 +2,6 @@ package entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
 
 public class Bullet {
@@ -11,11 +10,22 @@ public class Bullet {
     private final double width = 12, height = 36;
     private boolean active = true;
 
-    private static Image bulletImage = new Image(
-            Bullet.class.getResource("/images/Bullet.png").toExternalForm()
-    );
+    private static Image Image;
 
-    public Bullet(double x, double y) { this.x = x; this.y = y; }
+    public Bullet(double x, double y) {
+        this.x = x;
+        this.y = y;
+
+        if (Image == null) {
+            try {
+                Image = new Image(
+                        Bullet.class.getResource("/images/Bullet.png").toExternalForm()
+                );
+            } catch (Exception e) {
+                Image = null;
+            }
+        }
+    }
 
     public boolean isActive() { return active; }
     public void deactivate() { active = false; }
@@ -27,10 +37,7 @@ public class Bullet {
     }
 
     public void render(GraphicsContext gc) {
-        if (!active) return;
-
-        // Vẽ ảnh viên đạn
-        gc.drawImage(bulletImage, x, y, width, height);
+        if (!active || Image == null) return;
+        gc.drawImage(Image, x, y, width, height);
     }
-
 }
