@@ -66,14 +66,34 @@ public class Game extends Application {
 
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
-                showPause(); return;
+                showPause();
+                return;
             }
+
             if (e.getCode() == KeyCode.C) {
-                resumeGame(); return;
+                resumeGame();
+                return;
             }
+
+            // M: Back to Menu
+            if (e.getCode() == KeyCode.M) {
+                gamePaused = true;
+//                systems.AudioSystem.getInstance().stopMusic();
+                Scene menuScene = MainMenu.cachedScene;
+                if (menuScene == null)
+                {
+                    menuScene = new MainMenu().create(stage);
+                    MainMenu.cachedScene = menuScene;
+                }
+                stage.setScene(menuScene);
+                return;
+            }
+
             if (e.getCode() == KeyCode.R || world.getScoring().isGameOver()) {
-                restartGame(); return;
+                restartGame();
+                return;
             }
+
             if (e.getCode() == KeyCode.SPACE) {
                 for (Ball ball : world.getBalls()) {
                     if (ball.isStickToPaddle()) ball.launch();
