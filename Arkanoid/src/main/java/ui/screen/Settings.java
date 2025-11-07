@@ -49,20 +49,11 @@ public class Settings {
             listener.onClose();
         });
 
-        Button backBtn = new Button("Back to Menu");
-        backBtn.setOnAction(e -> listener.onClose());
-
         VBox root = new VBox(30, title, musicBox);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(30));
 
         Scene scene =  new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
-
-        scene.setOnKeyPressed(ev -> {
-            if (ev.getCode() == KeyCode.B){
-                listener.onClose();
-            }
-        });
 
         return scene;
     }
