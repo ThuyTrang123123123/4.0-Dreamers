@@ -15,8 +15,8 @@ public class Ball {
     private double velocityY;
     private boolean lost = false;
     // Trạng thái dính với paddle
-    private boolean stickToPaddle = true;  // Bắt đầu với trạng thái dính
-    private double stickOffsetX = 0;        // Khoảng cách từ tâm paddle
+    private boolean stickToPaddle = true;
+    private double stickOffsetX = 0;
 
     // ===== Constructor =====
     public Ball(double x, double y, double radius, double speed) {

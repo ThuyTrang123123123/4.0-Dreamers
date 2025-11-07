@@ -3,27 +3,27 @@ package core;
 import entities.bricks.Brick;
 import entities.bricks.ExplodingBrick;
 import entities.bricks.HardBrick;
+import entities.bricks.NormalBrick;
+import entities.bricks.factory.BrickFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Level - Quản lý 12 level với độ khó tăng dần
- * Thiết kế theo bảng: Level 1-12 với các hình dạng khác nhau
+ * Sử dụng BrickFactory để tạo bricks (Factory Pattern)
  */
 public class Level {
     private final List<Brick> bricks;
     private int currentLevel = 1;
     private static final int MAX_LEVEL = 12;
+    private final BrickFactory brickFactory = new BrickFactory();
 
     public Level(int rows, int cols) {
         bricks = new ArrayList<>();
         generateLevel(currentLevel);
     }
 
-    /**
-     * Tạo gạch theo từng level cụ thể
-     */
     private void generateLevel(int level) {
         bricks.clear();
 
@@ -43,199 +43,202 @@ public class Level {
             default -> generateLevel1();
         }
 
-        System.out.println("Level " + level + " - Số gạch: " + bricks.size());
+        System.out.println("Level " + level + " - Tổng gạch: " + bricks.size());
     }
 
-    // ===== Level 1: 1 hàng đơn giản (5 gạch)
+
     private void generateLevel1() {
-        int startX = 250, startY = 100;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
+        String[][] pattern = {
+                {"", "", "N", "N", "N", "N", "", ""},
+                {"", "", "N", "H", "H", "N", "", ""},
+                {"N", "N", "H", "", "", "H", "N", "N"},
+                {"H", "N", "", "", "", "", "N", "H"},
+                {"N", "N", "", "", "", "", "N", "N"}
 
-        for (int col = 0; col < 1; col++) {
-            double x = startX + col * (brickWidth + gap);
-            bricks.add(new Brick(x, startY, brickWidth, brickHeight));
-        }
+        };
+        addBricksFromPattern(pattern);
     }
 
-    // ===== Level 2: 2 hàng (12 gạch)
     private void generateLevel2() {
-        int startX = 180, startY = 80;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
-
-        for (int row = 0; row < 2; row++) {
-            for (int col = 0; col < 6; col++) {
-                double x = startX + col * (brickWidth + gap);
-                double y = startY + row * (brickHeight + gap);
-                bricks.add(new ExplodingBrick(x, y, brickWidth, brickHeight));
-            }
-        }
+        String[][] pattern = {
+                {"", "N", "H", "H", "H", "H", "H", ""},
+                {"", "N", "N", "N", "N", "N", "N", ""},
+                {"", "N", "N", "", "", "N", "N", ""},
+                {"", "", "H", "", "", "H", "", ""},
+                {"H", "H", "H", "", "", "H", "H", "H"}
+        };
+        addBricksFromPattern(pattern);
     }
 
-    // ===== Level 3: 3 hàng (21 gạch)
     private void generateLevel3() {
-        int startX = 110, startY = 80;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
-
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 7; col++) {
-                double x = startX + col * (brickWidth + gap);
-                double y = startY + row * (brickHeight + gap);
-                bricks.add(new Brick(x, y, brickWidth, brickHeight));
-            }
-        }
+        String[][] pattern = {
+                {"", "", "N", "N", "N", "N", "", ""},
+                {"N", "N", "N", "N", "N", "N", "N", "N"},
+                {"H", "H", "H", "H", "H", "H", "H", "H"},
+                {"N", "N", "H", "", "", "H", "N", "N"},
+                {"N", "N", "H", "", "", "H", "N", "N"}
+        };
+        addBricksFromPattern(pattern);
     }
 
-    // ===== Level 4: Hình kim cương (~28 gạch)
     private void generateLevel4() {
-        int startX = 60, startY = 50;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
-
-        int[] colsPerRow = {4, 6, 8, 6, 4};
-
-        for (int row = 0; row < 5; row++) {
-            int cols = colsPerRow[row];
-            int offset = (10 - cols) / 2;
-
-            for (int col = 0; col < cols; col++) {
-                double x = startX + (offset + col) * (brickWidth + gap);
-                double y = startY + row * (brickHeight + gap);
-                bricks.add(new Brick(x, y, brickWidth, brickHeight));
-            }
-        }
+        String[][] pattern = {
+                {"H", "", "", "", "", "", "", "H"},
+                {"N", "H", "", "", "", "", "H", "N"},
+                {"", "N", "H", "", "", "H", "N", ""},
+                {"", "", "N", "H", "H", "N", "", ""},
+                {"H", "", "", "N", "N", "", "", "H"},
+                {"H", "", "", "N", "N", "", "", "H"},
+                {"N", "H", "", "", "", "", "H", "N"},
+                {"", "N", "H", "", "", "H", "N", ""},
+                {"", "", "N", "H", "H", "N", "", ""},
+                {"N", "", "", "N", "N", "", "", "N"},
+                {"", "N", "", "", "", "", "N", ""},
+                {"", "", "N", "", "", "N", "", ""},
+                {"", "", "", "N", "N", "", "", ""},
+        };
+        addBricksFromPattern(pattern);
     }
 
-    // ===== Level 5: Hình chữ T (~16 gạch)
     private void generateLevel5() {
-        int startX = 60, startY = 50;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
-
-        for (int col = 2; col < 9; col++) {
-            double x = startX + col * (brickWidth + gap);
-            bricks.add(new Brick(x, startY, brickWidth, brickHeight));
-        }
-
-        for (int row = 1; row < 4; row++) {
-            double x = startX + 5 * (brickWidth + gap);
-            double y = startY + row * (brickHeight + gap);
-            bricks.add(new Brick(x, y, brickWidth, brickHeight));
-        }
+        String[][] pattern = {
+                {"H", "", "", "", "", "", "", "H"},
+                {"", "H", "", "", "", "", "H", ""},
+                {"", "", "H", "", "", "H", "", ""},
+                {"N", "N", "N", "N", "N", "N", "N", "N"},
+                {"N", "N", "N", "N", "N", "N", "N", "N"}
+        };
+        addBricksFromPattern(pattern);
     }
 
-    // ===== Level 6: Hình chữ X (10 gạch)
     private void generateLevel6() {
-        int startX = 60, startY = 50;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
-
-        for (int row = 0; row < 5; row++) {
-            double x1 = startX + row * 2 * (brickWidth + gap);
-            double y = startY + row * (brickHeight + gap);
-            bricks.add(new Brick(x1, y, brickWidth, brickHeight));
-
-            if (row != 2) {
-                double x2 = startX + (8 - row * 2) * (brickWidth + gap);
-                bricks.add(new Brick(x2, y, brickWidth, brickHeight));
-            }
-        }
+        String[][] pattern = {
+                {"H", "H", "H", "H", "", "", "", ""},
+                {"H", "N", "N", "H", "", "", "", ""},
+                {"H", "N", "N", "H", "", "", "", ""},
+                {"H", "N", "N", "H", "", "", "", ""},
+                {"H", "N", "N", "H", "", "", "", ""},
+                {"H", "H", "H", "H", "H", "", "", ""},
+                {"", "", "", "H", "H", "H", "H", "H"},
+                {"", "", "", "", "H", "N", "N", "H"},
+                {"", "", "", "", "H", "N", "N", "H"},
+                {"", "", "", "", "H", "N", "N", "H"},
+                {"", "", "", "", "H", "N", "N", "H"},
+                {"", "", "", "", "H", "H", "H", "H"}
+        };
+        addBricksFromPattern(pattern);
     }
 
-    // ===== Level 7: Hình vuông rỗng - khung (~24 gạch)
     private void generateLevel7() {
-        int startX = 60, startY = 50;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
-
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 8; col++) {
-                if (row == 0 || row == 4 || col == 0 || col == 7) {
-                    double x = startX + col * (brickWidth + gap);
-                    double y = startY + row * (brickHeight + gap);
-                    bricks.add(new Brick(x, y, brickWidth, brickHeight));
-                }
-            }
-        }
+        String[][] pattern = {
+                {"N", "N", "H", "H", "H", "H", "N", "N"},
+                {"N", "H", "N", "", "", "N", "H", "N"},
+                {"H", "N", "", "", "", "", "N", "H"},
+                {"N", "", "", "", "", "", "", "N"},
+                {"N", "H", "H", "H", "H", "H", "H", "N"},
+                {"", "", "", "", "", "", "", ""},
+                {"H", "H", "H", "H", "H", "H", "H", "H"}
+        };
+        addBricksFromPattern(pattern);
     }
 
-    // ===== Level 8: Tam giác ngược (~25 gạch)
     private void generateLevel8() {
-        int startX = 60, startY = 50;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
-
-        for (int row = 0; row < 5; row++) {
-            int cols = 9 - row;
-
-            for (int col = 0; col < cols; col++) {
-                double x = startX + col * (brickWidth + gap);
-                double y = startY + row * (brickHeight + gap);
-                bricks.add(new Brick(x, y, brickWidth, brickHeight));
-            }
-        }
+        String[][] pattern = {
+                {"N", "", "", "", "", "", "", "N"},
+                {"N", "", "", "", "", "", "", "N"},
+                {"N", "", "N", "N", "N", "N", "", "N"},
+                {"N", "H", "H", "H", "H", "H", "H", "N"},
+                {"N", "H", "H", "H", "H", "H", "H", "N"},
+                {"H", "", "", "", "", "", "", "H"},
+                {"N", "N", "N", "N", "N", "N", "N", "N"}
+        };
+        addBricksFromPattern(pattern);
     }
 
-    // ===== Level 9: Lưới cờ vua
     private void generateLevel9() {
-        int startX = 60, startY = 50;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
+        String[][] pattern = {
+                {"H", "N", "N", "", "", "N", "N", "H"},
+                {"N", "H", "", "", "", "", "H", "N"},
+                {"N", "", "H", "H", "H", "H", "", "N"},
+                {"", "", "H", "H", "H", "H", "", ""},
+                {"", "", "H", "H", "H", "H", "", ""},
+                {"N", "", "H", "H", "H", "H", "", "N"},
+                {"N", "H", "", "", "", "", "H", "N"},
+                {"H", "N", "N", "", "", "N", "N", "H"}
+        };
+        addBricksFromPattern(pattern);
+    }
 
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 9; col++) {
-                if ((row + col) % 2 == 0) {
+    private void generateLevel10() {
+        String[][] pattern = {
+                {"", "", "", "H", "H", "", "", ""},
+                {"", "", "H", "H", "H", "H", "", ""},
+                {"", "H", "H", "N", "N", "H", "H", ""},
+                {"H", "H", "N", "E", "H", "N", "H", "H"},
+                {"H", "H", "N", "H", "E", "N", "H", "H"},
+                {"", "H", "H", "N", "N", "H", "", ""},
+                {"", "", "H", "H", "H", "H", "", ""},
+                {"", "", "", "H", "H", "", "", ""},
+                {"", "", "", "N", "N", "", "", ""},
+                {"", "", "", "N", "", "", "", ""}
+        };
+        addBricksFromPattern(pattern);
+    }
+
+    private void generateLevel11() {
+        String[][] pattern = {
+                {"H", "H", "H", "", "", "H", "H", "H"},
+                {"H", "H", "H", "H", "H", "H", "H", "H"},
+                {"H", "N", "H", "H", "H", "H", "N", "H"},
+                {"H", "N", "N", "E", "E", "N", "N", "H"},
+                {"H", "H", "H", "H", "H", "H", "H", "H"},
+                {"", "N", "N", "N", "N", "N", "N", ""},
+                {"", "", "N", "N", "N", "N", "", ""},
+                {"", "", "", "N", "N", "", "", ""},
+                {"", "", "", "", "N", "", "", "", ""}
+
+        };
+        addBricksFromPattern(pattern);
+    }
+
+    private void generateLevel12() {
+        String[][] pattern = {
+                {"H", "", "", "", "", "", "", ""},
+                {"H", "", "", "", "", "", "", ""},
+                {"H", "N", "N", "N", "H", "", "H", "N", "N"},
+                {"H", "N", "", "N", "H", "", "H", "N"},
+                {"H", "N", "", "N", "H", "", "H", "N", "N"},
+                {"H", "N", "", "N", "H", "", "H", "N"},
+                {"H", "N", "N", "N", "H", "H", "H", "N", "N"},
+                {"H", "H", "H", "", "", "H", "", ""}
+        };
+        addBricksFromPattern(pattern);
+    }
+
+    // Helper: Add bricks using BrickFactory
+    private void addBricksFromPattern(String[][] pattern) {
+        int brickWidth = 60, brickHeight = 20, gap = 3;
+        int startX = 100, startY = 80;
+        for (int row = 0; row < pattern.length; row++) {
+            for (int col = 0; col < pattern[row].length; col++) {
+                String typeStr = pattern[row][col];
+                if (!typeStr.isEmpty()) {
+                    char type = typeStr.charAt(0);
                     double x = startX + col * (brickWidth + gap);
                     double y = startY + row * (brickHeight + gap);
-                    bricks.add(new Brick(x, y, brickWidth, brickHeight));
+                    Brick brick = brickFactory.create(type, x, y, brickWidth, brickHeight);
+                    if (brick != null) {
+                        bricks.add(brick);
+                    }
                 }
             }
         }
+        long hardCount = bricks.stream().filter(b -> b instanceof HardBrick).count();
+        long explodingCount = bricks.stream().filter(b -> b instanceof ExplodingBrick).count();
+        System.out.println("Level " + currentLevel + " - Total: " + bricks.size() + ", Hard: " + hardCount + ", Exploding: " + explodingCount + ", Normal: " + (bricks.size() - hardCount - explodingCount));
     }
 
-    // ===== Level 10:
-    private void generateLevel10() {
-        int startX = 60, startY = 50;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
-
-        for (int row = 0; row < 5; row++) {
-            double x1 = startX + 2 * (brickWidth + gap);
-            double y = startY + row * (brickHeight + gap);
-            bricks.add(new Brick(x1, y, brickWidth, brickHeight));
-
-            double x2 = startX + 7 * (brickWidth + gap);
-            bricks.add(new Brick(x2, y, brickWidth, brickHeight));
-
-            if (row == 2) {
-                for (int col = 3; col < 7; col++) {
-                    double x = startX + col * (brickWidth + gap);
-                    bricks.add(new Brick(x, y, brickWidth, brickHeight));
-                }
-            }
-        }
-    }
-
-    // ===== Level 11: Hình sóng
-    private void generateLevel11() {
-        int startX = 60, startY = 50;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
-
-        for (int col = 0; col < 10; col++) {
-            int row = (int)(2 + 1.5 * Math.sin(col * Math.PI / 3));
-
-            double x = startX + col * (brickWidth + gap);
-            double y = startY + row * (brickHeight + gap);
-            bricks.add(new Brick(x, y, brickWidth, brickHeight));
-        }
-    }
-
-    // ===== Level 12: BOSS LEVEL - Full màn hình (60 gạch)
-    private void generateLevel12() {
-        int startX = 60, startY = 50;
-        int brickWidth = 60, brickHeight = 20, gap = 10;
-
-        for (int row = 0; row < 6; row++) {
-            for (int col = 0; col < 10; col++) {
-                double x = startX + col * (brickWidth + gap);
-                double y = startY + row * (brickHeight + gap);
-                bricks.add(new Brick(x, y, brickWidth, brickHeight));
-            }
-        }
-    }
-
+    // Các phương thức còn lại giữ nguyên
     public void regenerate() {
         if (currentLevel < MAX_LEVEL) {
             currentLevel++;

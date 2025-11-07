@@ -3,6 +3,7 @@ package entities.powerups;
 import core.Config;
 import core.World;
 import entities.Paddle;
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -18,12 +19,6 @@ public class ShrinkPaddle extends PowerUp {
 
     public ShrinkPaddle(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.LIGHTBLUE);
-        try {
-            image = new Image(getClass().getResource("/images/ShrinkPaddle.png").toExternalForm());
-        } catch (Exception e) {
-            System.err.println("Không thể tải ảnh ShrinkPaddle: " + e.getMessage());
-            image = null;
-        }
     }
 
     @Override
@@ -34,6 +29,15 @@ public class ShrinkPaddle extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
+
+        try {
+            if (image == null && Platform.isFxApplicationThread()) {
+                image = new Image(getClass().getResource("/images/ShrinkPaddle.png").toExternalForm());
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh ShrinkPaddle: " + e.getMessage());
+            image = null;
+        }
 
         double drawX = getX() - getWidth() / 2;
         double drawY = getY() - getHeight() / 2;

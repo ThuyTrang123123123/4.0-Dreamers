@@ -3,6 +3,7 @@ package entities.powerups;
 import core.Config;
 import core.World;
 import entities.Ball;
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -18,12 +19,6 @@ public class SlowBall extends PowerUp {
 
     public SlowBall(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.PURPLE);
-        try {
-            image = new Image(getClass().getResource("/images/SlowBall.png").toExternalForm());
-        } catch (Exception e) {
-            System.err.println("Không thể tải ảnh SlowBall: " + e.getMessage());
-            image = null;
-        }
     }
 
     @Override
@@ -34,6 +29,15 @@ public class SlowBall extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
+
+        try {
+            if (image == null && Platform.isFxApplicationThread()) {
+                image = new Image(getClass().getResource("/images/SlowBall.png").toExternalForm());
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh SlowBall: " + e.getMessage());
+            image = null;
+        }
         double drawX = getX() - getWidth() / 2;
         double drawY = getY() - getHeight() / 2;
 

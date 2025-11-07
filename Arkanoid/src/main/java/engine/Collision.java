@@ -6,6 +6,7 @@ import entities.Bullet;
 import entities.Paddle;
 import entities.bricks.Brick;
 import entities.bricks.ExplodingBrick;
+import entities.bricks.UnbreakableBrick;
 import entities.powerups.*;
 
 import java.util.List;
@@ -73,23 +74,23 @@ public class Collision {
                 // Nếu là ExplodingBrick → gọi hit + explodeNearby
                 if (brick instanceof ExplodingBrick exploding) {
                     exploding.hit();
-                    exploding.explodeNearby(bricks);
+                    int count = exploding.exployNearbyAndCount(bricks);
+                    world.getScoring().addScore(count);
+                    world.getScoring().incrementBricksDestroyed(count);
+
+                } else if (brick instanceof UnbreakableBrick unbreakable) {
+                    //Không cộng điểm, ko cộng gạch phá
                 } else {
-                    brick.hit(); // gạch thường or gạch hard
+                    brick.hit();// gạch thường or gạch hard
+                    world.getScoring().addScore(1);
+                    world.getScoring().incrementBricksDestroyed(1);
                 }
                 systems.AudioSystem.getInstance().playBrickHit();
-
-                world.getScoring().addScore(1);
-                world.getScoring().incrementBricksDestroyed();
-
                 new Physics().reflectBall(ball, brick);
                 if (brick.isDestroyed()) {
-
                     double chance = Math.random();
-
                     if (chance < 0.5) {
                         Class<? extends PowerUp> type;
-
                         double r = Math.random();
                         if (r < 1.0 / 9) {
                             type = BonusCoin.class;
@@ -106,11 +107,10 @@ public class Collision {
                         } else if (r < 7.0 / 9) {
                             type = SpeedBall.class;
                         } else if (r < 8.0 / 9) {
-                         type = EnLargeBall.class;
+                            type = EnLargeBall.class;
                         } else {
                             type = ShootPaddle.class;
                         }
-
                         PowerUp pu = world.getPowerUpPool().acquire(type, brick.getX(), brick.getY());
                         world.getPowerUps().add(pu);
                     }
@@ -130,16 +130,19 @@ public class Collision {
 
             for (Brick brick : bricks) {
                 if (isBulletTouchingBrick(bullet, brick)) {
+                    // Nếu là ExplodingBrick → gọi hit + explodeNearby
                     if (brick instanceof ExplodingBrick exploding) {
                         exploding.hit();
-                        exploding.explodeNearby(bricks);
+                        int count = exploding.exployNearbyAndCount(bricks);
+                        world.getScoring().addScore(count);
+                        world.getScoring().incrementBricksDestroyed(count);
+                    } else if (brick instanceof UnbreakableBrick unbreakable) {
+                        //Không cộng điểm, ko cộng gạch phá
                     } else {
-                        brick.hit();
+                        brick.hit();// gạch thường or gạch hard
+                        world.getScoring().addScore(1);
+                        world.getScoring().incrementBricksDestroyed(1);
                     }
-
-                    world.getScoring().addScore(1);
-                    world.getScoring().incrementBricksDestroyed();
-
                     bullet.deactivate();
                     break;
                 }

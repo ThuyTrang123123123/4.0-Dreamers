@@ -18,12 +18,15 @@ module core {
     // Cho phép các package được sử dụng từ bên ngoài module
     exports core;
 
-/**
+
 exports data;
 exports engine;
+
 exports entities;
+exports entities.bricks;
+exports entities.powerups;
+
 exports net;
 exports systems;
-exports ui;
-exports util;**/
+exports util;
 }

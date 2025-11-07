@@ -37,13 +37,11 @@ public class InGame {
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #" + colorToHex(Colors.BACKGROUND) + ";");
 
-        // === Canvas gameplay ===
         Canvas canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.LIGHTGRAY);
-        gc.fillRect(0, 0, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT); // tạm vẽ nền gameplay
+        gc.fillRect(0, 0, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
 
-        // === HUD (score, lives, bricks, pause button) ===
         scoreLabel = new Label("Score: 0");
         scoreLabel.setFont(Fonts.main(18));
         scoreLabel.setTextFill(Colors.TEXT);
@@ -67,18 +65,15 @@ public class InGame {
         hudBar.setAlignment(Pos.CENTER);
         hudBar.setStyle("-fx-padding: 10; -fx-background-color: #" + colorToHex(Colors.SECONDARY) + ";");
 
-        // === Binding dữ liệu với ScoringSystem ===
-        bindHUDWithScoring();
-
-        // === Đặt layout ===
         root.setTop(hudBar);
         root.setCenter(canvas);
+
+        updateHUD(); // cập nhật HUD lần đầu
 
         return new Scene(root, 800, 600);
     }
 
     public HBox createHUD() {
-        // Khởi tạo các label
         scoreLabel = new Label("Score: 0");
         scoreLabel.setFont(Fonts.main(18));
         scoreLabel.setTextFill(Colors.TEXT);
@@ -95,56 +90,25 @@ public class InGame {
         rankLabel.setFont(Fonts.main(18));
         rankLabel.setTextFill(Colors.TEXT);
 
-        // Tạo thanh HUD
         HBox hudBar = new HBox(40, scoreLabel, livesLabel, bricksLabel, rankLabel);
         hudBar.setAlignment(Pos.TOP_LEFT);
         hudBar.setPadding(new Insets(10));
         hudBar.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 8;");
-        hudBar.setMouseTransparent(true); // không chặn input cho gameplay
+        hudBar.setMouseTransparent(true);
 
-        // Binding dữ liệu với ScoringSystem
-        bindHUDWithScoring();
+        updateHUD(); // cập nhật HUD lần đầu
 
         return hudBar;
     }
 
-    /**
-     * Binding HUD với ScoringSystem và AchievementSystem để tự động cập nhật
-     * Khi scoring hoặc rank thay đổi → Label tự động cập nhật, không cần gọi updateHUD()
-     */
-    private void bindHUDWithScoring() {
-        // Bind điểm số
-        scoreLabel.textProperty().bind(
-                scoring.scoreProperty().asString("Score: %d")
-        );
-
-        // Bind mạng sống
-        livesLabel.textProperty().bind(
-                scoring.livesProperty().asString("Lives: %d")
-        );
-
-        // Bind số gạch đã phá
-        bricksLabel.textProperty().bind(
-                scoring.bricksDestroyedProperty().asString("Bricks: %d")
-        );
-
-        // Bind rank hiện tại (tự động cập nhật khi rank thay đổi)
-        rankLabel.textProperty().bind(
-                achievements.currentRankIconProperty()
-                        .concat(" ")
-                        .concat(achievements.currentRankNameProperty())
-        );
+    public void updateHUD() {
+        scoreLabel.setText("Score: " + scoring.getScore());
+        livesLabel.setText("Lives: " + scoring.getLives());
+        bricksLabel.setText("Bricks: " + scoring.getBricksDestroyed());
+        rankLabel.setText(achievements.getCurrentRankIcon() + " " + achievements.getCurrentRankName());
     }
 
-    @Deprecated
-    public void updateHUD(int newScore, int newLives) {
-        // Method này không còn cần thiết nếu dùng binding
-        // Nhưng giữ lại để code cũ không bị lỗi
-        System.out.println("⚠️ updateHUD() deprecated - HUD tự động cập nhật qua binding!");
-    }
-
-
-    private String colorToHex(javafx.scene.paint.Color color) {
+    private String colorToHex(Color color) {
         return color.toString().substring(2, 8);
     }
 }
