@@ -15,6 +15,10 @@ public class GameLoop implements Runnable {
         this.game = game;
     }
 
+    public boolean isRunning() {
+        return running;
+    }
+
     public void start() {
         running = true;
         new Thread(this).start();

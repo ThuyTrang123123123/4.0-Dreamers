@@ -36,6 +36,8 @@ import ui.screen.Pause;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 
+import static java.awt.SystemColor.menu;
+
 public class Game extends Application {
     private Canvas canvas;
     private GraphicsContext gc;
@@ -50,6 +52,7 @@ public class Game extends Application {
     private GameLoop loop;
 
     public Scene createGamescene(Stage stage) {
+        this.stage = stage;
         canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         gc = canvas.getGraphicsContext2D();
         world.init(canvas);
@@ -65,15 +68,36 @@ public class Game extends Application {
         this.inGameScene = scene;
 
         scene.setOnKeyPressed(e -> {
+            // M: Back to Menu
+            if (e.getCode() == KeyCode.M) {
+                gamePaused = true; //tại vì là pause nên cần ấn C để chạy được
+//                systems.AudioSystem.getInstance().stopMusic();
+                Scene menuScene = MainMenu.cachedScene;
+                if (loop != null) loop.stop();
+                if (menuScene == null)
+                {
+                    menuScene = new MainMenu().create(stage);
+                    MainMenu.cachedScene = menuScene;
+                }
+                stage.setScene(menuScene);
+                return;
+            }
+
             if (e.getCode() == KeyCode.ESCAPE) {
-                showPause(); return;
+                showPause();
+                return;
             }
+
             if (e.getCode() == KeyCode.C) {
-                resumeGame(); return;
+                resumeGame();
+                return;
             }
+
             if (e.getCode() == KeyCode.R || world.getScoring().isGameOver()) {
-                restartGame(); return;
+                restartGame();
+                return;
             }
+
             if (e.getCode() == KeyCode.SPACE) {
                 for (Ball ball : world.getBalls()) {
                     if (ball.isStickToPaddle()) ball.launch();
@@ -232,13 +256,10 @@ public class Game extends Application {
 
     public void showPause() {
         gamePaused = true;
-        stage.setScene(pauseScene);
     }
 
     public void resumeGame() {
         gamePaused = false;
-        stage.setScene(inGameScene);
-        inGameScene.getRoot().requestFocus();
     }
 
     private void restartGameFromPause() {
@@ -262,6 +283,15 @@ public class Game extends Application {
             inGameScene = createGamescene(stage);
         }
         return inGameScene;
+    }
+
+    public void unpause() { this.gamePaused = false; }
+
+    public void startLoopIfNeeded() {
+        if (loop == null || !loop.isRunning()) {
+            loop = new GameLoop(this);
+            loop.start();
+        }
     }
 
     public Canvas getCanvas() {
