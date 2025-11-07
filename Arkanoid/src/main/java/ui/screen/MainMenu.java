@@ -2,12 +2,16 @@ package ui.screen;
 
 import core.Config;
 import core.Game;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import systems.AudioSystem;
 import ui.theme.Colors;
 import ui.widgets.ButtonUI;
+
+import java.util.Objects;
 
 public class MainMenu {
     public static Scene cachedScene;
@@ -15,7 +19,24 @@ public class MainMenu {
 
     public Scene create(Stage stage) {
         VBox root = new VBox(20);
-        root.setStyle("-fx-background-color: #" + colorToHex(Colors.BACKGROUND) + "; -fx-alignment: center;");
+        root.setAlignment(Pos.CENTER);
+
+        Image bg = new Image(
+                Objects.requireNonNull(
+                        getClass().getResource("/themes/BACKGROUND.png")
+                ).toExternalForm()
+        );
+        BackgroundImage bgi = new BackgroundImage(
+                bg,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(
+                        BackgroundSize.AUTO, BackgroundSize.AUTO,
+                        false, false, true, true
+                )
+        );
+        root.setBackground(new Background(bgi));
 
         ButtonUI playBtn = new ButtonUI("Play");
         playBtn.setOnAction(e -> {
