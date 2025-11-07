@@ -11,7 +11,7 @@ import ui.widgets.ButtonUI;
 
 public class MainMenu {
     public static Scene cachedScene;
-    private Game currentGame;
+    public static Game currentGame;
 
     public Scene create(Stage stage) {
         VBox root = new VBox(20);
@@ -20,8 +20,10 @@ public class MainMenu {
         ButtonUI playBtn = new ButtonUI("Play");
         playBtn.setOnAction(e -> {
             if (currentGame == null) currentGame = new Game();
-            stage.setScene(currentGame.createGamescene(stage));
-            stage.show();
+            Scene s = currentGame.getOrCreateGameScene(stage);
+            stage.setScene(s);
+            currentGame.unpause();
+            currentGame.startLoopIfNeeded();
         });
 
         ButtonUI settingsBtn = new ButtonUI("Settings");

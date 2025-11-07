@@ -35,6 +35,8 @@ import ui.screen.Pause;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 
+import static java.awt.SystemColor.menu;
+
 public class Game extends Application {
     private Canvas canvas;
     private GraphicsContext gc;
@@ -65,6 +67,21 @@ public class Game extends Application {
         this.inGameScene = scene;
 
         scene.setOnKeyPressed(e -> {
+            // M: Back to Menu
+            if (e.getCode() == KeyCode.M) {
+                gamePaused = true; //tại vì là pause nên cần ấn C để chạy được
+//                systems.AudioSystem.getInstance().stopMusic();
+                Scene menuScene = MainMenu.cachedScene;
+                if (loop != null) loop.stop();
+                if (menuScene == null)
+                {
+                    menuScene = new MainMenu().create(stage);
+                    MainMenu.cachedScene = menuScene;
+                }
+                stage.setScene(menuScene);
+                return;
+            }
+
             if (e.getCode() == KeyCode.ESCAPE) {
                 showPause();
                 return;
@@ -72,20 +89,6 @@ public class Game extends Application {
 
             if (e.getCode() == KeyCode.C) {
                 resumeGame();
-                return;
-            }
-
-            // M: Back to Menu
-            if (e.getCode() == KeyCode.M) {
-                gamePaused = true;
-//                systems.AudioSystem.getInstance().stopMusic();
-                Scene menuScene = MainMenu.cachedScene;
-                if (menuScene == null)
-                {
-                    menuScene = new MainMenu().create(stage);
-                    MainMenu.cachedScene = menuScene;
-                }
-                stage.setScene(menuScene);
                 return;
             }
 
@@ -259,6 +262,15 @@ public class Game extends Application {
             inGameScene = createGamescene(stage);
         }
         return inGameScene;
+    }
+
+    public void unpause() { this.gamePaused = false; }
+
+    public void startLoopIfNeeded() {
+        if (loop == null || !loop.isRunning()) {
+            loop = new GameLoop(this);
+            loop.start();
+        }
     }
 
     public Canvas getCanvas() {
