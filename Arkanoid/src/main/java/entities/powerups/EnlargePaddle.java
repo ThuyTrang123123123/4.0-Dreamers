@@ -17,6 +17,10 @@ public class EnlargePaddle extends PowerUp {
     private final double enlargeFactor = 1.5;
     private final double duration = 8.0; // giây
 
+    public double getEnlargeFactor() {
+        return enlargeFactor;
+    }
+
     public EnlargePaddle(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.LIGHTBLUE);
     }

@@ -28,6 +28,8 @@ public class Ball {
     }
 
     // ===== Getters & Setters =====
+
+    public double getSpeedMultiplier() {return speedMultiplier;}
     public double getX() { return x; }
     public double getY() { return y; }
     public double getRadius() { return radius; }

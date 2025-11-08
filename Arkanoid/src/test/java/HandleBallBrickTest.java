@@ -59,4 +59,5 @@ public class HandleBallBrickTest {
         assertEquals(1, world.getScoring().getBricksDestroyed(), "Không cộng đúng số gạch bị phá");
     }
 
+
 }
