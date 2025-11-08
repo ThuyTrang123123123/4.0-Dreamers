@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -200,9 +201,13 @@ public class Game extends Application {
     }
 
     public void render() {
-        gc.setFill(Colors.PRIMARY);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
+        Image bg = world.getLevel().getBackgroundImage();
+        if (bg != null) {
+            gc.drawImage(bg, 0, 0, canvas.getWidth(), canvas.getHeight());
+        } else {
+            gc.setFill(Colors.PRIMARY);
+            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        }
         gc.setFill(Colors.TEXT);
         gc.setFont(Fonts.main(20));
         gc.fillText("Level " + world.getLevel().getCurrentLevel() + " / " + world.getLevel().getMaxLevel(),
