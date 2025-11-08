@@ -16,6 +16,10 @@ public class SpeedBall extends PowerUp {
     private final double speedFactor = 1.5; // tăng tốc
     private final double duration = 8.0;
 
+    public double getSpeedFactor() {
+        return speedFactor;
+    }
+
     public SpeedBall(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.ORANGE);
     }
