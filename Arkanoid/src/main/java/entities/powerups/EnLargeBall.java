@@ -14,6 +14,10 @@ public class EnLargeBall extends PowerUp {
     private final double duration = 8.0;
     private Image image;
 
+    public double getEnLargeFactor() {
+        return EnLargeFactor;
+    }
+
     public EnLargeBall(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.ORANGE);
     }

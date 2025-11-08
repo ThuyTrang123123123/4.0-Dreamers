@@ -35,7 +35,6 @@ public class ExtraLife extends PowerUp {
             System.err.println("Không thể tải ảnh ExtraLife: " + e.getMessage());
             image = null;
         }
-        // Vẽ ảnh từ tâm → dịch về góc trên trái
         double drawX = getX() - getWidth() / 2;
         double drawY = getY() - getHeight() / 2;
 
@@ -49,7 +48,5 @@ public class ExtraLife extends PowerUp {
         if (!hasFlyingBall) return;
 
         world.getScoring().addLife();
-        System.out.println(" da add life");
-
     }
 }

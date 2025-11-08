@@ -17,6 +17,10 @@ public class ShrinkPaddle extends PowerUp {
     private final double ShrinkFactor = 0.8;
     private final double duration = 8.0; // giây
 
+    public double getShrinkFactor() {
+        return ShrinkFactor;
+    }
+
     public ShrinkPaddle(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.LIGHTBLUE);
     }
