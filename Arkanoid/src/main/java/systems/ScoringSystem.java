@@ -1,52 +1,65 @@
 package systems;
 
+import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class ScoringSystem {
-    private int score;
-    private int lives;
-    private int bricksDestroyed;
+    private final IntegerProperty score;
+    private final IntegerProperty lives;
+    private final IntegerProperty bricksDestroyed;
 
     public ScoringSystem() {
-        this.score = 0;
-        this.lives = 1;
-        this.bricksDestroyed = 0;
+        this.score = new SimpleIntegerProperty(0);
+        this.lives = new SimpleIntegerProperty(1);
+        this.bricksDestroyed = new SimpleIntegerProperty(0);
     }
 
-    // Getter methods
-    public int getScore() { return score; }
-    public int getLives() { return lives; }
-    public int getBricksDestroyed() { return bricksDestroyed; }
+    // Getter methods for properties (for binding)
+    public IntegerProperty scoreProperty() { return score; }
+    public IntegerProperty livesProperty() { return lives; }
+    public IntegerProperty bricksDestroyedProperty() { return bricksDestroyed; }
+
+    // Getter methods for values
+    public int getScore() { return score.get(); }
+    public int getLives() { return lives.get(); }
+    public int getBricksDestroyed() { return bricksDestroyed.get(); }
 
     // Logic methods
     public void addScore(int points) {
-        score += points;
+        Platform.runLater(() -> score.set(score.get() + points));
     }
 
     public void loseLife() {
-        if (lives > 0) {
-            lives--;
+        int current = lives.get();
+        if (current > 0) {
+            Platform.runLater(() -> lives.set(current - 1));
         }
     }
 
     public void addLife() {
-        lives++;
+        Platform.runLater(() -> lives.set(lives.get() + 1));
     }
 
     public void incrementBricksDestroyed(int amount) {
+        int currentBricks = bricksDestroyed.get();
         for (int i = 1; i <= amount; i++) {
-            if ((bricksDestroyed + i) % 3 == 0) {
+            if ((currentBricks + i) % 3 == 0) {
                 addLife();
             }
         }
-        bricksDestroyed += amount;
+        Platform.runLater(() -> bricksDestroyed.set(currentBricks + amount));
     }
 
     public boolean isGameOver() {
-        return lives <= 0;
+        return lives.get() <= 0;
     }
 
     public void reset() {
-        score = 0;
-        lives = 1;
-        bricksDestroyed = 0;
+        Platform.runLater(() -> {
+            score.set(0);
+            lives.set(1);
+            bricksDestroyed.set(0);
+        });
     }
 }

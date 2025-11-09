@@ -1,7 +1,9 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import entities.Bullet;
 import javafx.application.Application;
@@ -30,13 +32,18 @@ import systems.AchievementSystem;
 import systems.AudioSystem;
 import systems.ScoringSystem;
 
+import data.JsonStorage;
+import data.Storage;
+import data.repositories.PlayerRepository;
+import data.repositories.ScoreRepository;
+
 import ui.screen.InGame;
 import ui.screen.MainMenu;
 import ui.screen.Pause;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 
-import static java.awt.SystemColor.menu;
+import javafx.beans.property.IntegerProperty;
 
 public class Game extends Application {
     private Canvas canvas;
@@ -50,12 +57,46 @@ public class Game extends Application {
     private Scene pauseScene;
     private Scene mainMenuScene;
     private GameLoop loop;
-
+    private Storage storage = new JsonStorage();
+    private PlayerRepository playerRepo = new PlayerRepository(storage);
+    private ScoreRepository scoreRepo = new ScoreRepository(storage);
     public Scene createGamescene(Stage stage) {
         this.stage = stage;
         canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         gc = canvas.getGraphicsContext2D();
         world.init(canvas);
+
+        Map<String, Object> progress = storage.load("progress");
+        if (!progress.isEmpty()) {
+            int loadedScore = ((Number) progress.getOrDefault("score", 0)).intValue();
+            world.getScoring().scoreProperty().set(loadedScore);
+
+            int loadedLives = ((Number) progress.getOrDefault("lives", 1)).intValue();
+            world.getScoring().livesProperty().set(loadedLives);
+
+            int loadedBricks = ((Number) progress.getOrDefault("bricksDestroyed", 0)).intValue();
+            world.getScoring().bricksDestroyedProperty().set(loadedBricks);
+
+            int savedLevel = ((Number) progress.getOrDefault("currentLevel", 1)).intValue();
+            world.getLevel().setCurrentLevel(savedLevel);
+
+            int rankIndex = ((Number) progress.getOrDefault("rankIndex", 0)).intValue();
+            world.getAchievements().currentRankIndexProperty().set(rankIndex);
+            world.getAchievements().currentRankNameProperty().set(world.getAchievements().getCurrentRank().getName());
+            world.getAchievements().currentRankIconProperty().set(world.getAchievements().getCurrentRank().getIcon());
+
+            // Fix cast: Dùng List<String> thay vì String[]
+            Object unlockedObj = progress.get("unlockedAchievements");
+            if (unlockedObj instanceof List) {
+                List<?> unlockedList = (List<?>) unlockedObj;
+                for (Object idObj : unlockedList) {
+                    if (idObj instanceof String) {
+                        world.getAchievements().unlockAchievement((String) idObj);
+                    }
+                }
+            }
+        }
+        System.out.println("Đã load progress: Level " + world.getLevel().getCurrentLevel());
 
         hudLayer = new InGame(this, world.getScoring(), world.getAchievements());
         HBox hud = hudLayer.createHUD();
@@ -196,6 +237,24 @@ public class Game extends Application {
             } else {
                 world.nextLevel();
             }
+            Map<String, Object> progress = new HashMap<>();
+            progress.put("score", world.getScoring().getScore());
+            progress.put("lives", world.getScoring().getLives());
+            progress.put("bricksDestroyed", world.getScoring().getBricksDestroyed());
+            progress.put("currentLevel", world.getLevel().getCurrentLevel());
+            progress.put("rankIndex", world.getAchievements().getCurrentRankIndex());
+
+            var unlocked = world.getAchievements().getUnlockedAchievements();
+            List<String> unlockedIds = new ArrayList<>();
+            for (AchievementSystem.Achievement ach : unlocked) {
+                unlockedIds.add(ach.getId());
+            }
+            progress.put("unlockedAchievements", unlockedIds);
+
+            storage.save("progress", progress);
+
+            // Save high score
+            scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
         }
     }
 
@@ -206,7 +265,10 @@ public class Game extends Application {
         gc.setFill(Colors.TEXT);
         gc.setFont(Fonts.main(20));
         gc.fillText("Level " + world.getLevel().getCurrentLevel() + " / " + world.getLevel().getMaxLevel(),
-                Config.SCREEN_WIDTH - 150, 30);
+                Config.SCREEN_WIDTH - 170, 30);
+
+        gc.fillText("Pause: press ESC", Config.SCREEN_WIDTH - 170, 60);
+        gc.fillText("Menu: press M", Config.SCREEN_WIDTH - 170, 90);
 
         world.getPaddle().render(gc);
         hudLayer.updateHUD();
@@ -250,8 +312,17 @@ public class Game extends Application {
             gc.setFill(Colors.TEXT);
             gc.setFont(Fonts.main(28));
             gc.fillText("GAME OVER", 320, 280);
+            scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
             gc.setFont(Fonts.main(16));
             gc.fillText("Press R to Restart", 320, 320);
+        }
+
+        if (gamePaused) {
+            gc.setFill(Colors.TEXT);
+            gc.setFont(Fonts.main(24));
+            gc.fillText("GAME PAUSED", 320, 260);
+            gc.setFont(Fonts.main(16));
+            gc.fillText("Press C to Continue", 330, 300);
         }
     }
     public void showPause() {
@@ -269,6 +340,9 @@ public class Game extends Application {
 
     private void restartGame() {
         world.reset();
+        storage.delete("progress"); // Reset progress
+        playerRepo.resetPlayer();
+        scoreRepo.resetScores();
         gamePaused = false;
         gameWon = false;
     }

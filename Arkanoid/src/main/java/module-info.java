@@ -9,6 +9,8 @@ module core {
     requires java.desktop;
     requires javafx.media;
     requires javafx.graphics;
+    requires com.fasterxml.jackson.databind;
+    requires java.sql;
 
     // Cho phép JavaFX truy cập các class controller
     opens core to javafx.fxml;
