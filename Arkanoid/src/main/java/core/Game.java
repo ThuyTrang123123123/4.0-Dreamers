@@ -14,6 +14,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import engine.Collision;
@@ -36,6 +38,9 @@ import data.JsonStorage;
 import data.Storage;
 import data.repositories.PlayerRepository;
 import data.repositories.ScoreRepository;
+
+import net.LeaderboardClient;
+import net.MockServer; // Import MockServer
 
 import ui.screen.InGame;
 import ui.screen.MainMenu;
@@ -60,6 +65,9 @@ public class Game extends Application {
     private Storage storage = new JsonStorage();
     private PlayerRepository playerRepo = new PlayerRepository(storage);
     private ScoreRepository scoreRepo = new ScoreRepository(storage);
+    private LeaderboardClient leaderboardClient = new LeaderboardClient(); // Instance client
+    private MockServer mockServer; // Mock server cho test
+
     public Scene createGamescene(Stage stage) {
         this.stage = stage;
         canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
@@ -111,7 +119,7 @@ public class Game extends Application {
         scene.setOnKeyPressed(e -> {
             // M: Back to Menu
             if (e.getCode() == KeyCode.M) {
-                gamePaused = true; //tại vì là pause nên cần ấn C để chạy được
+                gamePaused = true;
 //                systems.AudioSystem.getInstance().stopMusic();
                 Scene menuScene = MainMenu.cachedScene;
                 if (loop != null) loop.stop();
@@ -255,6 +263,8 @@ public class Game extends Application {
 
             // Save high score
             scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
+            // Submit to leaderboard
+            leaderboardClient.submitScore(playerRepo.getPlayerName(), world.getScoring().getScore());
         }
     }
 
@@ -306,6 +316,8 @@ public class Game extends Application {
             gc.setFont(Fonts.main(16));
             gc.fillText("Final Score: " + world.getScoring().getScore(), 310, 340);
             gc.fillText("Press R to Restart", 310, 370);
+            // Submit score khi win
+            leaderboardClient.submitScore(playerRepo.getPlayerName(), world.getScoring().getScore());
         }
 
         if (world.getScoring().isGameOver()) {
@@ -313,6 +325,8 @@ public class Game extends Application {
             gc.setFont(Fonts.main(28));
             gc.fillText("GAME OVER", 320, 280);
             scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
+            // Submit score khi game over
+            leaderboardClient.submitScore(playerRepo.getPlayerName(), world.getScoring().getScore());
             gc.setFont(Fonts.main(16));
             gc.fillText("Press R to Restart", 320, 320);
         }
@@ -379,10 +393,42 @@ public class Game extends Application {
     @Override
     public void start(Stage stage) {
         this.stage = stage;
+        // Khởi động MockServer cho test offline
+        mockServer = new MockServer();
+        try {
+            mockServer.start();
+        } catch (Exception e) {
+            System.err.println("Lỗi khởi động MockServer: " + e.getMessage());
+        }
+
         stage.setTitle("Arkanoid");
         stage.setScene(new MainMenu().create(stage));
         stage.show();
 
-        stage.setOnCloseRequest(e -> AudioSystem.getInstance().dispose());
+        stage.setOnCloseRequest(e -> {
+            AudioSystem.getInstance().dispose();
+            mockServer.stop(); // Dừng server khi close
+        });
+    }
+
+    // Thêm method hiển thị leaderboard (gọi từ MainMenu nếu cần)
+    public void showLeaderboard() {
+        List<Map<String, Object>> topScores = leaderboardClient.getTopScores(10);
+
+        VBox leaderboardBox = new VBox(10);
+        leaderboardBox.setAlignment(Pos.CENTER);
+
+        Label title = new Label("Top 10 Scores");
+        title.setFont(Fonts.main(24));
+
+        for (Map<String, Object> entry : topScores) {
+            Label scoreLabel = new Label((String) entry.get("player") + ": " + entry.get("score"));
+            leaderboardBox.getChildren().add(scoreLabel);
+        }
+
+        Scene leaderboardScene = new Scene(leaderboardBox, 400, 600);
+        Stage leaderboardStage = new Stage();
+        leaderboardStage.setScene(leaderboardScene);
+        leaderboardStage.show();
     }
 }
