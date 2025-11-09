@@ -28,7 +28,7 @@ public class Level {
     }
 
     private String pathForLevel() {
-        return "/themes/Level " + currentLevel + ".png";
+        return "/images/Level " + currentLevel + ".png";
     }
 
     public Image getBackgroundImage() {

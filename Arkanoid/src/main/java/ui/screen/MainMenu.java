@@ -23,7 +23,7 @@ public class MainMenu {
 
         Image bg = new Image(
                 Objects.requireNonNull(
-                        getClass().getResource("/themes/BACKGROUND.png")
+                        getClass().getResource("/images/BACKGROUND.png")
                 ).toExternalForm()
         );
         BackgroundImage bgi = new BackgroundImage(

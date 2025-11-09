@@ -11,4 +11,12 @@ public class Fonts {
     public static Font main(double size) {
         return Font.font("Comic Sans MS", size);
     }
+
+    public static Font title() {
+        return TITLE;
+    }
+
+    public static Font body() {
+        return body();
+    }
 }
