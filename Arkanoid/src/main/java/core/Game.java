@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -43,6 +44,7 @@ import net.LeaderboardClient;
 import net.MockServer;
 
 import ui.screen.InGame;
+import ui.screen.LevelSelect;
 import ui.screen.MainMenu;
 import ui.screen.Pause;
 import ui.theme.Colors;
@@ -67,10 +69,19 @@ public class Game extends Application {
     private ScoreRepository scoreRepo = new ScoreRepository(storage);
     private LeaderboardClient leaderboardClient = new LeaderboardClient();
     private MockServer mockServer;
+    private enum Mode { PLAY, PRACTICE }
+    private Mode mode = Mode.PLAY;
 
+    private boolean levelFinished = false;
+    private boolean isPracticeMode = false;
     private boolean justCompleted = false;
     private boolean scoreSavedForGameOver = false;  // Flag cho game over
-    private boolean scoreSavedForWin = false;       // Flag cho win
+    private boolean scoreSavedForWin = false;// Flag cho win
+
+    private static final String PROGRESS_PLAY = "progress_play";
+    private static final String SCORES_PLAY   = "scores_play";
+    private static final String SCORES_PRACT  = "scores_practice";
+
 
     public Scene createGamescene(Stage stage) {
         this.stage = stage;
@@ -78,35 +89,33 @@ public class Game extends Application {
         gc = canvas.getGraphicsContext2D();
         world.init(canvas);
 
-        Map<String, Object> progress = storage.load("progress");
-        if (!progress.isEmpty()) {
-            int loadedScore = ((Number) progress.getOrDefault("score", 0)).intValue();
-            world.getScoring().scoreProperty().set(loadedScore);
+        if (mode == Mode.PLAY) {
+            Map<String, Object> progress = storage.load(PROGRESS_PLAY);
+            if (!progress.isEmpty()) {
+                int loadedScore  = ((Number) progress.getOrDefault("score", 0)).intValue();
+                int loadedLives  = ((Number) progress.getOrDefault("lives", 1)).intValue();
+                int loadedBricks = ((Number) progress.getOrDefault("bricksDestroyed", 0)).intValue();
+                int savedLevel   = ((Number) progress.getOrDefault("currentLevel", 1)).intValue();
+                int rankIndex    = ((Number) progress.getOrDefault("rankIndex", 0)).intValue();
 
-            int loadedLives = ((Number) progress.getOrDefault("lives", 1)).intValue();
-            world.getScoring().livesProperty().set(loadedLives);
+                world.getScoring().scoreProperty().set(loadedScore);
+                world.getScoring().livesProperty().set(loadedLives);
+                world.getScoring().bricksDestroyedProperty().set(loadedBricks);
+                world.getLevel().setCurrentLevel(savedLevel);
 
-            int loadedBricks = ((Number) progress.getOrDefault("bricksDestroyed", 0)).intValue();
-            world.getScoring().bricksDestroyedProperty().set(loadedBricks);
+                world.getAchievements().currentRankIndexProperty().set(rankIndex);
+                world.getAchievements().currentRankNameProperty().set(world.getAchievements().getCurrentRank().getName());
+                world.getAchievements().currentRankIconProperty().set(world.getAchievements().getCurrentRank().getIcon());
 
-            int savedLevel = ((Number) progress.getOrDefault("currentLevel", 1)).intValue();
-            world.getLevel().setCurrentLevel(savedLevel);
-
-            int rankIndex = ((Number) progress.getOrDefault("rankIndex", 0)).intValue();
-            world.getAchievements().currentRankIndexProperty().set(rankIndex);
-            world.getAchievements().currentRankNameProperty().set(world.getAchievements().getCurrentRank().getName());
-            world.getAchievements().currentRankIconProperty().set(world.getAchievements().getCurrentRank().getIcon());
-
-            Object unlockedObj = progress.get("unlockedAchievements");
-            if (unlockedObj instanceof List) {
-                List<?> unlockedList = (List<?>) unlockedObj;
-                for (Object idObj : unlockedList) {
-                    if (idObj instanceof String) {
-                        world.getAchievements().unlockAchievement((String) idObj);
+                Object unlockedObj = progress.get("unlockedAchievements");
+                if (unlockedObj instanceof List) {
+                    for (Object idObj : (List<?>) unlockedObj) {
+                        if (idObj instanceof String) world.getAchievements().unlockAchievement((String) idObj);
                     }
                 }
             }
         }
+
         System.out.println("Đã load progress: Level " + world.getLevel().getCurrentLevel());
 
         hudLayer = new InGame(this, world.getScoring(), world.getAchievements());
@@ -122,15 +131,18 @@ public class Game extends Application {
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.M) {
                 gamePaused = true;
-                Scene menuScene = MainMenu.cachedScene;
                 if (loop != null) loop.stop();
+
+                Scene menuScene = (mode == Mode.PLAY) ? MainMenu.cachedScene : MainMenu.cachedScenePractice;
                 if (menuScene == null) {
                     menuScene = new MainMenu().create(stage);
-                    MainMenu.cachedScene = menuScene;
+                    if (mode == Mode.PLAY) MainMenu.cachedScene = menuScene;
+                    else MainMenu.cachedScenePractice = menuScene;
                 }
                 stage.setScene(menuScene);
                 return;
             }
+
 
             if (e.getCode() == KeyCode.ESCAPE) {
                 showPause();
@@ -142,17 +154,35 @@ public class Game extends Application {
                 return;
             }
 
-            if (e.getCode() == KeyCode.R || world.getScoring().isGameOver()) {
+            if (e.getCode() == KeyCode.R) {
                 restartGame();
                 return;
             }
 
             if (e.getCode() == KeyCode.SPACE) {
+                if (gamePaused || world.getScoring().isGameOver() || gameWon || levelFinished) {
+                    return;
+                }
+
                 for (Ball ball : world.getBalls()) {
                     if (ball.isStickToPaddle()) ball.launch();
                 }
                 return;
             }
+
+            if (mode == Mode.PRACTICE && e.getCode() == KeyCode.ENTER ) {
+
+                gamePaused = true;
+                if (loop != null) loop.stop();
+
+                var storage = new JsonStorage();
+                var playerRepo = new PlayerRepository(storage);
+                var scoreRepo  = new ScoreRepository(storage);
+                LevelSelect select = new LevelSelect(stage, this, playerRepo, scoreRepo);
+                stage.setScene(select.create());
+                return;
+            }
+
             world.getPaddle().onKeyPressed(e.getCode());
         });
 
@@ -240,22 +270,32 @@ public class Game extends Application {
         if (world.getLevel().isComplete() && !justCompleted) {
             justCompleted = true;
 
-            if (world.getLevel().isGameComplete()) {
-                gameWon = true;
-            } else {
-                world.nextLevel();
-            }
+            if (mode == Mode.PRACTICE) {
+                levelFinished = true;
 
-            saveProgress();
+                scoreRepo.saveBestScoreIfHigher(world.getLevel().getCurrentLevel(),
+                        world.getScoring().getScore());
+            } else {
+                if (world.getLevel().isGameComplete()) {
+                    gameWon = true;
+                } else {
+                    world.nextLevel();
+                }
+                saveProgress();
+            }
         } else if (!world.getLevel().isComplete()) {
             justCompleted = false;
         }
     }
 
     public void render() {
-        gc.setFill(Colors.PRIMARY);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
+        Image bg = world.getLevel().getBackgroundImage();
+        if (bg != null) {
+            gc.drawImage(bg, 0, 0, canvas.getWidth(), canvas.getHeight());
+        } else {
+            gc.setFill(Colors.PRIMARY);
+            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        }
         gc.setFill(Colors.TEXT);
         gc.setFont(Fonts.main(20));
         gc.fillText("Level " + world.getLevel().getCurrentLevel() + " / " + world.getLevel().getMaxLevel(),
@@ -289,7 +329,6 @@ public class Game extends Application {
             gc.fillText("Press SPACE to launch ball", 260, 400);
         }
 
-        // ===== XỬ LÝ WIN (chỉ lưu điểm 1 lần) =====
         if (gameWon && !scoreSavedForWin) {
             scoreSavedForWin = true;
             saveScoreOnce("WIN");
@@ -326,9 +365,17 @@ public class Game extends Application {
             gc.setFont(Fonts.main(16));
             gc.fillText("Press C to Continue", 330, 300);
         }
+
+        if (isPracticeMode && (gameWon || world.getScoring().isGameOver())) {
+            gc.setFill(Colors.TEXT);
+            gc.setFont(Fonts.main(18));
+            gc.fillText("Press ENTER to return to Level Select", 250, 420);
+        }
     }
 
     private void saveProgress() {
+        if (mode != Mode.PLAY) return;
+
         Map<String, Object> progress = new HashMap<>();
         progress.put("score", world.getScoring().getScore());
         progress.put("lives", world.getScoring().getLives());
@@ -336,17 +383,21 @@ public class Game extends Application {
         progress.put("currentLevel", world.getLevel().getCurrentLevel());
         progress.put("rankIndex", world.getAchievements().getCurrentRankIndex());
 
-        var unlocked = world.getAchievements().getUnlockedAchievements();
         List<String> unlockedIds = new ArrayList<>();
-        for (AchievementSystem.Achievement ach : unlocked) {
+        for (AchievementSystem.Achievement ach : world.getAchievements().getUnlockedAchievements()) {
             unlockedIds.add(ach.getId());
         }
         progress.put("unlockedAchievements", unlockedIds);
 
-        storage.save("progress", progress);
+        storage.save(PROGRESS_PLAY, progress);
 
-        // Chỉ save high score (KHÔNG submit leaderboard ở đây)
         scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
+
+        int cur = world.getLevel().getCurrentLevel();
+        int highest = getHighestLevelUnlocked();
+        if (cur >= highest && cur < world.getLevel().getMaxLevel()) {
+            setHighestLevelUnlocked(cur + 1);
+        }
 
         System.out.println("Progress saved: Level " + world.getLevel().getCurrentLevel());
     }
@@ -377,19 +428,26 @@ public class Game extends Application {
     }
 
     private void restartGame() {
-        world.reset();
-        storage.delete("progress");
-        playerRepo.resetPlayer();
-        scoreRepo.resetScores();
-
-        // reset flag
         gamePaused = false;
         gameWon = false;
         justCompleted = false;
         scoreSavedForGameOver = false;
         scoreSavedForWin = false;
 
-        System.out.println("Game restarted - All flags reset");
+        if (mode == Mode.PLAY) {
+            world.reset();
+            world.getLevel().setCurrentLevel(1);
+            storage.delete(PROGRESS_PLAY);
+            playerRepo.resetPlayer();
+            scoreRepo.resetScores();
+            System.out.println("🔁 Restart PLAY mode → back to Level 1");
+        }
+        else if (mode == Mode.PRACTICE) {
+            int currentLevel = world.getLevel().getCurrentLevel();
+            world.reset();
+            world.getLevel().setCurrentLevel(currentLevel);
+            System.out.println("🔁 Restart PRACTICE mode → stay at Level " + currentLevel);
+        }
     }
 
     public void showMainMenu() {
@@ -423,6 +481,88 @@ public class Game extends Application {
         return !gamePaused;
     }
 
+    public void showLeaderboard() {
+        List<Map<String, Object>> topScores = leaderboardClient.getTopScores(10);
+
+        VBox leaderboardBox = new VBox(10);
+        leaderboardBox.setAlignment(Pos.CENTER);
+
+        Label title = new Label("Top 10 Scores");
+        title.setFont(Fonts.main(24));
+
+        for (Map<String, Object> entry : topScores) {
+            Label scoreLabel = new Label((String) entry.get("player") + ": " + entry.get("score"));
+            leaderboardBox.getChildren().add(scoreLabel);
+        }
+
+        Scene leaderboardScene = new Scene(leaderboardBox, 400, 600);
+        Stage leaderboardStage = new Stage();
+        leaderboardStage.setScene(leaderboardScene);
+        leaderboardStage.show();
+    }
+
+    public void startLevelFromSelect(Stage stage, int level) {
+        mode = Mode.PRACTICE;
+        gamePaused = false;
+        gameWon = false;
+        justCompleted = false;
+        scoreSavedForGameOver = false;
+        scoreSavedForWin = false;
+        levelFinished = false;
+
+        if (canvas == null) {
+            canvas = new Canvas(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
+            gc = canvas.getGraphicsContext2D();
+        }
+
+        world.init(canvas);
+        world.reset();
+        world.getLevel().setCurrentLevel(level);
+
+        inGameScene = createGamescene(stage);
+        stage.setScene(inGameScene);
+        startLoopIfNeeded();
+    }
+
+    public int getHighestLevelUnlocked() {
+        try {
+            Map<String, Object> p = storage.load(PROGRESS_PLAY);
+            int highest = ((Number)p.getOrDefault(
+                    "highestLevelUnlocked",
+                    Math.max(1, ((Number)p.getOrDefault("currentLevel", 1)).intValue())
+            )).intValue();
+            return Math.max(1, highest);
+        } catch (Exception e) {
+            return 1;
+        }
+    }
+
+    public void setHighestLevelUnlocked(int v) {
+        Map<String, Object> p = storage.load(PROGRESS_PLAY);
+        p.put("highestLevelUnlocked", Math.max(1, v));
+        storage.save(PROGRESS_PLAY, p);
+    }
+
+    public void setModePlay()     {
+        mode = Mode.PLAY;
+        inGameScene = null;
+        gamePaused = false;
+        gameWon = false;
+        justCompleted = false;
+        scoreSavedForGameOver = false;
+        scoreSavedForWin = false;
+    }
+
+    public void setModePractice() {
+        mode = Mode.PRACTICE;
+        inGameScene = null;
+        gamePaused = false;
+        gameWon = false;
+        justCompleted = false;
+        scoreSavedForGameOver = false;
+        scoreSavedForWin = false;
+    }
+
     @Override
     public void start(Stage stage) {
         this.stage = stage;
@@ -442,25 +582,5 @@ public class Game extends Application {
             AudioSystem.getInstance().dispose();
             mockServer.stop();
         });
-    }
-
-    public void showLeaderboard() {
-        List<Map<String, Object>> topScores = leaderboardClient.getTopScores(10);
-
-        VBox leaderboardBox = new VBox(10);
-        leaderboardBox.setAlignment(Pos.CENTER);
-
-        Label title = new Label("Top 10 Scores");
-        title.setFont(Fonts.main(24));
-
-        for (Map<String, Object> entry : topScores) {
-            Label scoreLabel = new Label((String) entry.get("player") + ": " + entry.get("score"));
-            leaderboardBox.getChildren().add(scoreLabel);
-        }
-
-        Scene leaderboardScene = new Scene(leaderboardBox, 400, 600);
-        Stage leaderboardStage = new Stage();
-        leaderboardStage.setScene(leaderboardScene);
-        leaderboardStage.show();
     }
 }
