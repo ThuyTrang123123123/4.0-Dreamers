@@ -47,6 +47,13 @@ public class MainMenu {
             currentGame.startLoopIfNeeded();
         });
 
+        ButtonUI levelSelectBtn = new ButtonUI("📋 Select Level");
+        levelSelectBtn.setOnAction(e -> {
+//            AudioSystem.getInstance().playSound("select");
+            LevelSelect levelSelect = new LevelSelect();
+            stage.setScene(levelSelect.create(stage));
+        });
+
         ButtonUI settingsBtn = new ButtonUI("Settings");
         settingsBtn.setOnAction(e -> {
             AudioSystem audio = AudioSystem.getInstance();

@@ -11,7 +11,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -246,23 +245,23 @@ public class Game extends Application {
             } else {
                 world.nextLevel();
             }
+
+            saveProgress();
+        } else if (!world.getLevel().isComplete()) {
+            justCompleted = false;
         }
     }
 
     public void render() {
-        Image bg = world.getLevel().getBackgroundImage();
-        if (bg != null) {
-            gc.drawImage(bg, 0, 0, canvas.getWidth(), canvas.getHeight());
-        } else {
-            gc.setFill(Colors.PRIMARY);
-            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        }
+        gc.setFill(Colors.PRIMARY);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
         gc.setFill(Colors.TEXT);
         gc.setFont(Fonts.main(20));
         gc.fillText("Level " + world.getLevel().getCurrentLevel() + " / " + world.getLevel().getMaxLevel(),
                 Config.SCREEN_WIDTH - 170, 30);
 
-        gc.fillText("Pause: press ERC", Config.SCREEN_WIDTH - 170, 60);
+        gc.fillText("Pause: press ESC", Config.SCREEN_WIDTH - 170, 60);
         gc.fillText("Menu: press M", Config.SCREEN_WIDTH - 170, 90);
 
         world.getPaddle().render(gc);
