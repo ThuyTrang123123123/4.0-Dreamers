@@ -59,11 +59,19 @@ public class MainMenu {
             stage.setScene(settings.create(stage));
         });
 
+        ButtonUI leaderboardBtn = new ButtonUI("View Leaderboard");
+        leaderboardBtn.setOnAction(e -> {
+            Game gameInstance = new Game();
+            gameInstance.showLeaderboard();
+        });
+        root.getChildren().add(leaderboardBtn);
+
         ButtonUI exitBtn = new ButtonUI("Exit");
         exitBtn.setOnAction(e -> stage.close());
 
         root.getChildren().addAll(playBtn, settingsBtn, exitBtn);
         return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
+
     }
 
     private String colorToHex(javafx.scene.paint.Color color) {

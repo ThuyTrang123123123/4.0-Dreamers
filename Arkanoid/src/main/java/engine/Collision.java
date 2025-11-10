@@ -6,6 +6,7 @@ import entities.Bullet;
 import entities.Paddle;
 import entities.bricks.Brick;
 import entities.bricks.ExplodingBrick;
+import entities.bricks.HardBrick;
 import entities.bricks.UnbreakableBrick;
 import entities.powerups.*;
 
@@ -80,8 +81,19 @@ public class Collision {
 
                 } else if (brick instanceof UnbreakableBrick unbreakable) {
                     //Không cộng điểm, ko cộng gạch phá
-                } else {
-                    brick.hit();// gạch thường or gạch hard
+                }
+                else if (brick instanceof HardBrick hard){
+                    hard.hit();
+                    if (hard.isDestroyed()) {
+                        world.getScoring().addScore(1);
+                        world.getScoring().incrementBricksDestroyed(1);
+                        System.out.println("HardBrick phá hủy! +1 điểm");
+                    } else {
+                        System.out.println("HardBrick chưa bị phá");
+                    }
+                }
+                else {
+                    brick.hit();// gạch thường
                     world.getScoring().addScore(1);
                     world.getScoring().incrementBricksDestroyed(1);
                 }
