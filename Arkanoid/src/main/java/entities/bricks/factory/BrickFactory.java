@@ -8,6 +8,7 @@ public class BrickFactory {
             case 'N' -> new NormalBrick(x, y, width, height);
             case 'H' -> new HardBrick(x, y, width, height);
             case 'E' -> new ExplodingBrick(x, y, width, height);
+            case 'U' -> new UnbreakableBrick(x, y, width, height);
             default -> null;
         };
     }
