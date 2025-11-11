@@ -90,6 +90,7 @@ public class Settings {
 
         ButtonUI applyMusicBtn = new ButtonUI("ADD MUSIC");
         applyMusicBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
             String selected = musicBox.getValue();
             audio.setSelectedMusic(selected);
             audio.playIfChanged(selected);
@@ -130,6 +131,7 @@ public class Settings {
 
         ButtonUI backBtn = new ButtonUI("SAVE AND BACK");
         backBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
             Object selected = colorGroup.getSelectedToggle() != null
                     ? colorGroup.getSelectedToggle().getUserData()
                     : Colors.SECONDARY;

@@ -57,13 +57,20 @@ public class MainMenu {
         ButtonUI playBtn = new ButtonUI("Play");
         playBtn.setOnAction(e -> {
             AudioSystem.getInstance().playSound("select.mp3");
-            if (playGame == null) playGame = new Game();
-            playGame.setModePlay();
-            Scene s = playGame.getOrCreateGameScene(stage);
+            if (playGame == null) {
+                playGame = new Game();
+            }
             cachedScene = create(stage);
-            stage.setScene(s);
-            playGame.unpause();
-            playGame.startLoopIfNeeded();
+
+            if (playGame.isPlayMode() && playGame.hasExistingScene()) {
+                playGame.resumeFromMenu(stage);
+            } else {
+                playGame.setModePlay();
+                Scene s = playGame.getOrCreateGameScene(stage);
+                stage.setScene(s);
+                playGame.unpause();
+                playGame.startLoopIfNeeded();
+            }
         });
 
         ButtonUI levelSelectBtn = new ButtonUI("Practice");

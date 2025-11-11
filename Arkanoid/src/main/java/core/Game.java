@@ -621,6 +621,23 @@ public class Game extends Application {
         stage.setScene(menuScene);
     }
 
+    public boolean hasExistingScene() {
+        return inGameScene != null;
+    }
+
+    public boolean isPlayMode() {
+        return mode == Mode.PLAY;
+    }
+
+    public void resumeFromMenu(Stage stage) {
+        if (inGameScene == null) {
+            inGameScene = createGamescene(stage);
+        }
+        stage.setScene(inGameScene);
+        unpause();
+        startLoopIfNeeded();
+    }
+
 
     @Override
     public void start(Stage stage) {
