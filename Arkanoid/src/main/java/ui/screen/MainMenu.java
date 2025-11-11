@@ -13,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import systems.AudioSystem;
-import ui.theme.Colors;
 import ui.widgets.ButtonUI;
 
 import java.util.Objects;
@@ -116,9 +115,5 @@ public class MainMenu {
 
         root.getChildren().addAll(introduceBtn, playBtn, levelSelectBtn, settingsBtn, leaderboardBtn, exitBtn);
         return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
-    }
-
-    private String colorToHex(javafx.scene.paint.Color color) {
-        return color.toString().substring(2, 8);
     }
 }

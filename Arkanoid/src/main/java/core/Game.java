@@ -603,6 +603,13 @@ public class Game extends Application {
         scoreSavedForWin = false;
         endScreenShown = false;
 
+        inGameScene = null;
+        world.reset();
+        world.getLevel().setCurrentLevel(1);
+        storage.delete(PROGRESS_PLAY);
+        playerRepo.resetPlayer();
+        scoreRepo.resetScores();
+
         Scene menuScene = (mode == Mode.PLAY) ? MainMenu.cachedScene : MainMenu.cachedScenePractice;
         if (menuScene == null) {
             menuScene = new MainMenu().create(stage);
