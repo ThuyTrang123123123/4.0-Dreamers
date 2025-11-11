@@ -12,6 +12,7 @@ module core {
     requires com.fasterxml.jackson.databind;
     requires java.sql;
     requires jdk.httpserver;
+//    requires core;
 
     // Cho phép JavaFX truy cập các class controller
     opens core to javafx.fxml;

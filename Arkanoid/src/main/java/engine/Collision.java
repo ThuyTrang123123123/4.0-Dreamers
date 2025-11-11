@@ -101,7 +101,7 @@ public class Collision {
                 new Physics().reflectBall(ball, brick);
                 if (brick.isDestroyed()) {
                     double chance = Math.random();
-                    if (chance < 0.5) {
+                    if (chance < 0.25) {
                         Class<? extends PowerUp> type;
                         double r = Math.random();
                         if (r < 1.0 / 9) {
