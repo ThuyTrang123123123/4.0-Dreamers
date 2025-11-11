@@ -40,7 +40,7 @@ import data.repositories.PlayerRepository;
 import data.repositories.ScoreRepository;
 
 import net.LeaderboardClient;
-import net.MockServer; // Import MockServer
+import net.MockServer;
 
 import ui.screen.InGame;
 import ui.screen.MainMenu;
@@ -65,8 +65,12 @@ public class Game extends Application {
     private Storage storage = new JsonStorage();
     private PlayerRepository playerRepo = new PlayerRepository(storage);
     private ScoreRepository scoreRepo = new ScoreRepository(storage);
-    private LeaderboardClient leaderboardClient = new LeaderboardClient(); // Instance client
-    private MockServer mockServer; // Mock server cho test
+    private LeaderboardClient leaderboardClient = new LeaderboardClient();
+    private MockServer mockServer;
+
+    private boolean justCompleted = false;
+    private boolean scoreSavedForGameOver = false;  // Flag cho game over
+    private boolean scoreSavedForWin = false;       // Flag cho win
 
     public Scene createGamescene(Stage stage) {
         this.stage = stage;
@@ -93,7 +97,6 @@ public class Game extends Application {
             world.getAchievements().currentRankNameProperty().set(world.getAchievements().getCurrentRank().getName());
             world.getAchievements().currentRankIconProperty().set(world.getAchievements().getCurrentRank().getIcon());
 
-            // Fix cast: Dùng List<String> thay vì String[]
             Object unlockedObj = progress.get("unlockedAchievements");
             if (unlockedObj instanceof List) {
                 List<?> unlockedList = (List<?>) unlockedObj;
@@ -117,14 +120,11 @@ public class Game extends Application {
         this.inGameScene = scene;
 
         scene.setOnKeyPressed(e -> {
-            // M: Back to Menu
             if (e.getCode() == KeyCode.M) {
                 gamePaused = true;
-//                systems.AudioSystem.getInstance().stopMusic();
                 Scene menuScene = MainMenu.cachedScene;
                 if (loop != null) loop.stop();
-                if (menuScene == null)
-                {
+                if (menuScene == null) {
                     menuScene = new MainMenu().create(stage);
                     MainMenu.cachedScene = menuScene;
                 }
@@ -223,10 +223,8 @@ public class Game extends Application {
             bu.update(dt);
             return !bu.isActive();
         });
-        // Xử lý đạn bắn trúng gạch
+
         Collision.handleBulletBrickCollision(world.getBullets(), world.getBricks(), world);
-
-
 
         List<PowerUp> toRemove = new ArrayList<>();
         for (PowerUp pu : world.getPowerUps()) {
@@ -239,32 +237,18 @@ public class Game extends Application {
         }
         world.getPowerUps().removeAll(toRemove);
 
-        if (world.getLevel().isComplete()) {
+        if (world.getLevel().isComplete() && !justCompleted) {
+            justCompleted = true;
+
             if (world.getLevel().isGameComplete()) {
                 gameWon = true;
             } else {
                 world.nextLevel();
             }
-            Map<String, Object> progress = new HashMap<>();
-            progress.put("score", world.getScoring().getScore());
-            progress.put("lives", world.getScoring().getLives());
-            progress.put("bricksDestroyed", world.getScoring().getBricksDestroyed());
-            progress.put("currentLevel", world.getLevel().getCurrentLevel());
-            progress.put("rankIndex", world.getAchievements().getCurrentRankIndex());
 
-            var unlocked = world.getAchievements().getUnlockedAchievements();
-            List<String> unlockedIds = new ArrayList<>();
-            for (AchievementSystem.Achievement ach : unlocked) {
-                unlockedIds.add(ach.getId());
-            }
-            progress.put("unlockedAchievements", unlockedIds);
-
-            storage.save("progress", progress);
-
-            // Save high score
-            scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
-            // Submit to leaderboard
-            leaderboardClient.submitScore(playerRepo.getPlayerName(), world.getScoring().getScore());
+            saveProgress();
+        } else if (!world.getLevel().isComplete()) {
+            justCompleted = false;
         }
     }
 
@@ -291,11 +275,9 @@ public class Game extends Application {
             if (!b.isDestroyed()) b.render(gc);
         }
 
-        // Vẽ bullet
         for (Bullet b : world.getBullets()) {
             b.render(gc);
         }
-
 
         for (PowerUp pu : world.getPowerUps()) {
             pu.render(gc);
@@ -307,6 +289,12 @@ public class Game extends Application {
             gc.fillText("Press SPACE to launch ball", 260, 400);
         }
 
+        // ===== XỬ LÝ WIN (chỉ lưu điểm 1 lần) =====
+        if (gameWon && !scoreSavedForWin) {
+            scoreSavedForWin = true;
+            saveScoreOnce("WIN");
+        }
+
         if (gameWon) {
             gc.setFill(Colors.TEXT);
             gc.setFont(Fonts.main(32));
@@ -316,17 +304,17 @@ public class Game extends Application {
             gc.setFont(Fonts.main(16));
             gc.fillText("Final Score: " + world.getScoring().getScore(), 310, 340);
             gc.fillText("Press R to Restart", 310, 370);
-            // Submit score khi win
-            leaderboardClient.submitScore(playerRepo.getPlayerName(), world.getScoring().getScore());
+        }
+
+        if (world.getScoring().isGameOver() && !scoreSavedForGameOver) {
+            scoreSavedForGameOver = true;
+            saveScoreOnce("GAME_OVER");
         }
 
         if (world.getScoring().isGameOver()) {
             gc.setFill(Colors.TEXT);
             gc.setFont(Fonts.main(28));
             gc.fillText("GAME OVER", 320, 280);
-            scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
-            // Submit score khi game over
-            leaderboardClient.submitScore(playerRepo.getPlayerName(), world.getScoring().getScore());
             gc.setFont(Fonts.main(16));
             gc.fillText("Press R to Restart", 320, 320);
         }
@@ -339,6 +327,42 @@ public class Game extends Application {
             gc.fillText("Press C to Continue", 330, 300);
         }
     }
+
+    private void saveProgress() {
+        Map<String, Object> progress = new HashMap<>();
+        progress.put("score", world.getScoring().getScore());
+        progress.put("lives", world.getScoring().getLives());
+        progress.put("bricksDestroyed", world.getScoring().getBricksDestroyed());
+        progress.put("currentLevel", world.getLevel().getCurrentLevel());
+        progress.put("rankIndex", world.getAchievements().getCurrentRankIndex());
+
+        var unlocked = world.getAchievements().getUnlockedAchievements();
+        List<String> unlockedIds = new ArrayList<>();
+        for (AchievementSystem.Achievement ach : unlocked) {
+            unlockedIds.add(ach.getId());
+        }
+        progress.put("unlockedAchievements", unlockedIds);
+
+        storage.save("progress", progress);
+
+        // Chỉ save high score (KHÔNG submit leaderboard ở đây)
+        scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
+
+        System.out.println("Progress saved: Level " + world.getLevel().getCurrentLevel());
+    }
+
+    private void saveScoreOnce(String reason) {
+        int finalScore = world.getScoring().getScore();
+        int finalLevel = world.getLevel().getCurrentLevel();
+
+        // Save local high score
+        scoreRepo.saveScore(finalLevel, finalScore);
+
+        leaderboardClient.submitScore(playerRepo.getPlayerName(), finalScore);
+
+        System.out.println("Score saved ONCE for " + reason + ": " + finalScore);
+    }
+
     public void showPause() {
         gamePaused = true;
     }
@@ -354,11 +378,18 @@ public class Game extends Application {
 
     private void restartGame() {
         world.reset();
-        storage.delete("progress"); // Reset progress
+        storage.delete("progress");
         playerRepo.resetPlayer();
         scoreRepo.resetScores();
+
+        // reset flag
         gamePaused = false;
         gameWon = false;
+        justCompleted = false;
+        scoreSavedForGameOver = false;
+        scoreSavedForWin = false;
+
+        System.out.println("Game restarted - All flags reset");
     }
 
     public void showMainMenu() {
@@ -373,7 +404,9 @@ public class Game extends Application {
         return inGameScene;
     }
 
-    public void unpause() { this.gamePaused = false; }
+    public void unpause() {
+        this.gamePaused = false;
+    }
 
     public void startLoopIfNeeded() {
         if (loop == null || !loop.isRunning()) {
@@ -393,7 +426,7 @@ public class Game extends Application {
     @Override
     public void start(Stage stage) {
         this.stage = stage;
-        // Khởi động MockServer cho test offline
+
         mockServer = new MockServer();
         try {
             mockServer.start();
@@ -407,11 +440,10 @@ public class Game extends Application {
 
         stage.setOnCloseRequest(e -> {
             AudioSystem.getInstance().dispose();
-            mockServer.stop(); // Dừng server khi close
+            mockServer.stop();
         });
     }
 
-    // Thêm method hiển thị leaderboard (gọi từ MainMenu nếu cần)
     public void showLeaderboard() {
         List<Map<String, Object>> topScores = leaderboardClient.getTopScores(10);
 
