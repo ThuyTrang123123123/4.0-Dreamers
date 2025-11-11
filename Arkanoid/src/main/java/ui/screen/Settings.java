@@ -51,7 +51,7 @@ public class Settings {
             }
         });
 
-        Label musicLabel = new Label("🎵 SELECT MUSIC");
+        Label musicLabel = new Label("SELECT MUSIC");
         musicLabel.setTextFill(Colors.TEXTBT);
         musicLabel.setFont(Fonts.main(20));
         ComboBox<String> musicBox = new ComboBox<>(FXCollections.observableArrayList(
@@ -77,7 +77,7 @@ public class Settings {
         HBox musicRow = new HBox(12, musicBox, applyMusicBtn);
         musicRow.setAlignment(Pos.CENTER);
 
-        Label paddleLabel = new Label("🎨 COLORS OF PADDLE");
+        Label paddleLabel = new Label("COLORS OF PADDLE");
         paddleLabel.setTextFill(Colors.TEXTBT);
         paddleLabel.setFont(Fonts.main(20));
 

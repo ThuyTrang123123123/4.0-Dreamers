@@ -46,6 +46,14 @@ public class MainMenu {
         );
         root.setBackground(new Background(bgi));
 
+        ButtonUI introduceBtn = new ButtonUI("Introduce");
+        introduceBtn.setOnAction(e -> {
+//            AudioSystem.getInstance().playSound("select");
+            Introduce introduce = new Introduce();
+            cachedScene = create(stage);
+            stage.setScene(introduce.create(stage));
+        });
+
         ButtonUI playBtn = new ButtonUI("Play");
         playBtn.setOnAction(e -> {
             if (playGame == null) playGame = new Game();
@@ -84,7 +92,7 @@ public class MainMenu {
             stage.setScene(settings.create(stage));
         });
 
-        ButtonUI leaderboardBtn = new ButtonUI("View Leaderboard");
+        ButtonUI leaderboardBtn = new ButtonUI("View");
         leaderboardBtn.setOnAction(e -> {
             Game gameInstance = new Game();
             gameInstance.showLeaderboard();
@@ -93,7 +101,7 @@ public class MainMenu {
         ButtonUI exitBtn = new ButtonUI("Exit");
         exitBtn.setOnAction(e -> stage.close());
 
-        root.getChildren().addAll(playBtn, levelSelectBtn, settingsBtn, leaderboardBtn, exitBtn);
+        root.getChildren().addAll(introduceBtn, playBtn, levelSelectBtn, settingsBtn, leaderboardBtn, exitBtn);
         return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
     }
 
