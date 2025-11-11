@@ -176,14 +176,4 @@ public class PowerupEffectTest {
                 "Lỗi: Không cộng thêm mạng khi bóng đang bay");
     }
 
-
-
-
-
-
-
-
-
-
-
 }

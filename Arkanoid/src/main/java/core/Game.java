@@ -7,6 +7,7 @@ import java.util.Map;
 
 import entities.Bullet;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -17,6 +18,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import engine.Collision;
@@ -43,10 +47,7 @@ import data.repositories.ScoreRepository;
 import net.LeaderboardClient;
 import net.MockServer;
 
-import ui.screen.InGame;
-import ui.screen.LevelSelect;
-import ui.screen.MainMenu;
-import ui.screen.Pause;
+import ui.screen.*;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 
@@ -77,6 +78,7 @@ public class Game extends Application {
     private boolean justCompleted = false;
     private boolean scoreSavedForGameOver = false;  // Flag cho game over
     private boolean scoreSavedForWin = false;// Flag cho win
+    private boolean endScreenShown = false;
 
     private static final String PROGRESS_PLAY = "progress_play";
     private static final String SCORES_PLAY   = "scores_play";
@@ -199,6 +201,7 @@ public class Game extends Application {
 
     public void update(double dt) {
         if (gamePaused || gameWon) return;
+        if (mode == Mode.PRACTICE && levelFinished) return;
 
         Paddle paddle = world.getPaddle();
         List<Ball> balls = world.getBalls();
@@ -335,14 +338,9 @@ public class Game extends Application {
         }
 
         if (gameWon) {
-            gc.setFill(Colors.TEXT);
-            gc.setFont(Fonts.main(32));
-            gc.fillText("YOU WIN!", 280, 260);
-            gc.setFont(Fonts.main(20));
-            gc.fillText("Hoàn thành tất cả 12 level!", 250, 300);
-            gc.setFont(Fonts.main(16));
-            gc.fillText("Final Score: " + world.getScoring().getScore(), 310, 340);
-            gc.fillText("Press R to Restart", 310, 370);
+            endScreenShown = true;
+            goToEndScreen(world.getScoring().getScore());
+            return;
         }
 
         if (world.getScoring().isGameOver() && !scoreSavedForGameOver) {
@@ -366,10 +364,10 @@ public class Game extends Application {
             gc.fillText("Press C to Continue", 330, 300);
         }
 
-        if (isPracticeMode && (gameWon || world.getScoring().isGameOver())) {
+        if (mode == Mode.PRACTICE && levelFinished) {
             gc.setFill(Colors.TEXT);
             gc.setFont(Fonts.main(18));
-            gc.fillText("Press ENTER to return to Level Select", 250, 420);
+            gc.fillText("Level finished! Press ENTER to choose another level", 210, 420);
         }
     }
 
@@ -562,6 +560,74 @@ public class Game extends Application {
         scoreSavedForGameOver = false;
         scoreSavedForWin = false;
     }
+
+    private void goToEndScreen(int finalScore) {
+        if (loop != null) loop.stop();
+        Integer best = null;
+
+        Runnable onReplay = () -> {
+            startNewRun();
+        };
+
+        Runnable onMain = () -> {
+            openMainMenu();
+        };
+
+        Platform.runLater(() -> {  // <-- quan trọng
+            Scene endScene = End.create(
+                    stage,
+                    finalScore,
+                    best,
+                    onReplay,
+                    onMain,
+                    "/images/BACKGROUND.png" // phải tồn tại thật
+            );
+            stage.setScene(endScene);
+        });
+    }
+
+   private void startNewRun() {
+        gamePaused = false;
+        gameWon = false;
+        justCompleted = false;
+        scoreSavedForGameOver = false;
+        scoreSavedForWin = false;
+        endScreenShown = false;
+
+        if (mode == Mode.PLAY) {
+            world.reset();
+            world.getLevel().setCurrentLevel(1);
+            storage.delete(PROGRESS_PLAY);
+            playerRepo.resetPlayer();
+            scoreRepo.resetScores();
+        } else {
+            int currentLevel = world.getLevel().getCurrentLevel();
+            world.reset();
+            world.getLevel().setCurrentLevel(currentLevel);
+        }
+
+        inGameScene = createGamescene(stage);
+        stage.setScene(inGameScene);
+        startLoopIfNeeded();
+    }
+
+    private void openMainMenu() {
+        gamePaused = false;
+        gameWon = false;
+        justCompleted = false;
+        scoreSavedForGameOver = false;
+        scoreSavedForWin = false;
+        endScreenShown = false;
+
+        Scene menuScene = (mode == Mode.PLAY) ? MainMenu.cachedScene : MainMenu.cachedScenePractice;
+        if (menuScene == null) {
+            menuScene = new MainMenu().create(stage);
+            if (mode == Mode.PLAY) MainMenu.cachedScene = menuScene;
+            else MainMenu.cachedScenePractice = menuScene;
+        }
+        stage.setScene(menuScene);
+    }
+
 
     @Override
     public void start(Stage stage) {

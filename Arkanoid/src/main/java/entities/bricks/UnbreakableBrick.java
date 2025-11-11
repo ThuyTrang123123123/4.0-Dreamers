@@ -18,7 +18,7 @@ public class UnbreakableBrick extends Brick{
         if (!isDestroyed()) {
             double drawX = getX() - getWidth() / 2;
             double drawY = getY() - getHeight() / 2;
-            gc.setFill(Color.CHOCOLATE);
+            gc.setFill(Color.GRAY);
             gc.fillRect(drawX, drawY, getWidth(), getHeight());
         }
     }
