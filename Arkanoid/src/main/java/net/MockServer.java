@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 
 public class MockServer {
-    private static final int PORT = 8080;
+    private static final int PORT = 9091;
     private static final List<Map<String, Object>> scores = new ArrayList<>();
     private static HttpServer server;
     private final ObjectMapper mapper = new ObjectMapper();
