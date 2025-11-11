@@ -4,6 +4,7 @@ import core.World;
 import  core.Config;
 
 import entities.Ball;
+import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -17,12 +18,6 @@ public class DoubleBall extends PowerUp {
 
     public DoubleBall(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.GOLD);
-        try {
-            image = new Image(getClass().getResource("/images/DoubleBall.png").toExternalForm());
-        } catch (Exception e) {
-            System.err.println("Không thể tải ảnh DoubleBall: " + e.getMessage());
-            image = null;
-        }
     }
 
     @Override
@@ -33,6 +28,14 @@ public class DoubleBall extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
+        try {
+            if (image == null && Platform.isFxApplicationThread()) {
+                image = new Image(getClass().getResource("/images/DoubleBall.png").toExternalForm());
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh DoubleBall: " + e.getMessage());
+            image = null;
+        }
 
         double drawX = getX() - getWidth() / 2;
         double drawY = getY() - getHeight() / 2;

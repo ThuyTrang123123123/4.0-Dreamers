@@ -2,6 +2,7 @@ package entities.powerups;
 
 import core.Config;
 import core.World;
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
@@ -15,12 +16,6 @@ public class ExtraLife extends PowerUp {
 
     public ExtraLife(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.RED);
-        try {
-            image = new Image(getClass().getResource("/images/ExtraLife.png").toExternalForm());
-        } catch (Exception e) {
-            System.err.println("Không thể tải ảnh ExtraLife: " + e.getMessage());
-            image = null;
-        }
     }
 
     @Override
@@ -32,9 +27,14 @@ public class ExtraLife extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
-
-
-        // Vẽ ảnh từ tâm → dịch về góc trên trái
+        try {
+            if (image == null && Platform.isFxApplicationThread()) {
+                image = new Image(getClass().getResource("/images/ExtraLife.png").toExternalForm());
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh ExtraLife: " + e.getMessage());
+            image = null;
+        }
         double drawX = getX() - getWidth() / 2;
         double drawY = getY() - getHeight() / 2;
 
@@ -48,7 +48,5 @@ public class ExtraLife extends PowerUp {
         if (!hasFlyingBall) return;
 
         world.getScoring().addLife();
-        System.out.println(" da add life");
-
     }
 }

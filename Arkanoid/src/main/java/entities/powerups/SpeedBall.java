@@ -16,14 +16,12 @@ public class SpeedBall extends PowerUp {
     private final double speedFactor = 1.5; // tăng tốc
     private final double duration = 8.0;
 
+    public double getSpeedFactor() {
+        return speedFactor;
+    }
+
     public SpeedBall(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.ORANGE);
-        try {
-            image = new Image(getClass().getResource("/images/SpeedBall.png").toExternalForm());
-        } catch (Exception e) {
-            System.err.println("Không thể tải ảnh SpeedBall: " + e.getMessage());
-            image = null;
-        }
     }
 
     @Override
@@ -34,7 +32,14 @@ public class SpeedBall extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
-
+        try {
+            if (image == null && Platform.isFxApplicationThread()) {
+                image = new Image(getClass().getResource("/images/SpeedBall.png").toExternalForm());
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh SpeedBall: " + e.getMessage());
+            image = null;
+        }
         double drawX = getX() - getWidth() / 2;
         double drawY = getY() - getHeight() / 2;
 

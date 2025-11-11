@@ -11,15 +11,8 @@ import java.util.Objects;
  * Chỉ chạy nhạc background xuyên suốt
  */
 public class AudioSystem {
-
-    // ===== Singleton Instance =====
     private static AudioSystem instance;
-
-    // ===== Media Player =====
     private MediaPlayer musicPlayer;
-
-    // ===== Settings =====
-    private double volume = 0.3;  // Âm lượng (0.0 - 1.0)
     private boolean enabled = true;
     private String currentMusic = null;
     private String selectedMusic = null;
@@ -34,18 +27,11 @@ public class AudioSystem {
         return instance;
     }
 
-    /**
-     * Phát nhạc nền (looping vô hạn)
-     * @param fileName Tên file trong thư mục resources/sounds/ (ví dụ: "background.mp3")
-     */
     public void playBackgroundMusic(String fileName) {
         if (!enabled) return;
-
-        // Dừng nhạc cũ nếu đang phát
         stopMusic();
 
         try {
-            // Tìm file trong resources/sounds/
             URL musicUrl = getClass().getResource("/sounds/" + fileName);
 
             if (musicUrl == null) {
@@ -90,7 +76,7 @@ public class AudioSystem {
     }
 
     public void playBrickHit() {
-        playEffectOneShot("break.wav");   // <- chỉ 1 nhạc hiệu ứng
+        playEffectOneShot("break.wav");
     }
 
     public void setEnabled(boolean enabled) {

@@ -3,6 +3,7 @@ package entities.powerups;
 import core.Config;
 import core.World;
 import entities.Ball;
+import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -13,13 +14,12 @@ public class EnLargeBall extends PowerUp {
     private final double duration = 8.0;
     private Image image;
 
+    public double getEnLargeFactor() {
+        return EnLargeFactor;
+    }
+
     public EnLargeBall(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.ORANGE);
-        try {
-            image = new Image(getClass().getResource("/images/ELB.png").toExternalForm());
-        } catch (Exception e) {
-            System.err.println("Không thể tạo ảnh EnLargeBall: " + e.getMessage());
-        }
     }
 
     @Override
@@ -30,10 +30,17 @@ public class EnLargeBall extends PowerUp {
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
+        try {
+            if (image == null && Platform.isFxApplicationThread()) {
+                image = new Image(getClass().getResource("/images/ELB.png").toExternalForm());
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể tạo ảnh EnLargeBall: " + e.getMessage());
+            image = null;
+        }
 
         try {
             if (image == null) {
-                System.out.println("tai anh sai");
                 gc.setFill(color);
                 gc.fillOval(x - width / 2, y - height / 2, width, height);
                 return;

@@ -15,6 +15,10 @@ public class GameLoop implements Runnable {
         this.game = game;
     }
 
+    public boolean isRunning() {
+        return running;
+    }
+
     public void start() {
         running = true;
         new Thread(this).start();
@@ -37,7 +41,6 @@ public class GameLoop implements Runnable {
 
             // Bước 2: Vẽ game
             Platform.runLater(() -> game.render());
-
 
             // Bước 3: Ngủ để duy trì FPS
             long elapsedTime = System.currentTimeMillis() - startTime;

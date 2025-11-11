@@ -16,12 +16,12 @@ public class ButtonUI extends Button {
 
     private String defaultStyle() {
         return String.format("-fx-background-color: #%s; -fx-text-fill: #%s; -fx-background-radius: 10;",
-                colorToHex(Colors.BUTTON), colorToHex(Colors.TEXT));
+                colorToHex(Colors.BUTTON), colorToHex(Colors.TEXTBT));
     }
 
     private String hoverStyle() {
         return String.format("-fx-background-color: #%s; -fx-text-fill: #%s;",
-                colorToHex(Colors.BUTTON), colorToHex(Colors.TEXT));
+                colorToHex(Colors.BUTTON), colorToHex(Colors.TEXTBT));
     }
 
     private String colorToHex(javafx.scene.paint.Color color) {

@@ -9,6 +9,9 @@ module core {
     requires java.desktop;
     requires javafx.media;
     requires javafx.graphics;
+    requires com.fasterxml.jackson.databind;
+    requires java.sql;
+    requires jdk.httpserver;
 
     // Cho phép JavaFX truy cập các class controller
     opens core to javafx.fxml;
@@ -18,12 +21,15 @@ module core {
     // Cho phép các package được sử dụng từ bên ngoài module
     exports core;
 
-/**
+
 exports data;
 exports engine;
+
 exports entities;
+exports entities.bricks;
+exports entities.powerups;
+
 exports net;
 exports systems;
-exports ui;
-exports util;**/
+exports util;
 }

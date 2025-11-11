@@ -3,6 +3,7 @@ package entities.powerups;
 import core.World;
 import core.Config;
 import entities.Paddle;
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -16,20 +17,25 @@ public class EnlargePaddle extends PowerUp {
     private final double enlargeFactor = 1.5;
     private final double duration = 8.0; // giây
 
+    public double getEnlargeFactor() {
+        return enlargeFactor;
+    }
+
     public EnlargePaddle(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.LIGHTBLUE);
-        try {
-            image = new Image(getClass().getResource("/images/EnlargePaddle.png").toExternalForm());
-        } catch (Exception e) {
-            System.err.println("Không thể tải ảnh EnlargePaddle: " + e.getMessage());
-            image = null;
-        }
     }
 
     @Override
     public void render(GraphicsContext gc) {
         if (!isActive()) return;
-
+        try {
+            if (image == null && Platform.isFxApplicationThread()) {
+                image = new Image(getClass().getResource("/images/EnlargePaddle.png").toExternalForm());
+            }
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh EnlargePaddle: " + e.getMessage());
+            image = null;
+        }
         double drawX = getX() - getWidth() / 2;
         double drawY = getY() - getHeight() / 2;
 
