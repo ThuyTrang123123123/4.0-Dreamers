@@ -1,10 +1,8 @@
 package ui.screen;
 
 import core.Config;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -12,11 +10,11 @@ import ui.widgets.ButtonUI;
 
 import java.util.Objects;
 
-public class Introduce {
-    public Scene create(Stage stage) {
+public class Guide {
+    public static Scene create(Stage stage) {
         Image bg = new Image(
                 Objects.requireNonNull(
-                        getClass().getResource("/images/introduce.png")
+                        Guide.class.getResource("/images/guide.png")
                 ).toExternalForm()
         );
         BackgroundImage bgi = new BackgroundImage(
@@ -36,24 +34,12 @@ public class Introduce {
         HBox footer = new HBox(12);
         footer.setAlignment(Pos.CENTER_LEFT);
 
-        HBox mider = new HBox(12);
-        mider.setAlignment(Pos.CENTER_LEFT);
-
         ButtonUI backBtn = new ButtonUI("Menu");
-        backBtn.setOnAction( e -> stage.setScene(MainMenu.cachedScene));
-
-        ButtonUI nextBtn = new ButtonUI("Guide");
-        nextBtn.setOnAction(e -> {
-//            AudioSystem.getInstance().playSound("select");
-            Guide introduce = new Guide();
-            stage.setScene(Guide.create(stage));
-        });
+        backBtn.setOnAction(e -> stage.setScene(MainMenu.cachedScene));
 
         footer.getChildren().add(backBtn);
-        mider.getChildren().add(nextBtn);
 
         root.setLeft(footer);
-        root.setRight(mider);
 
         return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
     }

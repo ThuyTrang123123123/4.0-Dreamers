@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LeaderboardClient {
-    private static final String API_URL = "http://localhost:8080/leaderboard"; // Thay bằng URL thật
+    private static final String API_URL = "http://localhost:9091/leaderboard"; // Thay bằng URL thật
     private final ObjectMapper mapper = new ObjectMapper();
 
     public boolean submitScore(String playerName, int score) {

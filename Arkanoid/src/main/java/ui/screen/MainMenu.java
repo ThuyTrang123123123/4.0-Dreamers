@@ -92,7 +92,7 @@ public class MainMenu {
             stage.setScene(settings.create(stage));
         });
 
-        ButtonUI leaderboardBtn = new ButtonUI("View Leaderboard");
+        ButtonUI leaderboardBtn = new ButtonUI("View");
         leaderboardBtn.setOnAction(e -> {
             Game gameInstance = new Game();
             gameInstance.showLeaderboard();
