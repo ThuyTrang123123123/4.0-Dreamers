@@ -10,15 +10,15 @@ import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
 
 /**
- * PowerUp: Shrink Paddle — làm paddle nhỏ đi.
+ * PowerUp: Shrink Paddle — làm paddle nhỏ đi trong vài giây.
  */
 public class ShrinkPaddle extends PowerUp {
 
-    private final double ShrinkFactor = 0.8;
+    private final double shrinkFactor = 0.8;
     private final double duration = 8.0; // giây
 
     public double getShrinkFactor() {
-        return ShrinkFactor;
+        return shrinkFactor;
     }
 
     public ShrinkPaddle(double x, double y) {
@@ -51,21 +51,19 @@ public class ShrinkPaddle extends PowerUp {
 
     @Override
     public void onCollected(World world) {
-        //kiem tra xem trang thai bong truoc
+        // Chỉ áp dụng nếu có bóng đang bay
         boolean hasFlyingBall = world.getBalls().stream().anyMatch(ball -> !ball.isStickToPaddle());
         if (!hasFlyingBall) return;
 
         Paddle paddle = world.getPaddle();
-        double originalWidth = paddle.getWidth();
-        paddle.setWidth(originalWidth * ShrinkFactor);
+        paddle.applyScale(shrinkFactor);
 
-        // Sau "duration" giây, trả paddle về kích thước cũ
         new Thread(() -> {
             try {
                 Thread.sleep((long) (duration * 1000));
             } catch (InterruptedException ignored) {
             }
-            paddle.setWidth(originalWidth);
+            paddle.removeScale(shrinkFactor);
         }).start();
     }
 }

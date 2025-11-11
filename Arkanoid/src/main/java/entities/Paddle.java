@@ -1,5 +1,6 @@
 package entities;
 
+import core.Config;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -16,13 +17,16 @@ public class Paddle {
     private final long shootDelay = 400; // 0.4s giữa 2 viên
     private static Color defaultColor = Colors.SECONDARY;
     private Color color = defaultColor;
-
+    private double scaleFactor = 1.0;
+    private final double baseWidth;
 
     public Paddle(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.scaleFactor=1.0;
+        this.baseWidth=width;
         this.color = defaultColor;
     }
 
@@ -58,6 +62,21 @@ public class Paddle {
         gc.setFill(color != null ? color : defaultColor);
         gc.fillRect(x - width / 2, y - height / 2, width, height);
     }
+    public void applyScale(double factor) {
+        scaleFactor *= factor;
+        updateWidth();
+    }
+
+    public void removeScale(double factor) {
+        scaleFactor /= factor;
+        updateWidth();
+    }
+
+    private void updateWidth() {
+        this.width = baseWidth* scaleFactor;
+    }
+
+
 
     public void onKeyPressed(KeyCode code) {
         if (code == KeyCode.LEFT) moveLeft = true;
