@@ -33,4 +33,29 @@ public class PlayerRepository {
     public void resetPlayer() {
         storage.delete(PLAYER_KEY);
     }
+
+    public int getHighestLevelUnlocked() {
+        try {
+            Map<String, Object> data = storage.load("player");
+            Object val = data.get("highestLevelUnlocked");
+            if (val instanceof Number) {
+                return ((Number) val).intValue();
+            }
+            // fallback nếu chưa có thì coi như level 1 mở sẵn
+            return 1;
+        } catch (Exception e) {
+            return 1;
+        }
+    }
+
+    public void setHighestLevelUnlocked(int level) {
+        try {
+            Map<String, Object> data = storage.load("player");
+            data.put("highestLevelUnlocked", Math.max(1, level));
+            storage.save("player", data);
+        } catch (Exception e) {
+            System.err.println("⚠️ Không lưu được highestLevelUnlocked: " + e.getMessage());
+        }
+    }
+
 }

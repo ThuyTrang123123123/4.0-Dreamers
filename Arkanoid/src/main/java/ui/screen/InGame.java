@@ -70,7 +70,7 @@ public class InGame {
 
         updateHUD(); // cập nhật HUD lần đầu
 
-        return new Scene(root, 800, 600);
+        return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
     }
 
     public HBox createHUD() {

@@ -3,9 +3,13 @@
 Nhóm 4.0-Dreamers
 
 ERC = pause
-B = back to menu khi setting
+
+M = back to menu
+
 C = resume
+
 R = Restart
+
 SPACE = bắn bóng
 
 A - TUẦN 1:
@@ -14,11 +18,26 @@ A - TUẦN 1:
 
 - Chuyển màn từ start sang level
 
-- HiệN HUD
+- Hiện HUD
 
 - Vẽ bằng canvas
 
 B - Tuần 2 :
 
+- Thêm settings chọn 3 loại nhạc, thêm âm thanh hitbrick
 
-  
+- Tạo 12 level 
+
+- Thêm 4 loại gạch
+
+- Ghi nhận thành tích
+
+- Thêm powerups
+
+- Chỉnh collision cho va chạm mượt
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+![alt text](image-2.png)

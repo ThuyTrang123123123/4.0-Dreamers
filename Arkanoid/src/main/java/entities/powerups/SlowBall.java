@@ -17,6 +17,10 @@ public class SlowBall extends PowerUp {
     private final double slowFactor = 0.7; // chậm lại 30%
     private final double duration = 8.0;
 
+    public double getSlowFactor() {
+        return slowFactor;
+    }
+
     public SlowBall(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.PURPLE);
     }
@@ -64,4 +68,5 @@ public class SlowBall extends PowerUp {
             }
         }).start();
     }
+
 }

@@ -51,4 +51,43 @@ public class ScoreRepository {
     public void resetScores() {
         storage.delete(SCORES_KEY);
     }
+
+    public int getBestScore(int level) {
+        List<Map<String, Object>> scores = storage.loadList(SCORES_KEY);
+        for (Map<String, Object> entry : scores) {
+            if ((int) entry.get("level") == level) {
+                return (int) entry.get("score");
+            }
+        }
+        return 0;
+    }
+
+    // === Chỉ lưu điểm nếu cao hơn điểm cũ ===
+    public void saveBestScoreIfHigher(int level, int newScore) {
+        List<Map<String, Object>> scores = storage.loadList(SCORES_KEY);
+        boolean updated = false;
+
+        for (Map<String, Object> entry : scores) {
+            int entryLevel = (int) entry.get("level");
+            int oldScore = (int) entry.get("score");
+
+            if (entryLevel == level) {
+                if (newScore > oldScore) {
+                    entry.put("score", newScore);
+                }
+                updated = true;
+                break;
+            }
+        }
+
+        if (!updated) {
+            Map<String, Object> newEntry = new HashMap<>();
+            newEntry.put("level", level);
+            newEntry.put("score", newScore);
+            scores.add(newEntry);
+        }
+
+        storage.saveList(SCORES_KEY, scores);
+    }
+
 }

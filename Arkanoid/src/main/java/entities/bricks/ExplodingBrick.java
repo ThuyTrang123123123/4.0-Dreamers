@@ -4,7 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import java.util.List;
 
-public class ExplodingBrick extends Brick {
+public class ExplodingBrick extends BreakableBrick {
     private static final int GRID_RANGE = 1; // nổ lan 8 ô xung quanh (1 ô mỗi hướng)
 
     public ExplodingBrick(double x, double y, double width, double height) {
