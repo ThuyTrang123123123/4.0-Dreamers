@@ -1,52 +1,93 @@
+// ScoringSystem.java
 package systems;
 
+import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class ScoringSystem {
-    private int score;
-    private int lives;
-    private int bricksDestroyed;
+    private final IntegerProperty score;
+    private final IntegerProperty lives;
+    private final IntegerProperty bricksDestroyed;
+    private static final int MAX_LIVES = 6;
 
     public ScoringSystem() {
-        this.score = 0;
-        this.lives = 1;
-        this.bricksDestroyed = 0;
+        this.score = new SimpleIntegerProperty(0);
+        this.lives = new SimpleIntegerProperty(2);
+        this.bricksDestroyed = new SimpleIntegerProperty(0);
     }
 
-    // Getter methods
-    public int getScore() { return score; }
-    public int getLives() { return lives; }
-    public int getBricksDestroyed() { return bricksDestroyed; }
+    public IntegerProperty scoreProperty() { return score; }
+    public IntegerProperty livesProperty() { return lives; }
+    public IntegerProperty bricksDestroyedProperty() { return bricksDestroyed; }
 
-    // Logic methods
+    public int getScore() { return score.get(); }
+    public int getLives() { return lives.get(); }
+    public int getBricksDestroyed() { return bricksDestroyed.get(); }
+    public int getMaxLives() { return MAX_LIVES; }
+
     public void addScore(int points) {
-        score += points;
+        Platform.runLater(() -> score.set(score.get() + points));
     }
 
     public void loseLife() {
-        if (lives > 0) {
-            lives--;
+        int current = lives.get();
+        if (current > 0) {
+            Platform.runLater(() -> lives.set(current - 1));
         }
     }
 
     public void addLife() {
-        lives++;
+        int current = lives.get();
+        if (current < MAX_LIVES) {
+            Platform.runLater(() -> lives.set(current + 1));
+            System.out.println("+1 Mạng! Hiện tại: " + (current + 1) + "/" + MAX_LIVES);
+        } else {
+            System.out.println("Đã đạt tối đa " + MAX_LIVES + " mạng!");
+        }
+    }
+
+    public void addLives(int amount) {
+        int current = lives.get();
+        int newLives = Math.min(current + amount, MAX_LIVES);
+
+        if (newLives > current) {
+            Platform.runLater(() -> lives.set(newLives));
+            System.out.println("💖 +" + (newLives - current) + " Mạng! Hiện tại: " + newLives + "/" + MAX_LIVES);
+        } else {
+            System.out.println("⚠️ Đã đạt tối đa " + MAX_LIVES + " mạng!");
+        }
     }
 
     public void incrementBricksDestroyed(int amount) {
+        int currentBricks = bricksDestroyed.get();
+
         for (int i = 1; i <= amount; i++) {
-            if ((bricksDestroyed + i) % 3 == 0) {
+            if ((currentBricks + i) % 10 == 0) {
                 addLife();
             }
         }
-        bricksDestroyed += amount;
+
+        Platform.runLater(() -> bricksDestroyed.set(currentBricks + amount));
+    }
+
+    public boolean canAddLife() {
+        return lives.get() < MAX_LIVES;
+    }
+
+    public boolean isMaxLives() {
+        return lives.get() >= MAX_LIVES;
     }
 
     public boolean isGameOver() {
-        return lives <= 0;
+        return lives.get() <= 0;
     }
 
     public void reset() {
-        score = 0;
-        lives = 1;
-        bricksDestroyed = 0;
+        Platform.runLater(() -> {
+            score.set(0);
+            lives.set(2);
+            bricksDestroyed.set(0);
+        });
     }
 }
