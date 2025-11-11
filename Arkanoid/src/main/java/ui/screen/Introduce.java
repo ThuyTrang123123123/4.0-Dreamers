@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import systems.AudioSystem;
 import ui.widgets.ButtonUI;
 
 import java.util.Objects;
@@ -33,19 +34,21 @@ public class Introduce {
         BorderPane root = new BorderPane();
         root.setBackground(new Background(bgi));
 
-        HBox footer = new HBox(12);
+        VBox footer = new VBox(12);
         footer.setAlignment(Pos.CENTER_LEFT);
 
-        HBox mider = new HBox(12);
+        VBox mider = new VBox(12);
         mider.setAlignment(Pos.CENTER_LEFT);
 
         ButtonUI backBtn = new ButtonUI("Menu");
-        backBtn.setOnAction( e -> stage.setScene(MainMenu.cachedScene));
+        backBtn.setOnAction( e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
+            stage.setScene(MainMenu.cachedScene);
+        });
 
         ButtonUI nextBtn = new ButtonUI("Guide");
         nextBtn.setOnAction(e -> {
-//            AudioSystem.getInstance().playSound("select");
-            Guide introduce = new Guide();
+            AudioSystem.getInstance().playSound("select.mp3");
             stage.setScene(Guide.create(stage));
         });
 

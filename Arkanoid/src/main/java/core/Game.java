@@ -322,7 +322,7 @@ public class Game extends Application {
         if (world.getBalls().stream().anyMatch(Ball::isStickToPaddle)) {
             gc.setFill(Colors.TEXT);
             gc.setFont(Fonts.main(18));
-//            gc.fillText("Press SPACE to launch ball", 260, 400);
+            gc.fillText("Press SPACE to launch ball", 320, 260);
         }
 
         if (gameWon && !scoreSavedForWin) {
@@ -353,8 +353,8 @@ public class Game extends Application {
             gc.setFill(Colors.TEXT);
             gc.setFont(Fonts.main(24));
             gc.fillText("GAME PAUSED", 320, 260);
-//            gc.setFont(Fonts.main(16));
-//            gc.fillText("Press C to Continue", 330, 300);
+            gc.setFont(Fonts.main(16));
+            gc.fillText("Press C to Continue", 330, 300);
         }
 
         if (mode == Mode.PRACTICE && levelFinished) {
@@ -573,7 +573,7 @@ public class Game extends Application {
                     best,
                     onReplay,
                     onMain,
-                    "/images/BACKGROUND.png" // phải tồn tại thật
+                    "/images/END.png" // phải tồn tại thật
             );
             stage.setScene(endScene);
         });

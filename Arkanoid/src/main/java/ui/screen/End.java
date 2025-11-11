@@ -10,6 +10,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import systems.AudioSystem;
+import ui.widgets.ButtonUI;
 
 import java.util.Objects;
 
@@ -35,38 +37,31 @@ public class End {
             bgView.setFitWidth(Config.SCREEN_WIDTH);
             bgView.setFitHeight(Config.SCREEN_HEIGHT);
         } catch (Exception e) {
-            System.err.println("⚠️ Cannot load end background: " + e.getMessage());
+            System.err.println("Cannot load end background: " + e.getMessage());
         }
 
-        Label title = new Label("LEVEL COMPLETE");
-        title.setStyle("-fx-font-size: 36px; -fx-text-fill: white; -fx-font-weight: bold;");
-
         Label scoreLb = new Label("Score: " + score);
-        scoreLb.setStyle("-fx-font-size: 22px; -fx-text-fill: white;");
+        scoreLb.setStyle("-fx-font-size: 50px; -fx-text-fill: white;");
 
         Label bestLb = new Label(
                 (bestScore == null) ? "" : ("Best: " + bestScore)
         );
         bestLb.setStyle("-fx-font-size: 16px; -fx-text-fill: #dddddd;");
 
-        Button replayBtn = new Button("Play Again");
-        replayBtn.setMinWidth(220);
-        replayBtn.setStyle("-fx-font-size: 16px; -fx-background-radius: 12px;");
-
-        Button menuBtn = new Button("Main Menu");
-        menuBtn.setMinWidth(220);
-        menuBtn.setStyle("-fx-font-size: 16px; -fx-background-radius: 12px;");
+        ButtonUI replayBtn = new ButtonUI("Play Again");
+        ButtonUI menuBtn = new ButtonUI("Main Menu");
 
         replayBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
             if (onReplay != null) onReplay.run();
         });
         menuBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
             if (onMainMenu != null) onMainMenu.run();
         });
 
-        VBox box = new VBox(10, title, scoreLb, bestLb, replayBtn, menuBtn);
+        VBox box = new VBox(10, scoreLb, bestLb, replayBtn, menuBtn);
         box.setAlignment(Pos.CENTER);
-        box.setStyle("-fx-background-color: rgba(0,0,0,0.35); -fx-padding: 24px; -fx-background-radius: 16px;");
 
         StackPane root = new StackPane(bgView, box);
         root.setPrefSize(Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);

@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HandleBallBrickTest {
-       @Test
+    @Test
     public void testHandleCollisionWithNormalBrick() {
         Ball ball = new Ball(105, 105, 10, 5);
         Brick brick = new NormalBrick(100, 100, 50, 20);
@@ -39,7 +39,7 @@ public class HandleBallBrickTest {
     }
     @Test
     public void testExplodingBrickOnlyDestroysNearby() {
-           //mot gach o gan no, o xa ko no
+        //mot gach o gan no, o xa ko no
         Ball ball = new Ball(105, 105, 10, 5);
         ExplodingBrick explodingBrick = new ExplodingBrick(100, 100, 50, 20); // gốc
         Brick nearbyBrick = new NormalBrick(150, 100, 50, 20); // dx = 50 → bị phá

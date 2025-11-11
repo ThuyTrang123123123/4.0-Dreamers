@@ -56,6 +56,7 @@ public class MainMenu {
 
         ButtonUI playBtn = new ButtonUI("Play");
         playBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
             if (playGame == null) playGame = new Game();
             playGame.setModePlay();
             Scene s = playGame.getOrCreateGameScene(stage);
@@ -67,7 +68,7 @@ public class MainMenu {
 
         ButtonUI levelSelectBtn = new ButtonUI("Practice");
         levelSelectBtn.setOnAction(e -> {
-//            AudioSystem.getInstance().playSound("select");
+            AudioSystem.getInstance().playSound("select.mp3");
             if (practiceGame == null) practiceGame = new Game();
 
             practiceGame.setModePractice();
@@ -82,6 +83,7 @@ public class MainMenu {
 
         ButtonUI settingsBtn = new ButtonUI("Settings");
         settingsBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
             AudioSystem audio = AudioSystem.getInstance();
             Config cfg = new Config();
 
@@ -94,12 +96,16 @@ public class MainMenu {
 
         ButtonUI leaderboardBtn = new ButtonUI("View");
         leaderboardBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
             Game gameInstance = new Game();
             gameInstance.showLeaderboard();
         });
 
         ButtonUI exitBtn = new ButtonUI("Exit");
-        exitBtn.setOnAction(e -> stage.close());
+        exitBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
+            stage.close();
+        });
 
         root.getChildren().addAll(introduceBtn, playBtn, levelSelectBtn, settingsBtn, leaderboardBtn, exitBtn);
         return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
