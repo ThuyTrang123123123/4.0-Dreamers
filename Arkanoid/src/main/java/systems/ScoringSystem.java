@@ -1,3 +1,4 @@
+// ScoringSystem.java
 package systems;
 
 import javafx.application.Platform;
@@ -26,20 +27,20 @@ public class ScoringSystem {
     public int getMaxLives() { return MAX_LIVES; }
 
     public void addScore(int points) {
-        Platform.runLater(() -> score.set(score.get() + points));
+        score.set(score.get() + points);
     }
 
     public void loseLife() {
         int current = lives.get();
         if (current > 0) {
-            Platform.runLater(() -> lives.set(current - 1));
+            lives.set(current - 1);
         }
     }
 
     public void addLife() {
         int current = lives.get();
         if (current < MAX_LIVES) {
-            Platform.runLater(() -> lives.set(current + 1));
+            lives.set(current + 1);
             System.out.println("+1 Mạng! Hiện tại: " + (current + 1) + "/" + MAX_LIVES);
         } else {
             System.out.println("Đã đạt tối đa " + MAX_LIVES + " mạng!");
@@ -51,10 +52,10 @@ public class ScoringSystem {
         int newLives = Math.min(current + amount, MAX_LIVES);
 
         if (newLives > current) {
-            Platform.runLater(() -> lives.set(newLives));
-            System.out.println("💖 +" + (newLives - current) + " Mạng! Hiện tại: " + newLives + "/" + MAX_LIVES);
+            lives.set(newLives);
+            System.out.println((newLives - current) + " Mạng! Hiện tại: " + newLives + "/" + MAX_LIVES);
         } else {
-            System.out.println("⚠️ Đã đạt tối đa " + MAX_LIVES + " mạng!");
+            System.out.println(" Đã đạt tối đa " + MAX_LIVES + " mạng!");
         }
     }
 
@@ -66,8 +67,7 @@ public class ScoringSystem {
                 addLife();
             }
         }
-
-        Platform.runLater(() -> bricksDestroyed.set(currentBricks + amount));
+        bricksDestroyed.set(currentBricks + amount);
     }
 
     public boolean canAddLife() {

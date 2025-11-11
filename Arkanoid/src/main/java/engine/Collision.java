@@ -96,7 +96,7 @@ public class Collision {
                 new Physics().reflectBall(ball, brick);
                 if (brick.isDestroyed()) {
                     double chance = Math.random();
-                    if (chance < 0.5) {
+                    if (chance < 0.25) {
                         Class<? extends PowerUp> type;
                         double r = Math.random();
                         if (r < 1.0 / 9) {
@@ -145,7 +145,15 @@ public class Collision {
                         world.getScoring().incrementBricksDestroyed(count);
                     } else if (brick instanceof UnbreakableBrick unbreakable) {
                         //Không cộng điểm, ko cộng gạch phá
-                    } else {
+                    }
+                    else if (brick instanceof HardBrick hard) {
+                        hard.hit();
+                        if (hard.isDestroyed()) {
+                            world.getScoring().addScore(1);
+                            world.getScoring().incrementBricksDestroyed(1);
+                        }
+                    }
+                    else {
                         brick.hit();// gạch thường or gạch hard
                         world.getScoring().addScore(1);
                         world.getScoring().incrementBricksDestroyed(1);
