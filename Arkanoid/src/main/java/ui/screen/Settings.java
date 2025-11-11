@@ -78,6 +78,8 @@ public class Settings {
                 "REVIEW PHIM.mp3",
                 "NHẠC TẾT.mp3",
                 "CHRISTMAS SONGS.mp3",
+                "NHẠC JACK.mp3",
+                "NHẠC MTP.mp3",
                 "Bóng lá rơi.mp3"
         ));
         musicBox.setPrefWidth(260);
@@ -88,7 +90,7 @@ public class Settings {
             musicBox.getSelectionModel().selectFirst();
         }
 
-        ButtonUI applyMusicBtn = new ButtonUI("ADD MUSIC");
+        ButtonUI applyMusicBtn = new ButtonUI("ADD SOUND");
         applyMusicBtn.setOnAction(e -> {
             AudioSystem.getInstance().playSound("select.mp3");
             String selected = musicBox.getValue();
