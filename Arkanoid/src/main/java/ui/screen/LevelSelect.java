@@ -77,7 +77,7 @@ public class LevelSelect {
         root.setCenter(grid);
         root.setBottom(footer);
 
-        Scene scene = new Scene(root, 960, 600);
+        Scene scene = new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) stage.setScene(MainMenu.cachedScene);
         });

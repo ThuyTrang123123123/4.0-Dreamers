@@ -29,6 +29,16 @@ public class AudioSystem {
 
     public void playBackgroundMusic(String fileName) {
         if (!enabled) return;
+
+        //chạy tiếp nhạc nếu k set lại
+        if (Objects.equals(currentMusic, fileName) && musicPlayer != null) {
+            if (musicPlayer.getStatus() != MediaPlayer.Status.PLAYING) {
+                musicPlayer.play();
+            }
+            return;
+        }
+
+        //chuyển bài
         stopMusic();
 
         try {
@@ -45,6 +55,7 @@ public class AudioSystem {
             musicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             musicPlayer.play();
 
+            currentMusic = fileName;
             System.out.println("Đang phát nhạc: " + fileName);
 
         } catch (Exception e) {
@@ -61,6 +72,7 @@ public class AudioSystem {
             musicPlayer.dispose();
             musicPlayer = null;
         }
+        currentMusic = null;
     }
 
     public void pauseMusic() {

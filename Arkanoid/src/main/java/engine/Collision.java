@@ -145,7 +145,15 @@ public class Collision {
                         world.getScoring().incrementBricksDestroyed(count);
                     } else if (brick instanceof UnbreakableBrick unbreakable) {
                         //Không cộng điểm, ko cộng gạch phá
-                    } else {
+                    }
+                    else if (brick instanceof HardBrick hard) {
+                        hard.hit();
+                        if (hard.isDestroyed()) {
+                            world.getScoring().addScore(1);
+                            world.getScoring().incrementBricksDestroyed(1);
+                        }
+                    }
+                    else {
                         brick.hit();// gạch thường or gạch hard
                         world.getScoring().addScore(1);
                         world.getScoring().incrementBricksDestroyed(1);
