@@ -117,6 +117,9 @@ public class World {
     }
 
     // Getters
+    public void setPaddle(Paddle paddle) {
+        this.paddle = paddle;
+    }
     public Paddle getPaddle() { return paddle; }
     public Ball getBall() { return balls.isEmpty() ? null : balls.get(0); }
     public List<PowerUp> getPowerUps() { return powerUps; }

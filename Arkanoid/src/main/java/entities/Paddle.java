@@ -4,6 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
+import ui.theme.Colors;
 
 public class Paddle {
     private double x, y;
@@ -13,6 +14,8 @@ public class Paddle {
     private boolean shooting = false;
     private long lastShotTime = 0;
     private final long shootDelay = 400; // 0.4s giữa 2 viên
+    private static Color defaultColor = Colors.SECONDARY;
+    private Color color = defaultColor;
 
 
     public Paddle(double x, double y, double width, double height) {
@@ -20,6 +23,7 @@ public class Paddle {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.color = defaultColor;
     }
 
     public double getX() { return x; }
@@ -51,7 +55,7 @@ public class Paddle {
     }
 
     public void render(GraphicsContext gc) {
-        gc.setFill(Color.CYAN);
+        gc.setFill(color != null ? color : defaultColor);
         gc.fillRect(x - width / 2, y - height / 2, width, height);
     }
 
@@ -85,6 +89,17 @@ public class Paddle {
         return null;
     }
 
+    public static void setDefaultColor(Color c) {
+        if (c != null) defaultColor = c;
+    }
 
+    public static Color getDefaultColor() {
+        return defaultColor;
+    }
 
+    public void setColor(Color c) {
+        if (c != null) this.color = c;
+    }
+
+    public Color getColor() { return color; }
 }

@@ -1,4 +1,3 @@
-// ScoringSystem.java
 package systems;
 
 import javafx.application.Platform;

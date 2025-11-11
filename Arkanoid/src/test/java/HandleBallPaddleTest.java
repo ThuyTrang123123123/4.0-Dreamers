@@ -3,14 +3,6 @@ import entities.Paddle;
 import engine.Collision;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-/**
- *   public static void handleBallPaddleCollision(Ball ball, Paddle paddle) {
- *         ball.setY(paddle.getY() - paddle.getHeight() / 2 - ball.getRadius());
- *         ball.reverseY();
- *         double hitPos = (ball.getX() + ball.getDiameter() / 2) - (paddle.getX() + paddle.getWidth() / 2);
- *         ball.setVelocityX(hitPos * 2);
- *     }
- */
 public class HandleBallPaddleTest {
 
     @Test

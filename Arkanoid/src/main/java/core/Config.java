@@ -11,7 +11,7 @@ public class Config {
     public static final double PADDLE_HEIGHT = 15;
 
     public static final double BALL_RADIUS = 10;
-    public static final double BALL_SPEED = 350; // Giữ lại giá trị 350
+    public static final double BALL_SPEED = 350;
 
     public static final String DEFAULT_MUSIC = "nhac1.wav";
 
