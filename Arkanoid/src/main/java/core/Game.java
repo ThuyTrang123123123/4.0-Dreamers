@@ -18,9 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import engine.Collision;
@@ -30,14 +27,10 @@ import engine.*;
 import entities.Ball;
 import entities.Paddle;
 import entities.bricks.Brick;
-import entities.powerups.BonusCoin;
-import entities.powerups.EnlargePaddle;
-import entities.powerups.ExtraLife;
 import entities.powerups.PowerUp;
 
 import systems.AchievementSystem;
 import systems.AudioSystem;
-import systems.ScoringSystem;
 
 import data.JsonStorage;
 import data.Storage;
@@ -50,8 +43,6 @@ import net.MockServer;
 import ui.screen.*;
 import ui.theme.Colors;
 import ui.theme.Fonts;
-
-import javafx.beans.property.IntegerProperty;
 
 public class Game extends Application {
     private Canvas canvas;
@@ -431,13 +422,13 @@ public class Game extends Application {
             storage.delete(PROGRESS_PLAY);
             playerRepo.resetPlayer();
             scoreRepo.resetScores();
-            System.out.println("🔁 Restart PLAY mode → back to Level 1");
+            System.out.println("Restart PLAY mode → back to Level 1");
         }
         else if (mode == Mode.PRACTICE) {
             int currentLevel = world.getLevel().getCurrentLevel();
             world.reset();
             world.getLevel().setCurrentLevel(currentLevel);
-            System.out.println("🔁 Restart PRACTICE mode → stay at Level " + currentLevel);
+            System.out.println("Restart PRACTICE mode → stay at Level " + currentLevel);
         }
     }
 

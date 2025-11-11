@@ -50,6 +50,7 @@ public class Paddle {
     public void setMoveRight(boolean moveRight) { this.moveRight = moveRight; }
 
     public void update(double deltaTime) {
+        this.color = defaultColor;
         if (moveLeft) x -= speed * deltaTime;
         if (moveRight) x += speed * deltaTime;
 
