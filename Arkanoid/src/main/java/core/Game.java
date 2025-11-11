@@ -293,12 +293,8 @@ public class Game extends Application {
 
     public void render() {
         Image bg = world.getLevel().getBackgroundImage();
-        if (bg != null) {
-            gc.drawImage(bg, 0, 0, canvas.getWidth(), canvas.getHeight());
-        } else {
-            gc.setFill(Colors.PRIMARY);
-            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        }
+        gc.drawImage(bg, 0, 0, canvas.getWidth(), canvas.getHeight());
+
         gc.setFill(Colors.TEXT);
         gc.setFont(Fonts.main(20));
         gc.fillText("Level " + world.getLevel().getCurrentLevel() + " / " + world.getLevel().getMaxLevel(),
