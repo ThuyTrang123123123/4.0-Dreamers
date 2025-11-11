@@ -586,7 +586,7 @@ public class Game extends Application {
         });
     }
 
-   private void startNewRun() {
+    private void startNewRun() {
         gamePaused = false;
         gameWon = false;
         justCompleted = false;
