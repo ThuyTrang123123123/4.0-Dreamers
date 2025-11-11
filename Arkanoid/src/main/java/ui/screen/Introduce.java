@@ -33,10 +33,10 @@ public class Introduce {
         BorderPane root = new BorderPane();
         root.setBackground(new Background(bgi));
 
-        HBox footer = new HBox(12);
+        VBox footer = new VBox(12);
         footer.setAlignment(Pos.CENTER_LEFT);
 
-        HBox mider = new HBox(12);
+        VBox mider = new VBox(12);
         mider.setAlignment(Pos.CENTER_LEFT);
 
         ButtonUI backBtn = new ButtonUI("Menu");
@@ -45,7 +45,6 @@ public class Introduce {
         ButtonUI nextBtn = new ButtonUI("Guide");
         nextBtn.setOnAction(e -> {
 //            AudioSystem.getInstance().playSound("select");
-            Guide introduce = new Guide();
             stage.setScene(Guide.create(stage));
         });
 

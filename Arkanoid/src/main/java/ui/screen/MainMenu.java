@@ -56,6 +56,7 @@ public class MainMenu {
 
         ButtonUI playBtn = new ButtonUI("Play");
         playBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.wav");
             if (playGame == null) playGame = new Game();
             playGame.setModePlay();
             Scene s = playGame.getOrCreateGameScene(stage);

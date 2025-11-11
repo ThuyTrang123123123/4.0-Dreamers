@@ -35,8 +35,8 @@ public class AudioSystem {
             URL musicUrl = getClass().getResource("/sounds/" + fileName);
 
             if (musicUrl == null) {
-                System.err.println("⚠️ Không tìm thấy file nhạc: " + fileName);
-                System.err.println("   Đặt file vào: src/main/resources/sounds/" + fileName);
+                System.err.println("Không tìm thấy file nhạc: " + fileName);
+                System.err.println("Đặt file vào: src/main/resources/sounds/" + fileName);
                 return;
             }
 
@@ -45,10 +45,10 @@ public class AudioSystem {
             musicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             musicPlayer.play();
 
-            System.out.println("🎵 Đang phát nhạc: " + fileName);
+            System.out.println("Đang phát nhạc: " + fileName);
 
         } catch (Exception e) {
-            System.err.println("❌ Lỗi khi phát nhạc: " + e.getMessage());
+            System.err.println("Lỗi khi phát nhạc: " + e.getMessage());
         }
     }
 
@@ -96,7 +96,7 @@ public class AudioSystem {
             fx.setOnEndOfMedia(fx::dispose);
             fx.play();
         } catch (Exception ex) {
-            System.err.println("⚠️ Lỗi phát hiệu ứng " + fileName + ": " + ex.getMessage());
+            System.err.println("Lỗi phát hiệu ứng " + fileName + ": " + ex.getMessage());
         }
     }
 
@@ -137,4 +137,10 @@ public class AudioSystem {
             playBackgroundMusic(fileName);
         }
     }
+
+    public void playSound(String fileName) {
+        if (!enabled) return;
+        playEffectOneShot(fileName);
+    }
+
 }

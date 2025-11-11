@@ -31,7 +31,7 @@ public class Guide {
         BorderPane root = new BorderPane();
         root.setBackground(new Background(bgi));
 
-        HBox footer = new HBox(12);
+        VBox footer = new VBox();
         footer.setAlignment(Pos.CENTER_LEFT);
 
         ButtonUI backBtn = new ButtonUI("Menu");
