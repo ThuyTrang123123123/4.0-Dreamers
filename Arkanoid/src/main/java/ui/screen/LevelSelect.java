@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import systems.AudioSystem;
 import ui.screen.InGame;
 import ui.theme.Colors;
 import ui.theme.Fonts;
@@ -69,7 +70,10 @@ public class LevelSelect {
         VBox footer = new VBox(12);
         footer.setAlignment(Pos.CENTER_LEFT);
         ButtonUI backBtn = new ButtonUI("Back");
-        backBtn.setOnAction(e -> stage.setScene(MainMenu.cachedScenePractice));
+        backBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
+            stage.setScene(MainMenu.cachedScenePractice);
+        });
         footer.getChildren().add(backBtn);
 
         root.setTop(header);
@@ -130,7 +134,7 @@ public class LevelSelect {
             Button b = makeLevelButton(i);
             Label score = new Label("—");
             score.setFont(Fonts.main(12));
-            score.setTextFill(Colors.TEXT);
+            score.setTextFill(Colors.TEXTBT);
 
             levelButtons.add(b);
             scoreLabels.add(score);
@@ -174,7 +178,7 @@ public class LevelSelect {
 
             int best = bestScores[i - 1];
             s.setText(best > 0 ? ("Best: " + best) : "—");
-            s.setTextFill(Colors.TEXT);
+            s.setTextFill(Colors.TEXTBT);
         }
     }
 
