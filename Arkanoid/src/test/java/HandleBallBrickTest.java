@@ -56,7 +56,7 @@ public class HandleBallBrickTest {
         assertEquals(1, world.getScoring().getBricksDestroyed(), "Không cộng đúng số gạch bị phá");
     }
     @Test
-    public void testHandleCollisionWithHardBrick() {
+    public void testHandleCollisionWithHardBrick1() {
         Ball ball1 = new Ball(105, 105, 10, 5);
         Ball ball2 = new Ball(105, 105, 10, 5);
         Ball ball3 = new Ball(105, 105, 10, 5);

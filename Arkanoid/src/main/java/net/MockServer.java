@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 
 public class MockServer {
-    private static final int PORT = 8080;
+    private static final int PORT = 9091;
     private static final String SCORES_KEY = "leaderboard"; // khóa để lưu vào file
     private static HttpServer server;
     private final ObjectMapper mapper = new ObjectMapper();
