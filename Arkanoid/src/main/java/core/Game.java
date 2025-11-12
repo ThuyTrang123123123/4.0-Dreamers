@@ -405,33 +405,42 @@ public class Game extends Application {
 
         storage.save(getDynamicProgressKey(), progress);
 
-        scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
+        scoreRepo.saveBestScoreIfHigher(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
 
-        int cur = world.getLevel().getCurrentLevel();
-        int highest = getHighestLevelUnlocked();
-        if (cur >= highest && cur < world.getLevel().getMaxLevel()) {
-            setHighestLevelUnlocked(cur + 1);
-        }
+        //int cur = world.getLevel().getCurrentLevel();
+        //int highest = getHighestLevelUnlocked();
+        //if (cur >= highest && cur < world.getLevel().getMaxLevel()) {
+          //  setHighestLevelUnlocked(cur + 1);
+        //}
 
         System.out.println("Progress saved: Level " + world.getLevel().getCurrentLevel());
     }
 
-    private void saveScoreOnce(String reason) {
+    // Trong core/Game.java
 
+    private void saveScoreOnce(String reason) {
         int finalScore = world.getScoring().getScore();
         int finalLevel = world.getLevel().getCurrentLevel();
 
-        // Lưu local
-        scoreRepo.saveScore(finalLevel, finalScore);
+        // Lưu điểm cao cá nhân
+        scoreRepo.saveBestScoreIfHigher(finalLevel, finalScore);
+
+        // Lấy tên người chơi đã đăng nhập
         String playerName = AccountManager.getLoggedInUser();
-        // Nếu không ai đăng nhập (playerName là null), dùng tên mặc định từ playerRepo
         if (playerName == null || playerName.isEmpty()) {
             playerName = playerRepo.getPlayerName(); // Fallback về "Guest"
         }
+
         // Gửi lên leaderboard
         leaderboardClient.submitScore(playerName, finalScore);
-
         System.out.println("Score saved ONCE for " + reason + " as " + playerName + ": " + finalScore);
+
+        // === THÊM VÀO ĐÂY / ĐẢM BẢO BẠN CÓ DÒNG NÀY ===
+        // Nếu game kết thúc (thắng hoặc thua), xóa file "progress" (run này đã kết thúc)
+        if (reason.equals("GAME_OVER") || reason.equals("WIN")) {
+            storage.delete(getDynamicProgressKey());
+            System.out.println("Run finished. Deleting progress file: " + getDynamicProgressKey());
+        }
     }
 
     public void showPause() {
@@ -447,7 +456,7 @@ public class Game extends Application {
         stage.setScene(inGameScene);
     }
 
-    private void restartGame() {
+    public void restartGame() {
         gamePaused = false;
         gameWon = false;
         justCompleted = false;
@@ -458,8 +467,8 @@ public class Game extends Application {
             world.reset();
             world.getLevel().setCurrentLevel(1);
             storage.delete(getDynamicProgressKey());
-            playerRepo.resetPlayer();
-            scoreRepo.resetScores();
+           // playerRepo.resetPlayer();
+          //  scoreRepo.resetScores();
             System.out.println("Restart PLAY mode → back to Level 1");
         }
         else if (mode == Mode.PRACTICE) {
@@ -625,24 +634,33 @@ public class Game extends Application {
     }
 
 
+    // Trong core/Game.java
+
     public int getHighestLevelUnlocked() {
         try {
-            Map<String, Object> p = storage.load(getDynamicProgressKey());
-            int highest = ((Number)p.getOrDefault(
-                    "highestLevelUnlocked",
-                    Math.max(1, ((Number)p.getOrDefault("currentLevel", 1)).intValue())
-            )).intValue();
-            return Math.max(1, highest);
+            // Đọc từ file scores vĩnh viễn thay vì file progress
+            ScoreRepository personalScoreRepo = new ScoreRepository(storage);
+            List<Map<String, Object>> allMyScores = personalScoreRepo.getAllHighScores();
+
+            int highestLevelFound = 1; // Mặc định là 1
+
+            // Duyệt qua tất cả các điểm đã lưu
+            for (Map<String, Object> entry : allMyScores) {
+                // Chúng ta cần ép kiểu (cast) an toàn
+                int level = ((Number) entry.get("level")).intValue();
+                if (level > highestLevelFound) {
+                    highestLevelFound = level;
+                }
+            }
+            // Trả về level cao nhất bạn TỪNG CHƠI
+            return highestLevelFound;
+
         } catch (Exception e) {
-            return 1;
+            System.err.println("Lỗi khi đọc highest level: " + e.getMessage());
+            return 1; // Trả về 1 nếu có lỗi
         }
     }
 
-    public void setHighestLevelUnlocked(int v) {
-        Map<String, Object> p = storage.load(getDynamicProgressKey());
-        p.put("highestLevelUnlocked", Math.max(1, v));
-        storage.save(getDynamicProgressKey(), p);
-    }
 
     public void setModePlay()     {
         mode = Mode.PLAY;
@@ -701,8 +719,8 @@ public class Game extends Application {
             world.reset();
             world.getLevel().setCurrentLevel(1);
             storage.delete(getDynamicProgressKey());
-            playerRepo.resetPlayer();
-            scoreRepo.resetScores();
+           // playerRepo.resetPlayer();
+            //scoreRepo.resetScores();
         } else {
             int currentLevel = world.getLevel().getCurrentLevel();
             world.reset();
@@ -751,5 +769,45 @@ public class Game extends Application {
             AudioSystem.getInstance().dispose();
             mockServer.stop();
         });
+    }
+    // Trong core/Game.java
+
+    /** Kiểm tra xem có file save trên đĩa không */
+    public boolean hasDiskSave() {
+        Map<String, Object> progress = storage.load(getDynamicProgressKey());
+        return !progress.isEmpty();
+    }
+
+    /** Lấy level từ file save trên đĩa */
+    public int getLevelFromDiskSave() {
+        Map<String, Object> progress = storage.load(getDynamicProgressKey());
+        if (!progress.isEmpty()) {
+            return ((Number) progress.getOrDefault("currentLevel", 1)).intValue();
+        }
+        return 1;
+    }
+
+    /** Lấy level hiện tại đang chạy trong RAM (khi pause) */
+    public int getCurrentMemoryLevel() {
+        // Sửa lỗi: Phải là world.getLevel()
+        if (world != null && world.getLevel() != null) {
+            return world.getLevel().getCurrentLevel();
+        }
+        return 1;
+    }
+
+    /** Xóa file save (dùng cho nút "New Game") */
+    public void wipeDiskSave() {
+        storage.delete(getDynamicProgressKey());
+        System.out.println("Disk save wiped: " + getDynamicProgressKey());
+    }
+
+    /** Kiểm tra xem game đã "kết thúc" (Game Over/Win) chưa */
+    public boolean isGameFinished() {
+        // Đảm bảo world và scoring đã được khởi tạo
+        if (world == null || world.getScoring() == null) {
+            return false; // Mặc định là false nếu chưa load
+        }
+        return world.getScoring().isGameOver() || gameWon;
     }
 }
