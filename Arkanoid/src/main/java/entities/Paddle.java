@@ -13,6 +13,7 @@ public class Paddle {
     private double speed = 400;
     private boolean moveLeft, moveRight;
     private boolean shooting = false;
+    private long shootEndTime = 0;
     private long lastShotTime = 0;
     private final long shootDelay = 400; // 0.4s giữa 2 viên
     private static Color defaultColor = Colors.SECONDARY;
@@ -49,6 +50,9 @@ public class Paddle {
     public void setMoveLeft(boolean moveLeft) { this.moveLeft = moveLeft; }
     public void setMoveRight(boolean moveRight) { this.moveRight = moveRight; }
 
+    public long getShootEndTime() { return shootEndTime; }
+    public void setShootEndTime(long time) { this.shootEndTime = time; }
+
     public void update(double deltaTime) {
         this.color = defaultColor;
         if (moveLeft) x -= speed * deltaTime;
@@ -76,8 +80,6 @@ public class Paddle {
     private void updateWidth() {
         this.width = baseWidth* scaleFactor;
     }
-
-
 
     public void onKeyPressed(KeyCode code) {
         if (code == KeyCode.LEFT) moveLeft = true;

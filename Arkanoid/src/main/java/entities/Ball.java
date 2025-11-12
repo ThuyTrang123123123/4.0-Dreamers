@@ -107,7 +107,8 @@ public class Ball {
             double speed = core.Config.BALL_SPEED;  // Lấy từ Config
 
             // Bắn bóng lên trên với góc ngẫu nhiên nhẹ
-            double angle = -75 + (Math.random() * 30);  // Góc từ -75° đến -45°
+            //double angle = -75 + (Math.random() * 30);  // Góc từ -75° đến -45°
+            double angle=-180;
             velocityX = speed * Math.sin(Math.toRadians(angle));
             velocityY = speed * Math.cos(Math.toRadians(angle));
 

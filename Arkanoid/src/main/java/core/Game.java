@@ -7,6 +7,7 @@ import java.util.Map;
 
 import data.AccountManager;
 import entities.Bullet;
+import entities.bricks.ExplodingBrick;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -218,9 +219,23 @@ public class Game extends Application {
                 if (Collision.isBallTouchingPaddle(ball, paddle)) {
                     Collision.handleBallPaddleCollision(ball, paddle);
                 }
+
                 Collision.handleBallBrickCollision(ball, world.getBricks(), world);
             }
         }
+        for (Brick brick : world.getBricks()) {
+            if (brick instanceof ExplodingBrick) {
+                ExplodingBrick eb = (ExplodingBrick) brick;
+                if (brick.isDestroyed() && !eb.hasExploded()) {
+                    PlayExploding explosion = new PlayExploding(3, 3, brick.getX(), brick.getY());
+                    explosion.start(gc); // bắt đầu animation
+                    eb.setHasExploded(true); // chỉ gọi 1 lần hiệu ứng
+                }
+            }
+        }
+
+
+        // hết sửa
 
         world.getBalls().removeAll(lostBalls);
         if (!lostBalls.isEmpty() && world.getBalls().isEmpty()) {

@@ -1,7 +1,7 @@
 package entities.powerups;
 
 import core.World;
-import  core.Config;
+import core.Config;
 
 import entities.Ball;
 import javafx.application.Platform;
@@ -15,6 +15,8 @@ import javafx.scene.paint.Color;
  * PowerUp: Double Ball — Tạo thêm 1 quả bóng mới.
  */
 public class DoubleBall extends PowerUp {
+
+    private final double duration = 8.0;
 
     public DoubleBall(double x, double y) {
         super(x, y, Config.POWERUP_WIDTH, Config.POWERUP_HEIGHT, Color.GOLD);
@@ -55,6 +57,14 @@ public class DoubleBall extends PowerUp {
             clone.setVelocityY(ball.getVelocityY());
             clone.setStickToPaddle(false);
             newBalls.add(clone);
+
+            new Thread(() -> {
+                try {
+                    Thread.sleep((long) (duration * 1000));
+                    Platform.runLater(() -> world.getBalls().remove(clone));
+                } catch (InterruptedException ignored) {
+                }
+            }).start();
         }
         world.getBalls().addAll(newBalls);
     }

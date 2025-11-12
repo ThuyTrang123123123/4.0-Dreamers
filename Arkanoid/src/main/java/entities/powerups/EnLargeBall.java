@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class EnLargeBall extends PowerUp {
-    private double EnLargeFactor = 5;
+    private double EnLargeFactor = 1.25;
     private final double duration = 8.0;
     private Image image;
 
