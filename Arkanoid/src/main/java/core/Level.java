@@ -7,7 +7,6 @@ import javafx.scene.image.Image;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import ui.theme.ThemeManager;
 
 /**
  * Level - Quản lý 12 level với độ khó tăng dần
@@ -19,46 +18,24 @@ public class Level {
     private static final int MAX_LEVEL = 12;
     private final BrickFactory brickFactory = new BrickFactory();
     private Image backgroundImage;
-    private String cachedThemeKey = "__none__";
 
     public Level(int rows, int cols) {
         bricks = new ArrayList<>();
         generateLevel(currentLevel);
     }
 
-    public void invalidateBackground() {
-        backgroundImage = null;
-        cachedThemeKey = "__none__";
-    }
-
-    private void ensureThemeFresh() {
-        String selected = ThemeManager.pathForSelectedTheme(currentLevel);
-        String keyNow = (selected == null) ? "__default__" : selected;
-
-        if (keyNow.equals(cachedThemeKey) && backgroundImage != null) {
-            return;
-        }
-
-        try {
-            String pathToUse;
-            if (selected != null) {
-                pathToUse = selected;
-            } else {
-                pathToUse = pathForLevel();
-            }
-
-            backgroundImage = new Image(
-                    Objects.requireNonNull(getClass().getResource(pathToUse)).toExternalForm()
-            );
-            cachedThemeKey = keyNow;
-        } catch (Exception e) {
-            System.err.println("Không load được nền: " + keyNow + " -> " + e.getMessage());
-        }
-    }
-
-
     public Image getBackgroundImage() {
-        ensureThemeFresh();
+        if (backgroundImage == null) {
+            try {
+                backgroundImage = new Image(
+                        Objects.requireNonNull(
+                                getClass().getResource(pathForLevel())
+                        ).toExternalForm()
+                );
+            } catch (Exception e) {
+                System.err.println("Không tìm thấy ảnh nền level " + currentLevel + " : " + e.getMessage());
+            }
+        }
         return backgroundImage;
     }
 
@@ -363,7 +340,5 @@ public class Level {
     public void setCurrentLevel(int level) {
         this.currentLevel = Math.min(level, MAX_LEVEL);
         generateLevel(this.currentLevel);
-        invalidateBackground();
-        ensureThemeFresh();
     }
 }

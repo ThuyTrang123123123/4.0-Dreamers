@@ -123,28 +123,6 @@ public class MainMenu {
             stage.close();
         });
 
-        ButtonUI shopBtn = new ButtonUI("Shop");
-        shopBtn.setOnAction(e -> {
-            AudioSystem.getInstance().playSound("select.mp3");
-
-            Game g = (playGame != null) ? playGame : MainMenu.practiceGame;
-
-            if (g == null) {
-                g = new Game();
-                g.setModePlay();
-                g.getOrCreateGameScene(stage);
-                playGame = g;
-            }
-
-            Shop shop = new Shop(g, () -> {
-                stage.setScene(cachedScene != null ? cachedScene : create(stage));
-            });
-
-            Scene shopScene = shop.create(stage);
-            cachedScene = create(stage);
-            stage.setScene(shopScene);
-        });
-
         ButtonUI logoutBtn = new ButtonUI("Log out");
         logoutBtn.setOnAction(e -> {
             AccountManager.logout();
@@ -152,7 +130,6 @@ public class MainMenu {
         });
 
         root.getChildren().addAll(introduceBtn, playBtn, levelSelectBtn, settingsBtn, leaderboardBtn, exitBtn);
-        root.getChildren().add(shopBtn);
         root.getChildren().add(logoutBtn);
         return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
     }

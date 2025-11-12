@@ -90,43 +90,4 @@ public class JsonStorage implements Storage {
             file.delete();
         }
     }
-
-    @Override
-    public void putInt(String key, int value) {
-        cache.put(key, value);
-        saveAll();
-    }
-
-    @Override
-    public int getInt(String key, int def) {
-        Object v = cache.get(key);
-        if (v instanceof Number) return ((Number) v).intValue();
-        try { return Integer.parseInt(String.valueOf(v)); }
-        catch (Exception e) { return def; }
-    }
-
-    @Override
-    public void putString(String key, String value) {
-        cache.put(key, value);
-        saveAll();
-    }
-
-    @Override
-    public String getString(String key, String def) {
-        Object v = cache.get(key);
-        return (v != null) ? String.valueOf(v) : def;
-    }
-
-    @Override
-    public void flush() {
-        saveAll();
-    }
-
-    private void saveAll() {
-        try {
-            mapper.writeValue(new File(DATA_DIR + "data.json"), cache);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

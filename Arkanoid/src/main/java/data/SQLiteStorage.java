@@ -121,36 +121,4 @@ public class SQLiteStorage implements Storage {
         }
         return null;
     }
-
-    @Override
-    public void putInt(String key, int value) {
-        putRaw(key, Integer.toString(value));
-    }
-
-    @Override
-    public int getInt(String key, int def) {
-        String v = getRaw(key);
-        if (v == null) return def;
-        try {
-            return Integer.parseInt(v.trim());
-        } catch (NumberFormatException e) {
-            return def;
-        }
-    }
-
-    @Override
-    public void putString(String key, String value) {
-        putRaw(key, (value == null) ? "" : value);
-    }
-
-    @Override
-    public String getString(String key, String def) {
-        String v = getRaw(key);
-        return (v == null) ? def : v;
-    }
-
-    @Override
-    public void flush() {
-
-    }
 }

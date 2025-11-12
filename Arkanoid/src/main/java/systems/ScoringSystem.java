@@ -88,17 +88,4 @@ public class ScoringSystem {
             bricksDestroyed.set(0);
         });
     }
-
-    public int getPoints() {
-        return getScore();
-    }
-
-    public boolean spendPoints(int cost) {
-        if (getScore() >= cost) {
-            score.set(getScore() - cost);
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

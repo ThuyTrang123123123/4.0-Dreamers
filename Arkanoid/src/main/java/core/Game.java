@@ -45,7 +45,6 @@ import net.MockServer;
 import ui.screen.*;
 import ui.theme.Colors;
 import ui.theme.Fonts;
-import ui.theme.ThemeManager;
 
 public class Game extends Application {
     private Canvas canvas;
@@ -300,21 +299,8 @@ public class Game extends Application {
     }
 
     public void render() {
-        gc.setGlobalAlpha(1.0);
-        gc.setEffect(null);
-        gc.setGlobalBlendMode(javafx.scene.effect.BlendMode.SRC_OVER);
-
-        gc.setTransform(1, 0, 0, 1, 0, 0);
-
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
         Image bg = world.getLevel().getBackgroundImage();
-        if (bg != null) {
-            gc.drawImage(bg, 0, 0, canvas.getWidth(), canvas.getHeight());
-        } else {
-            gc.setFill(Colors.PRIMARY);
-            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        }
+        gc.drawImage(bg, 0, 0, canvas.getWidth(), canvas.getHeight());
 
         gc.setFill(Colors.TEXT);
         gc.setFont(Fonts.main(20));
@@ -467,8 +453,6 @@ public class Game extends Application {
         if (mode == Mode.PLAY) {
             world.reset();
             world.getLevel().setCurrentLevel(1);
-            world.getLevel().invalidateBackground();
-            ThemeManager.resetThemeForLevel(world.getLevel().getCurrentLevel());
             storage.delete(getDynamicProgressKey());
             playerRepo.resetPlayer();
             scoreRepo.resetScores();
@@ -477,8 +461,6 @@ public class Game extends Application {
             int currentLevel = world.getLevel().getCurrentLevel();
             world.reset();
             world.getLevel().setCurrentLevel(currentLevel);
-            world.getLevel().invalidateBackground();
-            ThemeManager.resetThemeForLevel(world.getLevel().getCurrentLevel());
             System.out.println("Restart PRACTICE mode → stay at Level " + currentLevel);
         }
     }
@@ -712,10 +694,6 @@ public class Game extends Application {
         stage.setScene(inGameScene);
         unpause();
         startLoopIfNeeded();
-    }
-
-    public World getWorld() {
-        return world;
     }
 
     @Override
