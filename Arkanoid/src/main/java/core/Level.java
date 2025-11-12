@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import ui.theme.ThemeManager;
 
 /**
  * Level - Quản lý 12 level với độ khó tăng dần
@@ -18,29 +19,47 @@ public class Level {
     private static final int MAX_LEVEL = 12;
     private final BrickFactory brickFactory = new BrickFactory();
     private Image backgroundImage;
+    private String cachedThemeKey = "__none__";
 
     public Level(int rows, int cols) {
         bricks = new ArrayList<>();
         generateLevel(currentLevel);
     }
 
-    private String pathForLevel() {
-        return "/images/Level " + currentLevel + ".png";
+    public void invalidateBackground() {
+        backgroundImage = null;
+        cachedThemeKey = "__none__";
+    }
+
+    private void ensureThemeFresh() {
+        String selected = ThemeManager.pathForSelectedTheme(currentLevel);
+        String keyNow = (selected == null) ? "__fallback__" : selected;
+        if (!keyNow.equals(cachedThemeKey)) {
+            backgroundImage = null;
+            try {
+                if (selected != null) {
+                    backgroundImage = new Image(
+                            Objects.requireNonNull(getClass().getResource(selected)).toExternalForm()
+                    );
+                } else {
+                    backgroundImage = new Image(
+                            Objects.requireNonNull(getClass().getResource(pathForLevel())).toExternalForm()
+                    );
+                }
+                cachedThemeKey = keyNow;
+            } catch (Exception e) {
+                System.err.println("Không load được nền: " + keyNow + " -> " + e.getMessage());
+            }
+        }
     }
 
     public Image getBackgroundImage() {
-        if (backgroundImage == null) {
-            try {
-                backgroundImage = new Image(
-                        Objects.requireNonNull(
-                                getClass().getResource(pathForLevel())
-                        ).toExternalForm()
-                );
-            } catch (Exception e) {
-                System.err.println("Không tìm thấy ảnh nền level " + currentLevel + " : " + e.getMessage());
-            }
-        }
+        ensureThemeFresh();
         return backgroundImage;
+    }
+
+    private String pathForLevel() {
+        return "/images/Level " + currentLevel + ".png";
     }
 
     private void generateLevel(int level) {
@@ -69,60 +88,97 @@ public class Level {
 
     private void generateLevel1() {
         String[][] pattern = {
-                {"", "N", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"", "N", "", "", "", "", "", "N", ""},
+                {"", "H", "", "", "", "", "", "H", ""},
+                {"H", "", "H", "", "", "", "H", "", "H"},
+                {"N", "", "N", "", "", "", "N", "", "N"},
+                {"", "", "", "N", "", "N", "", "", ""},
+                {"", "", "", "H", "", "H", "", "", ""},
+                {"", "", "", "", "H", "", "", "", ""},
+                {"", "", "", "", "N", "", "", "", ""}
         };
         addBricksFromPattern(pattern);
     }
 
     private void generateLevel2() {
         String[][] pattern = {
-                {"", "N", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"", "H", "", "", "", "", "H", ""},
+                {"", "", "H", "H", "H", "H", "", ""},
+                {"", "H", "N", "N", "N", "N", "H", ""},
+                {"H", "N", "", "", "", "", "N", "H"},
+                {"N", "", "", "", "", "", "", "N"},
+                {"N", "", "", "", "", "", "", "N"},
+                {"H", "N", "", "", "", "", "N", "H"},
+                {"", "H", "N", "N", "N", "N", "H", ""},
+                {"", "", "H", "H", "H", "H", "", ""}
         };
         addBricksFromPattern(pattern);
     }
 
     private void generateLevel3() {
         String[][] pattern = {
-                {"", "N", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"N", "", "", "", "", "", "N"},
+                {"", "N", "", "", "", "N", ""},
+                {"", "H", "N", "", "N", "H", ""},
+                {"", "H", "", "N", "", "H", ""},
+                {"", "H", "", "", "", "H", ""},
+                {"", "H", "", "", "", "H", ""},
+                {"", "H", "", "N", "", "H", ""},
+                {"", "H", "N", "", "N", "H", ""},
+                {"", "N", "", "", "", "N", ""},
+                {"N", "", "", "", "", "", "N"}
         };
         addBricksFromPattern(pattern);
     }
 
     private void generateLevel4() {
         String[][] pattern = {
-                {"", "N", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"", "N", "H", "H", "", ""},
+                {"", "N", "H", "H", "H", ""},
+                {"N", "", "N", "", "H", ""},
+                {"N", "", "N", "", "", ""},
+                {"", "N", "", "", "", ""},
+                {"", "N", "", "", "", ""},
+                {"", "", "", "", "N", ""},
+                {"", "", "", "", "N", ""},
+                {"", "", "", "N", "", "N"},
+                {"", "H", "", "N", "", "N"},
+                {"", "H", "H", "H", "N", ""},
+                {"", "", "H", "H", "N", ""}
         };
         addBricksFromPattern(pattern);
     }
 
     private void generateLevel5() {
         String[][] pattern = {
-                {"", "N", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "", "", "", "", "U", "", ""},
+                {"", "", "", "", "", "H", "E", "H", ""},
+                {"", "", "", "", "", "U", "", "U", ""},
+                {"", "", "", "", "H", "", "", "", "U"},
+                {"", "", "", "N", "H", "", "", "", "H"},
+                {"", "", "N", "N", "N", "", "", "H", ""},
+                {"", "N", "N", "", "N", "N", "", "H", ""},
+                {"", "N", "", "", "", "N", "", "H", ""},
+                {"", "N", "N", "", "N", "N", "", "H", ""},
+                {"", "", "N", "N", "N", "", "", "E", "H"},
+                {"", "", "", "N", "", "", "", "", "N"}
         };
         addBricksFromPattern(pattern);
     }
 
     private void generateLevel6() {
         String[][] pattern = {
-                {"", "N", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"", "N", "", "N", "", "", "", "", ""},
+                {"N", "N", "H", "N", "N", "", "H", "", ""},
+                {"N", "", "H", "", "N", "H", "H", "H", ""},
+                {"N", "", "H", "", "N", "H", "", "H", ""},
+                {"N", "", "E", "", "N", "", "", "", "H"},
+                {"N", "", "H", "", "N", "", "", "", "H"},
+                {"N", "", "H", "", "N", "", "", "H", ""},
+                {"N", "", "H", "", "N", "N", "", "H", ""},
+                {"N", "", "H", "", "", "N", "N", "", ""},
+                {"", "", "", "", "", "", "N", "N", ""},
+                {"", "", "", "", "", "", "", "N", ""}
         };
         addBricksFromPattern(pattern);
     }
@@ -130,60 +186,105 @@ public class Level {
     private void generateLevel7() {
         String[][] pattern = {
                 {"", "", "", "H", "", "", ""},
-                {"", "N", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "H", "N", "H", "", ""},
+                {"", "H", "N", "", "N", "H", ""},
+                {"H", "N", "", "", "", "N", "H"},
+                {"H", "", "", "", "", "", "H"},
+                {"H", "", "", "", "", "", "H"},
+                {"H", "", "", "", "", "", "H"},
+                {"H", "N", "", "", "", "N", "H"},
+                {"", "N", "N", "", "N", "N", ""},
+                {"", "", "E", "", "E", "", ""},
+                {"", "", "E", "", "E", "", ""},
+                {"", "N", "N", "", "N", "N", ""},
+                {"", "N", "N", "", "N", "N", ""},
+                {"", "", "", "", "", "", ""},
+                {"", "H", "H", "H", "H", "H", ""},
+                {"", "N", "N", "N", "N", "N", ""}
         };
         addBricksFromPattern(pattern);
     }
 
     private void generateLevel8() {
         String[][] pattern = {
-                {"", "N", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"", "N", "", "N", "", "", "", ""},
+                {"N", "N", "H", "N", "N", "", "", ""},
+                {"N", "", "N", "", "N", "", "", ""},
+                {"N", "", "H", "", "N", "", "", ""},
+                {"N", "", "N", "", "N", "", "", ""},
+                {"E", "", "H", "", "E", "", "", ""},
+                {"N", "", "N", "", "N", "", "H", ""},
+                {"N", "", "H", "", "N", "U", "N", "U"},
+                {"N", "", "N", "", "N", "", "N", ""},
+                {"N", "", "H", "", "N", "N", "E", ""}
         };
         addBricksFromPattern(pattern);
     }
 
     private void generateLevel9() {
         String[][] pattern = {
-                {"", "N", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "H", "H", "H"},
+                {"", "", "N", "N", "N"},
+                {"", "", "", "E", "N"},
+                {"", "", "", "E", "N"},
+                {"U", "", "N", "", "N"},
+                {"", "H", "N", "", "N"},
+                {"", "N", "H", "", ""},
+                {"", "N", "", "U", ""},
+                {"N", "", "", "", ""},
+                {"N", "", "", "", ""}
         };
         addBricksFromPattern(pattern);
     }
 
     private void generateLevel10() {
         String[][] pattern = {
-                {"", "N", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"H", "", "N", "", "", "", ""},
+                {"", "N", "E", "N", "", "", ""},
+                {"", "H", "", "H", "", "", ""},
+                {"", "N", "", "N", "", "", ""},
+                {"", "U", "", "U", "", "", ""},
+                {"", "N", "", "N", "", "", ""},
+                {"", "N", "", "N", "", "H", ""},
+                {"", "N", "", "N", "", "E", ""},
+                {"", "N", "", "N", "E", "", "E"},
+                {"", "U", "", "N", "H", "", "H"},
+                {"", "", "", "N", "", "H", ""},
+                {"", "", "", "U", "", "U", ""},
+                {"", "", "H", "", "", "", ""},
         };
         addBricksFromPattern(pattern);
     }
 
     private void generateLevel11() {
         String[][] pattern = {
-                {"", "N", "", "", "", "", "", "", ""},
+                {"", "", "N", "", "N", "", "N", "", ""},
+                {"", "N", "E", "", "E", "", "E", "N", ""},
+                {"", "H", "", "H", "", "H", "", "H", ""},
+                {"N", "", "", "U", "", "U", "", "", "N"},
                 {"", "", "", "", "", "", "", "", ""},
                 {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"", "", "H", "", "H", "", "H","",""},
+                {"", "H", "N", "", "N", "", "N", "H", ""},
+                {"", "U", "", "H", "", "H", "", "U", ""},
+                {"N", "", "", "U", "", "U", "", "", "N"},
         };
         addBricksFromPattern(pattern);
     }
 
     private void generateLevel12() {
         String[][] pattern = {
-                {"", "N", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
-                {"", "", "", "", "", "", "", "", ""},
+                {"H", "", "", "", "", "", "H"},
+                {"N", "H","", "", "", "H", "N"},
+                {"", "N", "H", "", "H", "N", ""},
+                {"", "", "N", "", "N", "", ""},
+                {"", "", "H", "", "H", "", ""},
+                {"", "U", "E", "U", "E", "U", ""},
+                {"", "", "H", "", "H", "", ""},
+                {"", "", "N", "", "N", "", ""},
+                {"", "N", "H", "", "H", "N", ""},
+                {"N", "H","", "", "", "H", "N"},
+                {"H", "", "", "", "", "", "H"},
         };
         addBricksFromPattern(pattern);
     }

@@ -16,14 +16,33 @@ public class ScoringSystem {
         this.bricksDestroyed = new SimpleIntegerProperty(0);
     }
 
-    public IntegerProperty scoreProperty() { return score; }
-    public IntegerProperty livesProperty() { return lives; }
-    public IntegerProperty bricksDestroyedProperty() { return bricksDestroyed; }
+    public IntegerProperty scoreProperty() {
+        return score;
+    }
 
-    public int getScore() { return score.get(); }
-    public int getLives() { return lives.get(); }
-    public int getBricksDestroyed() { return bricksDestroyed.get(); }
-    public int getMaxLives() { return MAX_LIVES; }
+    public IntegerProperty livesProperty() {
+        return lives;
+    }
+
+    public IntegerProperty bricksDestroyedProperty() {
+        return bricksDestroyed;
+    }
+
+    public int getScore() {
+        return score.get();
+    }
+
+    public int getLives() {
+        return lives.get();
+    }
+
+    public int getBricksDestroyed() {
+        return bricksDestroyed.get();
+    }
+
+    public int getMaxLives() {
+        return MAX_LIVES;
+    }
 
     public void addScore(int points) {
         score.set(score.get() + points);
@@ -87,5 +106,18 @@ public class ScoringSystem {
             lives.set(2);
             bricksDestroyed.set(0);
         });
+    }
+
+    public int getPoints() {
+        return getScore();
+    }
+
+    public boolean spendPoints(int cost) {
+        if (getScore() >= cost) {
+            score.set(getScore() - cost);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
