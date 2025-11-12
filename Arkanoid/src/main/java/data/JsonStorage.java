@@ -14,29 +14,6 @@ import java.util.Map;
 public class JsonStorage implements Storage {
     private static final String DATA_DIR = "src/main/resources/data/";
     private final ObjectMapper mapper = new ObjectMapper();
-    private static final JsonStorage INSTANCE = new JsonStorage();
-    private final Map<String, Object> cache = new HashMap<>();
-
-    public static JsonStorage getInstance() { return INSTANCE; }
-
-    public JsonStorage(){
-        // Đảm bảo thư mục tồn tại
-        File dir = new File(DATA_DIR);
-        if (!dir.exists()) dir.mkdirs();
-
-        // Tải cache từ file chính (data.json)
-        File mainFile = new File(DATA_DIR + "data.json");
-        if (mainFile.exists()) {
-            try {
-                Map<?, ?> loaded = mapper.readValue(mainFile, HashMap.class);
-                for (Map.Entry<?, ?> e : loaded.entrySet()) {
-                    cache.put(String.valueOf(e.getKey()), e.getValue());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     @Override
     public void save(String key, Map<String, Object> data) {
@@ -88,45 +65,6 @@ public class JsonStorage implements Storage {
         File file = new File(DATA_DIR + key + ".json");
         if (file.exists()) {
             file.delete();
-        }
-    }
-
-    @Override
-    public void putInt(String key, int value) {
-        cache.put(key, value);
-        saveAll();
-    }
-
-    @Override
-    public int getInt(String key, int def) {
-        Object v = cache.get(key);
-        if (v instanceof Number) return ((Number) v).intValue();
-        try { return Integer.parseInt(String.valueOf(v)); }
-        catch (Exception e) { return def; }
-    }
-
-    @Override
-    public void putString(String key, String value) {
-        cache.put(key, value);
-        saveAll();
-    }
-
-    @Override
-    public String getString(String key, String def) {
-        Object v = cache.get(key);
-        return (v != null) ? String.valueOf(v) : def;
-    }
-
-    @Override
-    public void flush() {
-        saveAll();
-    }
-
-    private void saveAll() {
-        try {
-            mapper.writeValue(new File(DATA_DIR + "data.json"), cache);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

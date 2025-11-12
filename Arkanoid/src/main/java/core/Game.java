@@ -43,7 +43,6 @@ import net.MockServer;
 import ui.screen.*;
 import ui.theme.Colors;
 import ui.theme.Fonts;
-import ui.theme.ThemeManager;
 
 public class Game extends Application {
     private Canvas canvas;
@@ -62,9 +61,7 @@ public class Game extends Application {
     private ScoreRepository scoreRepo = new ScoreRepository(storage);
     private LeaderboardClient leaderboardClient = new LeaderboardClient();
     private MockServer mockServer;
-
-    private enum Mode {PLAY, PRACTICE}
-
+    private enum Mode { PLAY, PRACTICE }
     private Mode mode = Mode.PLAY;
 
     private boolean levelFinished = false;
@@ -75,8 +72,8 @@ public class Game extends Application {
     private boolean endScreenShown = false;
 
     private static final String PROGRESS_PLAY = "progress_play";
-    private static final String SCORES_PLAY = "scores_play";
-    private static final String SCORES_PRACT = "scores_practice";
+    private static final String SCORES_PLAY   = "scores_play";
+    private static final String SCORES_PRACT  = "scores_practice";
 
 
     public Scene createGamescene(Stage stage) {
@@ -88,11 +85,11 @@ public class Game extends Application {
         if (mode == Mode.PLAY) {
             Map<String, Object> progress = storage.load(PROGRESS_PLAY);
             if (!progress.isEmpty()) {
-                int loadedScore = ((Number) progress.getOrDefault("score", 0)).intValue();
-                int loadedLives = ((Number) progress.getOrDefault("lives", 1)).intValue();
+                int loadedScore  = ((Number) progress.getOrDefault("score", 0)).intValue();
+                int loadedLives  = ((Number) progress.getOrDefault("lives", 1)).intValue();
                 int loadedBricks = ((Number) progress.getOrDefault("bricksDestroyed", 0)).intValue();
-                int savedLevel = ((Number) progress.getOrDefault("currentLevel", 1)).intValue();
-                int rankIndex = ((Number) progress.getOrDefault("rankIndex", 0)).intValue();
+                int savedLevel   = ((Number) progress.getOrDefault("currentLevel", 1)).intValue();
+                int rankIndex    = ((Number) progress.getOrDefault("rankIndex", 0)).intValue();
 
                 world.getScoring().scoreProperty().set(loadedScore);
                 world.getScoring().livesProperty().set(loadedLives);
@@ -166,14 +163,14 @@ public class Game extends Application {
                 return;
             }
 
-            if (mode == Mode.PRACTICE && e.getCode() == KeyCode.ENTER) {
+            if (mode == Mode.PRACTICE && e.getCode() == KeyCode.ENTER ) {
 
                 gamePaused = true;
                 if (loop != null) loop.stop();
 
                 var storage = new JsonStorage();
                 var playerRepo = new PlayerRepository(storage);
-                var scoreRepo = new ScoreRepository(storage);
+                var scoreRepo  = new ScoreRepository(storage);
                 LevelSelect select = new LevelSelect(stage, this, playerRepo, scoreRepo);
                 stage.setScene(select.create());
                 return;
@@ -286,21 +283,8 @@ public class Game extends Application {
     }
 
     public void render() {
-        gc.setGlobalAlpha(1.0);
-        gc.setEffect(null);
-        gc.setGlobalBlendMode(javafx.scene.effect.BlendMode.SRC_OVER);
-
-        gc.setTransform(1, 0, 0, 1, 0, 0);
-
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
         Image bg = world.getLevel().getBackgroundImage();
-        if (bg != null) {
-            gc.drawImage(bg, 0, 0, canvas.getWidth(), canvas.getHeight());
-        } else {
-            gc.setFill(Colors.PRIMARY);
-            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        }
+        gc.drawImage(bg, 0, 0, canvas.getWidth(), canvas.getHeight());
 
         gc.setFill(Colors.TEXT);
         gc.setFont(Fonts.main(20));
@@ -435,18 +419,15 @@ public class Game extends Application {
         if (mode == Mode.PLAY) {
             world.reset();
             world.getLevel().setCurrentLevel(1);
-            world.getLevel().invalidateBackground();
-            ThemeManager.resetThemeForLevel(world.getLevel().getCurrentLevel());
             storage.delete(PROGRESS_PLAY);
             playerRepo.resetPlayer();
             scoreRepo.resetScores();
             System.out.println("Restart PLAY mode → back to Level 1");
-        } else if (mode == Mode.PRACTICE) {
+        }
+        else if (mode == Mode.PRACTICE) {
             int currentLevel = world.getLevel().getCurrentLevel();
             world.reset();
             world.getLevel().setCurrentLevel(currentLevel);
-            world.getLevel().invalidateBackground();
-            ThemeManager.resetThemeForLevel(world.getLevel().getCurrentLevel());
             System.out.println("Restart PRACTICE mode → stay at Level " + currentLevel);
         }
     }
@@ -528,9 +509,9 @@ public class Game extends Application {
     public int getHighestLevelUnlocked() {
         try {
             Map<String, Object> p = storage.load(PROGRESS_PLAY);
-            int highest = ((Number) p.getOrDefault(
+            int highest = ((Number)p.getOrDefault(
                     "highestLevelUnlocked",
-                    Math.max(1, ((Number) p.getOrDefault("currentLevel", 1)).intValue())
+                    Math.max(1, ((Number)p.getOrDefault("currentLevel", 1)).intValue())
             )).intValue();
             return Math.max(1, highest);
         } catch (Exception e) {
@@ -544,7 +525,7 @@ public class Game extends Application {
         storage.save(PROGRESS_PLAY, p);
     }
 
-    public void setModePlay() {
+    public void setModePlay()     {
         mode = Mode.PLAY;
         inGameScene = null;
         gamePaused = false;
@@ -583,7 +564,7 @@ public class Game extends Application {
                     best,
                     onReplay,
                     onMain,
-                    "/images/END.png"
+                    "/images/END.png" // phải tồn tại thật
             );
             stage.setScene(endScene);
         });
@@ -655,9 +636,6 @@ public class Game extends Application {
         startLoopIfNeeded();
     }
 
-    public World getWorld() {
-        return world;
-    }
 
     @Override
     public void start(Stage stage) {

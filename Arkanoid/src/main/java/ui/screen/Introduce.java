@@ -33,10 +33,10 @@ public class Introduce {
         root.setBackground(new Background(bgi));
 
         VBox footer = new VBox(12);
-        footer.setAlignment(Pos.CENTER);
+        footer.setAlignment(Pos.CENTER_LEFT);
 
         VBox mider = new VBox(12);
-        mider.setAlignment(Pos.CENTER);
+        mider.setAlignment(Pos.CENTER_LEFT);
 
         ButtonUI backBtn = new ButtonUI("Menu");
         backBtn.setOnAction( e -> {
