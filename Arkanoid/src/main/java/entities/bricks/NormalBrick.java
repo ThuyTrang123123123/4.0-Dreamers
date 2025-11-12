@@ -14,7 +14,7 @@ public class NormalBrick extends BreakableBrick {
         if (destroyed) return;
         gc.setFill(Color.ORANGE);
         gc.fillRect(x - width / 2, y - height / 2, width, height);
-        gc.setStroke(Color.LIGHTYELLOW);
+        gc.setStroke(Color.BLACK);
         gc.strokeRect(x - width / 2, y - height / 2, width, height);
     }
 }

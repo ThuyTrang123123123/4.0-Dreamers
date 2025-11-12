@@ -45,25 +45,26 @@ public class ShootPaddle extends PowerUp {
     @Override
     public void onCollected(World world) {
         Paddle paddle = world.getPaddle();
-        paddle.setShooting(true); // bật chế độ bắn
+
         this.active = false;      // powerup biến mất khỏi màn hình
 
         // Tắt hiệu ứng
-        new Thread(() -> {
-            try {
-                long start = System.currentTimeMillis();
-                while (System.currentTimeMillis() - start < duration * 1000) {
-                    boolean hasFlyingBall = world.getBalls().stream().anyMatch(b -> !b.isStickToPaddle());
-                    if (!hasFlyingBall) break;
-                    Thread.sleep(200); // kiểm tra mỗi 200ms
-                }
-
-            } catch (InterruptedException ignored) {
+        Platform.runLater(() -> {
+            // Nếu Paddle chưa bắn, bật chế độ bắn
+            if (!paddle.isShooting()) {
+                paddle.setShooting(true);
+                // tạo luồng kiểm tra thời gian
+                new Thread(() -> {
+                    try {
+                        while (System.currentTimeMillis() < paddle.getShootEndTime()) {
+                            Thread.sleep(200); // kiểm tra mỗi 200ms
+                        }
+                        Platform.runLater(() -> paddle.setShooting(false));
+                    } catch (InterruptedException ignored) {
+                    }
+                }).start();
             }
-
-            Platform.runLater(() -> {
-                world.getPaddle().setShooting(false);
-            });
-        }).start();
+            paddle.setShootEndTime(System.currentTimeMillis() + (long) (duration * 1000));
+        });
     }
 }
