@@ -49,6 +49,7 @@ import ui.theme.Fonts;
 import javafx.beans.property.IntegerProperty;
 import javafx.scene.paint.Color;
 import javafx.geometry.Insets;
+import ui.theme.ThemeManager;
 
 public class Game extends Application {
     private Canvas canvas;
@@ -67,7 +68,9 @@ public class Game extends Application {
     private ScoreRepository scoreRepo = new ScoreRepository(storage);
     private LeaderboardClient leaderboardClient = new LeaderboardClient();
     private MockServer mockServer;
-    private enum Mode { PLAY, PRACTICE }
+
+    private enum Mode {PLAY, PRACTICE}
+
     private Mode mode = Mode.PLAY;
 
     private boolean levelFinished = false;
@@ -78,8 +81,8 @@ public class Game extends Application {
     private boolean endScreenShown = false;
 
     //private static final String PROGRESS_PLAY = "progress_play";
-    private static final String SCORES_PLAY   = "scores_play";
-    private static final String SCORES_PRACT  = "scores_practice";
+    private static final String SCORES_PLAY = "scores_play";
+    private static final String SCORES_PRACT = "scores_practice";
 
 
     public Scene createGamescene(Stage stage) {
@@ -91,11 +94,11 @@ public class Game extends Application {
         if (mode == Mode.PLAY) {
             Map<String, Object> progress = storage.load(getDynamicProgressKey());
             if (!progress.isEmpty()) {
-                int loadedScore  = ((Number) progress.getOrDefault("score", 0)).intValue();
-                int loadedLives  = ((Number) progress.getOrDefault("lives", 1)).intValue();
+                int loadedScore = ((Number) progress.getOrDefault("score", 0)).intValue();
+                int loadedLives = ((Number) progress.getOrDefault("lives", 1)).intValue();
                 int loadedBricks = ((Number) progress.getOrDefault("bricksDestroyed", 0)).intValue();
-                int savedLevel   = ((Number) progress.getOrDefault("currentLevel", 1)).intValue();
-                int rankIndex    = ((Number) progress.getOrDefault("rankIndex", 0)).intValue();
+                int savedLevel = ((Number) progress.getOrDefault("currentLevel", 1)).intValue();
+                int rankIndex = ((Number) progress.getOrDefault("rankIndex", 0)).intValue();
 
                 world.getScoring().scoreProperty().set(loadedScore);
                 world.getScoring().livesProperty().set(loadedLives);
@@ -116,6 +119,9 @@ public class Game extends Application {
         }
 
         System.out.println("Đã load progress: Level " + world.getLevel().getCurrentLevel());
+
+        // Sau khi khôi phục score/lives/level...
+        world.getScoring().setWalletSnapshot(world.getScoring().getScore());
 
         hudLayer = new InGame(this, world.getScoring(), world.getAchievements());
         HBox hud = hudLayer.createHUD();
@@ -169,14 +175,14 @@ public class Game extends Application {
                 return;
             }
 
-            if (mode == Mode.PRACTICE && e.getCode() == KeyCode.ENTER ) {
+            if (mode == Mode.PRACTICE && e.getCode() == KeyCode.ENTER) {
 
                 gamePaused = true;
                 if (loop != null) loop.stop();
 
                 var storage = new JsonStorage();
                 var playerRepo = new PlayerRepository(storage);
-                var scoreRepo  = new ScoreRepository(storage);
+                var scoreRepo = new ScoreRepository(storage);
                 LevelSelect select = new LevelSelect(stage, this, playerRepo, scoreRepo);
                 stage.setScene(select.create());
                 return;
@@ -302,8 +308,21 @@ public class Game extends Application {
     }
 
     public void render() {
+        gc.setGlobalAlpha(1.0);
+        gc.setEffect(null);
+        gc.setGlobalBlendMode(javafx.scene.effect.BlendMode.SRC_OVER);
+
+        gc.setTransform(1, 0, 0, 1, 0, 0);
+
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
         Image bg = world.getLevel().getBackgroundImage();
-        gc.drawImage(bg, 0, 0, canvas.getWidth(), canvas.getHeight());
+        if (bg != null) {
+            gc.drawImage(bg, 0, 0, canvas.getWidth(), canvas.getHeight());
+        } else {
+            gc.setFill(Colors.PRIMARY);
+            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        }
 
         gc.setFill(Colors.TEXT);
         gc.setFont(Fonts.main(20));
@@ -388,6 +407,9 @@ public class Game extends Application {
     }
 
     private void saveProgress() {
+        // CỘNG DỒN ĐIỂM VÀO VÍ ở các mốc lưu
+        world.getScoring().accumulateToWalletFromSnapshot();
+
         if (mode != Mode.PLAY) return;
 
         Map<String, Object> progress = new HashMap<>();
@@ -411,6 +433,7 @@ public class Game extends Application {
     }
 
     private void saveScoreOnce(String reason) {
+        world.getScoring().accumulateToWalletFromSnapshot();
         int finalScore = world.getScoring().getScore();
         int finalLevel = world.getLevel().getCurrentLevel();
 
@@ -448,6 +471,8 @@ public class Game extends Application {
     }
 
     public void restartGame() {
+        world.getScoring().setWalletSnapshot(0);
+
         gamePaused = false;
         gameWon = false;
         justCompleted = false;
@@ -457,14 +482,17 @@ public class Game extends Application {
         if (mode == Mode.PLAY) {
             world.reset();
             world.getLevel().setCurrentLevel(1);
+            world.getLevel().invalidateBackground();
+            ThemeManager.resetThemeForLevel(world.getLevel().getCurrentLevel());
             storage.delete(getDynamicProgressKey());
-            System.out.println("Restart PLAY mode → back to Level 1");
-        }
-        else if (mode == Mode.PRACTICE) {
+            System.out.println("Restart PLAY mode -> back to Level 1");
+        } else if (mode == Mode.PRACTICE) {
             int currentLevel = world.getLevel().getCurrentLevel();
             world.reset();
             world.getLevel().setCurrentLevel(currentLevel);
-            System.out.println("Restart PRACTICE mode → stay at Level " + currentLevel);
+            world.getLevel().invalidateBackground();
+            ThemeManager.resetThemeForLevel(world.getLevel().getCurrentLevel());
+            System.out.println("Restart PRACTICE mode -> stay at Level " + currentLevel);
         }
     }
 
@@ -615,6 +643,7 @@ public class Game extends Application {
 
         world.init(canvas);
         world.reset();
+        world.getLevel().invalidateBackground();
         world.getLevel().setCurrentLevel(level);
 
         inGameScene = createGamescene(stage);
@@ -648,8 +677,11 @@ public class Game extends Application {
         }
     }
 
+    public World getWorld() {
+        return world;
+    }
 
-    public void setModePlay()     {
+    public void setModePlay() {
         mode = Mode.PLAY;
         inGameScene = null;
         gamePaused = false;
@@ -681,20 +713,22 @@ public class Game extends Application {
             openMainMenu();
         };
 
-        Platform.runLater(() -> {  // <-- quan trọng
+        Platform.runLater(() -> {
             Scene endScene = End.create(
                     stage,
                     finalScore,
                     best,
                     onReplay,
                     onMain,
-                    "/images/BACKGROUND.png" // phải tồn tại thật
+                    "/images/END.png"
             );
             stage.setScene(endScene);
         });
     }
 
     private void startNewRun() {
+        world.getScoring().setWalletSnapshot(0);
+
         gamePaused = false;
         gameWon = false;
         justCompleted = false;
@@ -712,6 +746,7 @@ public class Game extends Application {
             world.getLevel().setCurrentLevel(currentLevel);
         }
 
+        world.getLevel().invalidateBackground();
         inGameScene = createGamescene(stage);
         stage.setScene(inGameScene);
         startLoopIfNeeded();
@@ -725,12 +760,20 @@ public class Game extends Application {
         scoreSavedForWin = false;
         endScreenShown = false;
 
+        inGameScene = null;
+        world.reset();
+        world.getLevel().setCurrentLevel(1);
+        storage.delete(getDynamicProgressKey());
+        playerRepo.resetPlayer();
+        scoreRepo.resetScores();
+
         Scene menuScene = (mode == Mode.PLAY) ? MainMenu.cachedScene : MainMenu.cachedScenePractice;
         if (menuScene == null) {
             menuScene = new MainMenu().create(stage);
             if (mode == Mode.PLAY) MainMenu.cachedScene = menuScene;
             else MainMenu.cachedScenePractice = menuScene;
         }
+        world.getLevel().invalidateBackground();
         stage.setScene(menuScene);
     }
 
@@ -773,13 +816,17 @@ public class Game extends Application {
     }
     // Trong core/Game.java
 
-    /** Kiểm tra xem có file save trên đĩa không */
+    /**
+     * Kiểm tra xem có file save trên đĩa không
+     */
     public boolean hasDiskSave() {
         Map<String, Object> progress = storage.load(getDynamicProgressKey());
         return !progress.isEmpty();
     }
 
-    /** Lấy level từ file save trên đĩa */
+    /**
+     * Lấy level từ file save trên đĩa
+     */
     public int getLevelFromDiskSave() {
         Map<String, Object> progress = storage.load(getDynamicProgressKey());
         if (!progress.isEmpty()) {
@@ -788,7 +835,9 @@ public class Game extends Application {
         return 1;
     }
 
-    /** Lấy level hiện tại đang chạy trong RAM (khi pause) */
+    /**
+     * Lấy level hiện tại đang chạy trong RAM (khi pause)
+     */
     public int getCurrentMemoryLevel() {
         // Sửa lỗi: Phải là world.getLevel()
         if (world != null && world.getLevel() != null) {
@@ -797,13 +846,17 @@ public class Game extends Application {
         return 1;
     }
 
-    /** Xóa file save (dùng cho nút "New Game") */
+    /**
+     * Xóa file save (dùng cho nút "New Game")
+     */
     public void wipeDiskSave() {
         storage.delete(getDynamicProgressKey());
         System.out.println("Disk save wiped: " + getDynamicProgressKey());
     }
 
-    /** Kiểm tra xem game đã "kết thúc" (Game Over/Win) chưa */
+    /**
+     * Kiểm tra xem game đã "kết thúc" (Game Over/Win) chưa
+     */
     public boolean isGameFinished() {
         // Đảm bảo world và scoring đã được khởi tạo
         if (world == null || world.getScoring() == null) {

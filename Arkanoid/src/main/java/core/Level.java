@@ -3,6 +3,7 @@ package core;
 import entities.bricks.*;
 import entities.bricks.factory.BrickFactory;
 import javafx.scene.image.Image;
+import ui.theme.ThemeManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,24 +19,39 @@ public class Level {
     private static final int MAX_LEVEL = 12;
     private final BrickFactory brickFactory = new BrickFactory();
     private Image backgroundImage;
+    private String cachedThemeKey = "__none__";
 
     public Level(int rows, int cols) {
         bricks = new ArrayList<>();
         generateLevel(currentLevel);
     }
 
-    public Image getBackgroundImage() {
-        if (backgroundImage == null) {
+    public void invalidateBackground() {
+        backgroundImage = null;
+        cachedThemeKey = "__none__";
+    }
+
+    private void ensureThemeFresh() {
+        String selected = ThemeManager.pathForSelectedTheme(currentLevel);
+        String keyNow = (selected == null) ? "__fallback__" : selected;
+        if (!keyNow.equals(cachedThemeKey)) {
+            backgroundImage = null;
             try {
+                String path = (selected != null) ? selected : pathForLevel();
                 backgroundImage = new Image(
-                        Objects.requireNonNull(
-                                getClass().getResource(pathForLevel())
-                        ).toExternalForm()
+                        Objects.requireNonNull(getClass().getResource(path)).toExternalForm(),
+                        Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT,
+                        false, true
                 );
+                cachedThemeKey = keyNow;
             } catch (Exception e) {
                 System.err.println("Không tìm thấy ảnh nền level " + currentLevel + " : " + e.getMessage());
             }
         }
+    }
+
+    public Image getBackgroundImage() {
+        ensureThemeFresh();
         return backgroundImage;
     }
 
@@ -245,7 +261,7 @@ public class Level {
                 {"N", "", "", "U", "", "U", "", "", "N"},
                 {"", "", "", "", "", "", "", "", ""},
                 {"", "", "", "", "", "", "", "", ""},
-                {"", "", "H", "", "H", "", "H","",""},
+                {"", "", "H", "", "H", "", "H", "", ""},
                 {"", "H", "N", "", "N", "", "N", "H", ""},
                 {"", "U", "", "H", "", "H", "", "U", ""},
                 {"N", "", "", "U", "", "U", "", "", "N"},
@@ -256,7 +272,7 @@ public class Level {
     private void generateLevel12() {
         String[][] pattern = {
                 {"H", "", "", "", "", "", "H"},
-                {"N", "H","", "", "", "H", "N"},
+                {"N", "H", "", "", "", "H", "N"},
                 {"", "N", "H", "", "H", "N", ""},
                 {"", "", "N", "", "N", "", ""},
                 {"", "", "H", "", "H", "", ""},
@@ -264,7 +280,7 @@ public class Level {
                 {"", "", "H", "", "H", "", ""},
                 {"", "", "N", "", "N", "", ""},
                 {"", "N", "H", "", "H", "N", ""},
-                {"N", "H","", "", "", "H", "N"},
+                {"N", "H", "", "", "", "H", "N"},
                 {"H", "", "", "", "", "", "H"},
         };
         addBricksFromPattern(pattern);
@@ -311,9 +327,10 @@ public class Level {
     }
 
     /**
-     public boolean isComplete() {
-     return bricks.stream().allMatch(Brick::isDestroyed);
-     }**/
+     * public boolean isComplete() {
+     * return bricks.stream().allMatch(Brick::isDestroyed);
+     * }
+     **/
     public boolean isComplete() {
         return bricks.stream()
                 .filter(brick -> brick instanceof BreakableBrick)

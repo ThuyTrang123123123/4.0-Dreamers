@@ -14,4 +14,14 @@ public interface Storage {
     List<Map<String, Object>> loadList(String key);
 
     void delete(String key);
+
+    void putInt(String key, int value);
+
+    int getInt(String key, int def);
+
+    void putString(String key, String value);
+
+    String getString(String key, String def);
+
+    void flush();
 }

@@ -17,6 +17,7 @@ import systems.AudioSystem;
 import ui.widgets.ButtonUI;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+
 import java.util.Optional;
 import java.util.Objects;
 
@@ -159,7 +160,7 @@ public class MainMenu {
             practiceGame.setModePractice();
             Storage storage = new JsonStorage();
             PlayerRepository playerRepo = new PlayerRepository(storage);
-            ScoreRepository scoreRepo  = new ScoreRepository(storage);
+            ScoreRepository scoreRepo = new ScoreRepository(storage);
 
             LevelSelect select = new LevelSelect(stage, practiceGame, playerRepo, scoreRepo);
             cachedScenePractice = create(stage);
@@ -192,6 +193,28 @@ public class MainMenu {
             stage.close();
         });
 
+        ButtonUI shopBtn = new ButtonUI("Shop");
+        shopBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
+
+            Game g = (playGame != null) ? playGame : practiceGame;
+
+            if (g == null) {
+                g = new Game();
+                g.setModePlay();
+                g.getOrCreateGameScene(stage);
+                playGame = g;
+            }
+
+            Shop shop = new Shop(g, () -> {
+                stage.setScene(cachedScene != null ? cachedScene : create(stage));
+            });
+
+            Scene shopScene = shop.create(stage);
+            cachedScene = create(stage);
+            stage.setScene(shopScene);
+        });
+
         ButtonUI logoutBtn = new ButtonUI("Log out");
         logoutBtn.setOnAction(e -> {
             AccountManager.logout();
@@ -200,6 +223,7 @@ public class MainMenu {
 
         root.getChildren().addAll(introduceBtn, playBtn, levelSelectBtn, settingsBtn, leaderboardBtn, exitBtn);
         root.getChildren().add(logoutBtn);
+        root.getChildren().add(shopBtn);
         return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
     }
 }
