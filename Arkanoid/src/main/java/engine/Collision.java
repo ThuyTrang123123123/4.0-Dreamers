@@ -9,6 +9,7 @@ import entities.bricks.ExplodingBrick;
 import entities.bricks.HardBrick;
 import entities.bricks.UnbreakableBrick;
 import entities.powerups.*;
+import javafx.scene.image.Image;
 
 import java.util.List;
 
@@ -78,7 +79,6 @@ public class Collision {
                     int count = exploding.exployNearbyAndCount(bricks);
                     world.getScoring().addScore(count);
                     world.getScoring().incrementBricksDestroyed(count);
-
                 } else if (brick instanceof UnbreakableBrick unbreakable) {
                     //Không cộng điểm, ko cộng gạch phá
                 } else if (brick instanceof HardBrick hard) {
