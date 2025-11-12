@@ -117,7 +117,7 @@ public class Collision {
                             type = EnLargeBall.class;
                         } else {
                             type = ShootPaddle.class;
-                        }ư
+                        }
                         PowerUp pu = world.getPowerUpPool().acquire(type, brick.getX(), brick.getY());
                         world.getPowerUps().add(pu);
                     }
