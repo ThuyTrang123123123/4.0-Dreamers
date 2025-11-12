@@ -24,6 +24,10 @@ public class Level {
         generateLevel(currentLevel);
     }
 
+    private String pathForLevel() {
+        return "/images/Level " + currentLevel + ".png";
+    }
+
     public Image getBackgroundImage() {
         if (backgroundImage == null) {
             try {
@@ -37,10 +41,6 @@ public class Level {
             }
         }
         return backgroundImage;
-    }
-
-    private String pathForLevel() {
-        return "/images/Level " + currentLevel + ".png";
     }
 
     private void generateLevel(int level) {

@@ -19,6 +19,9 @@ import ui.widgets.ButtonUI;
 
 import java.util.Objects;
 
+/**
+ * Settings – Màn hình cài đặt, cho phép người chơi điều chỉnh âm thanh, hình ảnh.
+ */
 public class Settings {
     public interface Listener { void onClose(); }
 

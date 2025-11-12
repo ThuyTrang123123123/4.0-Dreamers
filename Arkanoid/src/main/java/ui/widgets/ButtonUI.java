@@ -4,6 +4,9 @@ import javafx.scene.control.Button;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 
+/**
+ * ButtonUI – hiệu ứng khi chọn vào các nút.
+ */
 public class ButtonUI extends Button {
     public ButtonUI(String text) {
         super(text);

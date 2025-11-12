@@ -30,18 +30,18 @@ import java.util.Queue;
  */
 public class AchievementSystem {
 
-    // ===== Rank System =====
+    // Rank System
     private final IntegerProperty currentRankIndex;
     private final StringProperty currentRankName;
     private final StringProperty currentRankIcon;
     private final IntegerProperty pointsToNextRank;
 
-    // ===== Achievement System =====
+    // Achievement System
     private final List<Achievement> achievements;
     private final List<AchievementListener> listeners;
     private final List<RankUpListener> rankListeners;
 
-    // ===== Notification System (Tích hợp) =====
+    // Notification System (Tích hợp)
     private VBox notificationBox;
     private StackPane gameContainer;
     private final Queue<Runnable> notificationQueue = new LinkedList<>();

@@ -18,6 +18,9 @@ import ui.theme.Colors;
 import ui.theme.Fonts;
 import ui.widgets.ButtonUI;
 
+/**
+ * InGame – Màn hình chính khi đang chơi, hiển thị gameplay và HUD.
+ */
 public class InGame {
     private Label scoreLabel;
     private Label livesLabel;

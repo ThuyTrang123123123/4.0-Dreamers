@@ -116,7 +116,6 @@ public class World {
         paddle.setX(Config.SCREEN_WIDTH / 2.0);
     }
 
-    // Getters
     public void setPaddle(Paddle paddle) {
         this.paddle = paddle;
     }

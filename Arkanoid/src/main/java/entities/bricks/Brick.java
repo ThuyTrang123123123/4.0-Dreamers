@@ -5,6 +5,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import ui.theme.Colors;
 
+/**
+ * Lớp trừu tượng (Abstract Class) Brick
+ * Đây là lớp cơ sở cho tất cả các loại gạch trong trò chơi.
+ * Nó định nghĩa các thuộc tính và hành vi cơ bản mà mọi viên gạch phải có.
+ */
 public abstract class Brick {
     protected double x, y;         // Tọa độ tâm viên gạch
     protected double width, height;

@@ -12,6 +12,9 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ */
 public class AccountManager {
     private static final String ACCOUNTS_FILE = "src/main/resources/data/accounts.json";
     private final ObjectMapper mapper = new ObjectMapper();

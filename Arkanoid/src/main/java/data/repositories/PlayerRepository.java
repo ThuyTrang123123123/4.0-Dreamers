@@ -5,6 +5,9 @@ import data.Storage;
 
 import java.util.Map;
 
+/**
+ * Quản lý việc truy cập dữ liệu cho thực thể Player.
+ */
 public class PlayerRepository {
     private final Storage storage;
     private static final String PLAYER_KEY = "player";

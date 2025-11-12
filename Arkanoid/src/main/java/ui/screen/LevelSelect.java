@@ -22,6 +22,9 @@ import ui.widgets.ButtonUI;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * LevelSelect – Màn hình chọn cấp độ chơi, cho phép người chơi chọn màn chơi cụ thể.
+ */
 public class LevelSelect {
     private final Stage stage;
     private final Game game;

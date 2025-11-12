@@ -7,6 +7,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+/**
+ * BonusCoin – Cộng điểm mỗi khi người chơi thu thập.
+ */
+
 public class BonusCoin extends PowerUp {
     private double radius;
     private double speed;

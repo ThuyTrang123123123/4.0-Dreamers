@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Map;
 import data.AccountManager;
 
+/**
+ * Quản lý lưu trữ và truy xuất điểm số của người dùng.
+ * Tự động phân biệt điểm của người dùng đã đăng nhập và khách (guest).
+ */
+
 public class ScoreRepository {
     private final Storage storage;
    // private static final String SCORES_KEY = "scores";
