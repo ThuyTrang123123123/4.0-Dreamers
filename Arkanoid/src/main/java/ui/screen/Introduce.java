@@ -1,10 +1,8 @@
 package ui.screen;
 
 import core.Config;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -35,10 +33,10 @@ public class Introduce {
         root.setBackground(new Background(bgi));
 
         VBox footer = new VBox(12);
-        footer.setAlignment(Pos.CENTER_LEFT);
+        footer.setAlignment(Pos.CENTER);
 
         VBox mider = new VBox(12);
-        mider.setAlignment(Pos.CENTER_LEFT);
+        mider.setAlignment(Pos.CENTER);
 
         ButtonUI backBtn = new ButtonUI("Menu");
         backBtn.setOnAction( e -> {

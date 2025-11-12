@@ -54,7 +54,7 @@ public class ScoringSystem {
             lives.set(newLives);
             System.out.println((newLives - current) + " Mạng! Hiện tại: " + newLives + "/" + MAX_LIVES);
         } else {
-            System.out.println(" Đã đạt tối đa " + MAX_LIVES + " mạng!");
+            System.out.println("Đã đạt tối đa " + MAX_LIVES + " mạng!");
         }
     }
 
@@ -87,5 +87,18 @@ public class ScoringSystem {
             lives.set(2);
             bricksDestroyed.set(0);
         });
+    }
+
+    public int getPoints() {
+        return getScore();
+    }
+
+    public boolean spendPoints(int cost) {
+        if (getScore() >= cost) {
+            score.set(getScore() - cost);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

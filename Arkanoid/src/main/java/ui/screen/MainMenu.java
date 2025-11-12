@@ -2,6 +2,7 @@ package ui.screen;
 
 import core.Config;
 import core.Game;
+import data.AccountManager;
 import data.JsonStorage;
 import data.Storage;
 import data.repositories.PlayerRepository;
@@ -13,7 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import systems.AudioSystem;
-import ui.theme.Colors;
 import ui.widgets.ButtonUI;
 
 import java.util.Objects;
@@ -25,6 +25,15 @@ public class MainMenu {
     public static Game practiceGame;
 
     public Scene create(Stage stage) {
+        AccountManager accountManager = new AccountManager();
+
+        // Kiểm tra đã đăng nhập chưa
+        if (AccountManager.getLoggedInUser() == null) {
+            LoginScreen loginScreen = new LoginScreen(stage, accountManager, () -> {
+                stage.setScene(create(stage)); // Sau khi login thành công
+            });
+            return loginScreen.create();
+        }
         VBox root = new VBox(20);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(24));
@@ -48,7 +57,7 @@ public class MainMenu {
 
         ButtonUI introduceBtn = new ButtonUI("Introduce");
         introduceBtn.setOnAction(e -> {
-//            AudioSystem.getInstance().playSound("select");
+            AudioSystem.getInstance().playSound("select.mp3");
             Introduce introduce = new Introduce();
             cachedScene = create(stage);
             stage.setScene(introduce.create(stage));
@@ -114,11 +123,37 @@ public class MainMenu {
             stage.close();
         });
 
-        root.getChildren().addAll(introduceBtn, playBtn, levelSelectBtn, settingsBtn, leaderboardBtn, exitBtn);
-        return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
-    }
+        ButtonUI shopBtn = new ButtonUI("Shop");
+        shopBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
 
-    private String colorToHex(javafx.scene.paint.Color color) {
-        return color.toString().substring(2, 8);
+            Game g = (playGame != null) ? playGame : MainMenu.practiceGame;
+
+            if (g == null) {
+                g = new Game();
+                g.setModePlay();
+                g.getOrCreateGameScene(stage);
+                playGame = g;
+            }
+
+            Shop shop = new Shop(g, () -> {
+                stage.setScene(cachedScene != null ? cachedScene : create(stage));
+            });
+
+            Scene shopScene = shop.create(stage);
+            cachedScene = create(stage);
+            stage.setScene(shopScene);
+        });
+
+        ButtonUI logoutBtn = new ButtonUI("Log out");
+        logoutBtn.setOnAction(e -> {
+            AccountManager.logout();
+            stage.setScene(create(stage));
+        });
+
+        root.getChildren().addAll(introduceBtn, playBtn, levelSelectBtn, settingsBtn, leaderboardBtn, exitBtn);
+        root.getChildren().add(shopBtn);
+        root.getChildren().add(logoutBtn);
+        return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
     }
 }

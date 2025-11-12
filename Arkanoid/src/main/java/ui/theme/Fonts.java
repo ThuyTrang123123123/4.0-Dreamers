@@ -16,7 +16,4 @@ public class Fonts {
         return TITLE;
     }
 
-    public static Font body() {
-        return body();
-    }
 }

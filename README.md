@@ -1,43 +1,99 @@
-"BTL OOP 11"
+Arkanoid Game - Object-Oriented Programming Project
+---
 
-Nhóm 4.0-Dreamers
+Author
+---
 
-ERC = pause
+Group 2 - Class INT2204 11
 
-M = back to menu
+1. Nguyễn Thùy Trang - 24021644
+2. Nguyễn Minh Anh - 24021370
+3. Phan Yến Nhi - 24022705
+4. Trịnh Thị Vân - 24022842
 
-C = resume
+Instructor: Kiều Văn Tuyên
+Semester: HK1 - 2025
+---
 
-R = Restart
+Description
+---
 
-SPACE = bắn bóng
+...
 
-A - TUẦN 1:
+Key feature:
+1. 
+2. 
+3. 
+...
 
-- Chạy được level 1: Chỉnh sửa va chạm với biên, đá, vợt mượt
+Game mechanics:
+- 
 
-- Chuyển màn từ start sang level
+- 
 
-- Hiện HUD
+- 
 
-- Vẽ bằng canvas
+...
+---
 
-B - Tuần 2 :
+UML Diagram
 
-- Thêm settings chọn 3 loại nhạc, thêm âm thanh hitbrick
+...
+---
 
-- Tạo 12 level 
+Design Patterns Implementation
+1. ...
+Used in :
+Purpose :
+---
 
-- Thêm 4 loại gạch
+**Multithreading Implementation**
 
-- Ghi nhận thành tích
+...
+---
 
-- Thêm powerups
+**Installation**
+1. Clone the project from the repository.
+2. Open the project in the IDE.
+3. Run the project.
 
-- Chỉnh collision cho va chạm mượt
+**Usage**
 
-![alt text](image.png)
+**Control**
+...
 
-![alt text](image-1.png)
+**How to Play**
+1. 
+2. 
+3. 
+...
 
-![alt text](image-2.png)
+**Power-ups**
+...
+
+**Scoring System**
+...
+---
+
+**Demo**
+...
+---
+
+**Future Improvements**
+...
+---
+
+**Technologies Used**
+...
+---
+
+**License**
+... 
+---
+
+**Notes**
+...
+---
+
+*Last update: 12/11/2025*
+
