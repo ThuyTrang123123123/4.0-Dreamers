@@ -51,19 +51,26 @@ public class LeaderboardClient {
             URL url = new URL(API_URL + "/top?limit=" + top);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
 
-            if (conn.getResponseCode() == 200) {
-                // === THAY ĐỔI Ở ĐÂY ===
-                // Bỏ hoàn toàn BufferedReader và readLine()
-                // Đưa thẳng InputStream vào Jackson, nó sẽ tự xử lý
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                // Kiểm tra Content-Length
+                int contentLength = conn.getContentLength();
+                if (contentLength == 0) {
+                    return new ArrayList<>(); // Trả về list rỗng nếu server gửi body rỗng
+                }
+
                 return mapper.readValue(conn.getInputStream(),
                         mapper.getTypeFactory().constructCollectionType(List.class, HashMap.class));
-                // === KẾT THÚC THAY ĐỔI ===
+            } else {
+                System.err.println("Server trả về mã lỗi: " + responseCode);
+                return new ArrayList<>();
             }
         } catch (Exception e) {
             System.err.println("Lỗi lấy leaderboard: " + e.getMessage());
-            e.printStackTrace(); // Thêm dòng này để xem chi tiết lỗi nếu còn
+            return new ArrayList<>(); // Luôn trả về list rỗng nếu lỗi
         }
-        return new ArrayList<>();
     }
 }

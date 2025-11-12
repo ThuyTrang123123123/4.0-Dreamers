@@ -110,21 +110,26 @@ public class MockServer {
                             ? Integer.parseInt(query.split("=")[1])
                             : 10;
 
-                    String json;
-                    // === KHÓA scores ĐỂ ĐẢM BẢO AN TOÀN KHI ĐỌC ===
+                    List<Map<String, Object>> top;
                     synchronized (scores) {
-                        List<Map<String, Object>> top = new ArrayList<>(scores.subList(0, Math.min(limit, scores.size())));
-                        json = mapper.writeValueAsString(top);
-                    } // <-- KẾT THÚC KHỐI SYNCHRONIZED
+                        top = new ArrayList<>(scores.subList(0, Math.min(limit, scores.size())));
+                    }
 
-                    exchange.sendResponseHeaders(200, json.length());
+                    String json = mapper.writeValueAsString(top);
+
+                    // ← SỬA: Nếu rỗng, trả về [] thay vì body rỗng
+                    if (top.isEmpty()) {
+                        json = "[]"; // Đảm bảo luôn có body hợp lệ
+                    }
+
+                    exchange.sendResponseHeaders(200, json.getBytes().length);
                     try (OutputStream os = exchange.getResponseBody()) {
                         os.write(json.getBytes());
                     }
                 } catch (Exception e) {
-                    System.err.println("!!! Lỗi Server /top: " + e.getMessage());
+                    System.err.println("Lỗi Server /top: " + e.getMessage());
                     e.printStackTrace();
-                    exchange.sendResponseHeaders(500, -1); // Gửi lỗi 500
+                    exchange.sendResponseHeaders(500, -1);
                 }
             }
         });
