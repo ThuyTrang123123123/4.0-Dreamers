@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import data.AccountManager;
 import entities.Bullet;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -401,15 +402,21 @@ public class Game extends Application {
     }
 
     private void saveScoreOnce(String reason) {
+
         int finalScore = world.getScoring().getScore();
         int finalLevel = world.getLevel().getCurrentLevel();
 
-        // Save local high score
+        // Lưu local
         scoreRepo.saveScore(finalLevel, finalScore);
+        String playerName = AccountManager.getLoggedInUser();
+        // Nếu không ai đăng nhập (playerName là null), dùng tên mặc định từ playerRepo
+        if (playerName == null || playerName.isEmpty()) {
+            playerName = playerRepo.getPlayerName(); // Fallback về "Guest"
+        }
+        // Gửi lên leaderboard
+        leaderboardClient.submitScore(playerName, finalScore);
 
-        leaderboardClient.submitScore(playerRepo.getPlayerName(), finalScore);
-
-        System.out.println("Score saved ONCE for " + reason + ": " + finalScore);
+        System.out.println("Score saved ONCE for " + reason + " as " + playerName + ": " + finalScore);
     }
 
     public void showPause() {
@@ -438,13 +445,13 @@ public class Game extends Application {
             storage.delete(PROGRESS_PLAY);
             playerRepo.resetPlayer();
             scoreRepo.resetScores();
-            System.out.println("🔁 Restart PLAY mode → back to Level 1");
+            System.out.println("Restart PLAY mode → back to Level 1");
         }
         else if (mode == Mode.PRACTICE) {
             int currentLevel = world.getLevel().getCurrentLevel();
             world.reset();
             world.getLevel().setCurrentLevel(currentLevel);
-            System.out.println("🔁 Restart PRACTICE mode → stay at Level " + currentLevel);
+            System.out.println("Restart PRACTICE mode → stay at Level " + currentLevel);
         }
     }
 
@@ -484,17 +491,44 @@ public class Game extends Application {
 
         VBox leaderboardBox = new VBox(10);
         leaderboardBox.setAlignment(Pos.CENTER);
+        // CSS nhẹ cho đẹp
+        leaderboardBox.setStyle("-fx-padding: 20; -fx-background-color: #F4F4F4;");
 
         Label title = new Label("Top 10 Scores");
         title.setFont(Fonts.main(24));
+        title.setTextFill(Colors.PRIMARY);
+        leaderboardBox.getChildren().add(title);
 
-        for (Map<String, Object> entry : topScores) {
-            Label scoreLabel = new Label((String) entry.get("player") + ": " + entry.get("score"));
+        // === THAY ĐỔI VÒNG LẶP ===
+        // Dùng vòng lặp for-i để lấy số thứ tự
+        for (int i = 0; i < topScores.size(); i++) {
+            Map<String, Object> entry = topScores.get(i);
+
+            int rank = i + 1; // Số thứ tự (bắt đầu từ 1)
+            String player = (String) entry.get("player");
+            // Đảm bảo lấy "score" ra là Integer
+            int score = ((Number) entry.get("score")).intValue();
+
+            String text = rank + ". " + player + ": " + score;
+            Label scoreLabel = new Label(text);
+            scoreLabel.setFont(Fonts.main(16));
+
+            // (Tùy chọn) Tô màu cho top 3
+            if (rank == 1) {
+                scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #D4AF37;"); // Vàng
+            } else if (rank == 2) {
+                scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #C0C0C0;"); // Bạc
+            } else if (rank == 3) {
+                scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #CD7F32;"); // Đồng
+            }
+
             leaderboardBox.getChildren().add(scoreLabel);
         }
+        // === KẾT THÚC THAY ĐỔI ===
 
         Scene leaderboardScene = new Scene(leaderboardBox, 400, 600);
         Stage leaderboardStage = new Stage();
+        leaderboardStage.setTitle("Leaderboard");
         leaderboardStage.setScene(leaderboardScene);
         leaderboardStage.show();
     }
