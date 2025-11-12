@@ -81,7 +81,7 @@ public class Game extends Application {
     private boolean scoreSavedForWin = false;// Flag cho win
     private boolean endScreenShown = false;
 
-    private static final String PROGRESS_PLAY = "progress_play";
+    //private static final String PROGRESS_PLAY = "progress_play";
     private static final String SCORES_PLAY   = "scores_play";
     private static final String SCORES_PRACT  = "scores_practice";
 
@@ -93,7 +93,7 @@ public class Game extends Application {
         world.init(canvas);
 
         if (mode == Mode.PLAY) {
-            Map<String, Object> progress = storage.load(PROGRESS_PLAY);
+            Map<String, Object> progress = storage.load(getDynamicProgressKey());
             if (!progress.isEmpty()) {
                 int loadedScore  = ((Number) progress.getOrDefault("score", 0)).intValue();
                 int loadedLives  = ((Number) progress.getOrDefault("lives", 1)).intValue();
@@ -372,6 +372,19 @@ public class Game extends Application {
         }
     }
 
+    /**
+     * Lấy key (tên file) để lưu/tải progress, dựa trên người dùng đã đăng nhập.
+     */
+    private String getDynamicProgressKey() {
+        String username = AccountManager.getLoggedInUser();
+        if (username == null || username.isEmpty()) {
+            return "progress_guest"; // Dùng file riêng cho khách (Guest)
+        }
+        // Thay thế các ký tự không an toàn trong tên file
+        String safeUsername = username.replaceAll("[^a-zA-Z0-9_.-]", "_");
+        return "progress_" + safeUsername;
+    }
+
     private void saveProgress() {
         if (mode != Mode.PLAY) return;
 
@@ -388,7 +401,7 @@ public class Game extends Application {
         }
         progress.put("unlockedAchievements", unlockedIds);
 
-        storage.save(PROGRESS_PLAY, progress);
+        storage.save(getDynamicProgressKey(), progress);
 
         scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
 
@@ -442,7 +455,7 @@ public class Game extends Application {
         if (mode == Mode.PLAY) {
             world.reset();
             world.getLevel().setCurrentLevel(1);
-            storage.delete(PROGRESS_PLAY);
+            storage.delete(getDynamicProgressKey());
             playerRepo.resetPlayer();
             scoreRepo.resetScores();
             System.out.println("Restart PLAY mode → back to Level 1");
@@ -556,9 +569,10 @@ public class Game extends Application {
         startLoopIfNeeded();
     }
 
+
     public int getHighestLevelUnlocked() {
         try {
-            Map<String, Object> p = storage.load(PROGRESS_PLAY);
+            Map<String, Object> p = storage.load(getDynamicProgressKey());
             int highest = ((Number)p.getOrDefault(
                     "highestLevelUnlocked",
                     Math.max(1, ((Number)p.getOrDefault("currentLevel", 1)).intValue())
@@ -570,9 +584,9 @@ public class Game extends Application {
     }
 
     public void setHighestLevelUnlocked(int v) {
-        Map<String, Object> p = storage.load(PROGRESS_PLAY);
+        Map<String, Object> p = storage.load(getDynamicProgressKey());
         p.put("highestLevelUnlocked", Math.max(1, v));
-        storage.save(PROGRESS_PLAY, p);
+        storage.save(getDynamicProgressKey(), p);
     }
 
     public void setModePlay()     {
@@ -631,7 +645,7 @@ public class Game extends Application {
         if (mode == Mode.PLAY) {
             world.reset();
             world.getLevel().setCurrentLevel(1);
-            storage.delete(PROGRESS_PLAY);
+            storage.delete(getDynamicProgressKey());
             playerRepo.resetPlayer();
             scoreRepo.resetScores();
         } else {

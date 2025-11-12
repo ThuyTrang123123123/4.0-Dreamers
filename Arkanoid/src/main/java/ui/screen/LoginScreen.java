@@ -13,6 +13,8 @@ import ui.theme.Colors;
 import ui.theme.Fonts;
 import ui.widgets.ButtonUI;
 import java.io.File;
+import ui.screen.MainMenu;
+
 public class LoginScreen {
     private final Stage stage;
     private final AccountManager accountManager;
@@ -58,6 +60,11 @@ public class LoginScreen {
             }
             if (accountManager.login(user, pass)) {
                 AccountManager.setLoggedInUser(user);
+                // === THÊM VÀO ĐÂY ===
+                // Vô hiệu hóa (null) các instance game cũ
+                // để MainMenu buộc phải tạo game MỚI cho user này
+                MainMenu.playGame = null;
+                MainMenu.practiceGame = null;
                 onLoginSuccess.run();
             } else {
                 message.setText("Invalid username or password!");
@@ -75,8 +82,9 @@ public class LoginScreen {
             if (accountManager.register(user, pass)) {
                 message.setText("Registered successfully! Logging in...");
                 AccountManager.setLoggedInUser(user);
-
-                // === THÊM LOGIC XÓA PROGRESS CŨ TẠI ĐÂY ===
+                MainMenu.playGame = null;
+                MainMenu.practiceGame = null;
+// === THÊM LOGIC XÓA PROGRESS CŨ TẠI ĐÂY === // XÓA BẮT ĐẦU TỪ ĐÂY
                 try {
                     // "progress_play" là key trong Game.java
                     // JsonStorage sẽ biến nó thành "progress_play.json"
@@ -88,15 +96,10 @@ public class LoginScreen {
                             System.err.println("Could not delete progress file.");
                         }
                     }
-                    // Bạn cũng có thể cân nhắc xóa file "scores.json" nếu muốn
-                    // File oldScores = new File("src/main/resources/data/scores.json");
-                    // if (oldScores.exists()) oldScores.delete();
-
                 } catch (Exception ex) {
                     System.err.println("Error deleting old progress file: " + ex.getMessage());
                 }
-                // === KẾT THÚC LOGIC XÓA ===
-
+                // === KẾT THÚC LOGIC XÓA === // XÓA ĐẾN HẾT ĐÂY
                 onLoginSuccess.run(); // Chuyển đến MainMenu
             } else {
                 message.setText("Username already exists!");
