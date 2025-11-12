@@ -46,6 +46,10 @@ import ui.screen.*;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.scene.paint.Color;
+import javafx.geometry.Insets;
+
 public class Game extends Application {
     private Canvas canvas;
     private GraphicsContext gc;
@@ -165,14 +169,14 @@ public class Game extends Application {
                 return;
             }
 
-            if (mode == Mode.PRACTICE && e.getCode() == KeyCode.ENTER) {
+            if (mode == Mode.PRACTICE && e.getCode() == KeyCode.ENTER ) {
 
                 gamePaused = true;
                 if (loop != null) loop.stop();
 
                 var storage = new JsonStorage();
                 var playerRepo = new PlayerRepository(storage);
-                var scoreRepo = new ScoreRepository(storage);
+                var scoreRepo  = new ScoreRepository(storage);
                 LevelSelect select = new LevelSelect(stage, this, playerRepo, scoreRepo);
                 stage.setScene(select.create());
                 return;
@@ -218,7 +222,6 @@ public class Game extends Application {
                 if (Collision.isBallTouchingPaddle(ball, paddle)) {
                     Collision.handleBallPaddleCollision(ball, paddle);
                 }
-
                 Collision.handleBallBrickCollision(ball, world.getBricks(), world);
             }
         }
@@ -402,13 +405,7 @@ public class Game extends Application {
 
         storage.save(getDynamicProgressKey(), progress);
 
-        scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
-
-        int cur = world.getLevel().getCurrentLevel();
-        int highest = getHighestLevelUnlocked();
-        if (cur >= highest && cur < world.getLevel().getMaxLevel()) {
-            setHighestLevelUnlocked(cur + 1);
-        }
+        scoreRepo.saveBestScoreIfHigher(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
 
         System.out.println("Progress saved: Level " + world.getLevel().getCurrentLevel());
     }
@@ -420,14 +417,21 @@ public class Game extends Application {
         // Lưu local
         scoreRepo.saveScore(finalLevel, finalScore);
         String playerName = AccountManager.getLoggedInUser();
-        // Nếu không ai đăng nhập (playerName là null), dùng tên mặc định từ playerRepo
         if (playerName == null || playerName.isEmpty()) {
             playerName = playerRepo.getPlayerName(); // Fallback về "Guest"
         }
+
         // Gửi lên leaderboard
         leaderboardClient.submitScore(playerName, finalScore);
 
         System.out.println("Score saved ONCE for " + reason + " as " + playerName + ": " + finalScore);
+
+        // === THÊM VÀO ĐÂY / ĐẢM BẢO BẠN CÓ DÒNG NÀY ===
+        // Nếu game kết thúc (thắng hoặc thua), xóa file "progress" (run này đã kết thúc)
+        if (reason.equals("GAME_OVER") || reason.equals("WIN")) {
+            storage.delete(getDynamicProgressKey());
+            System.out.println("Run finished. Deleting progress file: " + getDynamicProgressKey());
+        }
     }
 
     public void showPause() {
@@ -443,7 +447,7 @@ public class Game extends Application {
         stage.setScene(inGameScene);
     }
 
-    private void restartGame() {
+    public void restartGame() {
         gamePaused = false;
         gameWon = false;
         justCompleted = false;
@@ -454,10 +458,9 @@ public class Game extends Application {
             world.reset();
             world.getLevel().setCurrentLevel(1);
             storage.delete(getDynamicProgressKey());
-            playerRepo.resetPlayer();
-            scoreRepo.resetScores();
             System.out.println("Restart PLAY mode → back to Level 1");
-        } else if (mode == Mode.PRACTICE) {
+        }
+        else if (mode == Mode.PRACTICE) {
             int currentLevel = world.getLevel().getCurrentLevel();
             world.reset();
             world.getLevel().setCurrentLevel(currentLevel);
@@ -497,45 +500,98 @@ public class Game extends Application {
     }
 
     public void showLeaderboard() {
+        // --- 1. Lấy Top 10 Toàn Cầu (Giữ nguyên) ---
         List<Map<String, Object>> topScores = leaderboardClient.getTopScores(10);
 
         VBox leaderboardBox = new VBox(10);
         leaderboardBox.setAlignment(Pos.CENTER);
-        // CSS nhẹ cho đẹp
-        leaderboardBox.setStyle("-fx-padding: 20; -fx-background-color: #F4F4F4;");
+        leaderboardBox.setStyle("-fx-padding: 20; -fx-background-color: #FFF8F6;"); // Cập nhật màu nền
 
-        Label title = new Label("Top 10 Scores");
-        title.setFont(Fonts.main(24));
+        Label title = new Label("BXH");
+        title.setFont(Fonts.main(28));
         title.setTextFill(Colors.PRIMARY);
         leaderboardBox.getChildren().add(title);
 
-        // === THAY ĐỔI VÒNG LẶP ===
-        // Dùng vòng lặp for-i để lấy số thứ tự
+        // --- 2. Hiển thị Top 10 Toàn Cầu (Giữ nguyên) ---
         for (int i = 0; i < topScores.size(); i++) {
             Map<String, Object> entry = topScores.get(i);
 
-            int rank = i + 1; // Số thứ tự (bắt đầu từ 1)
+            int rank = i + 1;
             String player = (String) entry.get("player");
-            // Đảm bảo lấy "score" ra là Integer
             int score = ((Number) entry.get("score")).intValue();
 
             String text = rank + ". " + player + ": " + score;
             Label scoreLabel = new Label(text);
             scoreLabel.setFont(Fonts.main(16));
 
-            // (Tùy chọn) Tô màu cho top 3
             if (rank == 1) {
                 scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #D4AF37;"); // Vàng
             } else if (rank == 2) {
-                scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #C0C0C0;"); // Bạc
+                scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A9A9A9;"); // Bạc
             } else if (rank == 3) {
                 scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #CD7F32;"); // Đồng
             }
 
             leaderboardBox.getChildren().add(scoreLabel);
         }
-        // === KẾT THÚC THAY ĐỔI ===
 
+        // --- 3. Thêm một đường kẻ phân cách ---
+        // (Tạo khoảng cách trực quan)
+        VBox.setMargin(title, new Insets(0, 0, 15, 0)); // Thêm margin dưới title
+        javafx.scene.shape.Line separator = new javafx.scene.shape.Line(0, 0, 300, 0);
+        separator.setStroke(Color.web("#E0E0E0"));
+        VBox.setMargin(separator, new Insets(15, 0, 15, 0)); // Thêm margin trên và dưới
+        leaderboardBox.getChildren().add(separator);
+
+
+        // --- 4. LOGIC MỚI: Hiển thị Thành Tích Cá Nhân ---
+        String currentUser = AccountManager.getLoggedInUser();
+
+        // Chỉ hiển thị nếu có người dùng đăng nhập (không phải Guest)
+        if (currentUser != null && !currentUser.isEmpty()) {
+
+            // Lấy Level cao nhất (từ file progress_User.json)
+            // Phương thức này đã được chúng ta sửa để đọc theo tài khoản
+            int personalBestLevel = getHighestLevelUnlocked();
+
+            // Lấy Điểm cao nhất (từ file scores_User.json)
+            // Chúng ta cần duyệt qua file điểm cá nhân để tìm điểm cao nhất
+            ScoreRepository personalScoreRepo = new ScoreRepository(storage);
+            List<Map<String, Object>> allMyScores = personalScoreRepo.getAllHighScores();
+
+            int personalBestScore = 0;
+            for (Map<String, Object> entry : allMyScores) {
+                int score = ((Number) entry.get("score")).intValue();
+                if (score > personalBestScore) {
+                    personalBestScore = score;
+                }
+            }
+
+            // Tạo các Label UI
+            Label personalTitle = new Label(currentUser + "'s Records");
+            personalTitle.setFont(Fonts.main(22));
+            personalTitle.setStyle("-fx-font-weight: bold; -fx-text-fill: #2C7A7B;"); // Màu teal
+            VBox.setMargin(personalTitle, new Insets(0, 0, 10, 0));
+
+            Label bestScoreLabel = new Label("Best Score: " + personalBestScore);
+            bestScoreLabel.setFont(Fonts.main(18));
+
+            Label bestLevelLabel = new Label("Highest Level: " + personalBestLevel);
+            bestLevelLabel.setFont(Fonts.main(18));
+
+            leaderboardBox.getChildren().addAll(personalTitle, bestScoreLabel, bestLevelLabel);
+
+        } else {
+            // Nếu là Guest, hiển thị lời nhắc
+            Label guestLabel = new Label("Log in to view your records!");
+            guestLabel.setFont(Fonts.main(16));
+            guestLabel.setStyle("-fx-text-fill: #777777;");
+            leaderboardBox.getChildren().add(guestLabel);
+        }
+        // --- Kết thúc Logic Mới ---
+
+
+        // --- 5. Hiển thị cửa sổ (Giữ nguyên) ---
         Scene leaderboardScene = new Scene(leaderboardBox, 400, 600);
         Stage leaderboardStage = new Stage();
         leaderboardStage.setTitle("Leaderboard");
@@ -566,24 +622,32 @@ public class Game extends Application {
         startLoopIfNeeded();
     }
 
+
     public int getHighestLevelUnlocked() {
         try {
-            Map<String, Object> p = storage.load(getDynamicProgressKey());
-            int highest = ((Number)p.getOrDefault(
-                    "highestLevelUnlocked",
-                    Math.max(1, ((Number)p.getOrDefault("currentLevel", 1)).intValue())
-            )).intValue();
-            return Math.max(1, highest);
+            // Đọc từ file scores vĩnh viễn thay vì file progress
+            ScoreRepository personalScoreRepo = new ScoreRepository(storage);
+            List<Map<String, Object>> allMyScores = personalScoreRepo.getAllHighScores();
+
+            int highestLevelFound = 1; // Mặc định là 1
+
+            // Duyệt qua tất cả các điểm đã lưu
+            for (Map<String, Object> entry : allMyScores) {
+                // Chúng ta cần ép kiểu (cast) an toàn
+                int level = ((Number) entry.get("level")).intValue();
+                if (level > highestLevelFound) {
+                    highestLevelFound = level;
+                }
+            }
+            // Trả về level cao nhất bạn TỪNG CHƠI
+            return highestLevelFound;
+
         } catch (Exception e) {
-            return 1;
+            System.err.println("Lỗi khi đọc highest level: " + e.getMessage());
+            return 1; // Trả về 1 nếu có lỗi
         }
     }
 
-    public void setHighestLevelUnlocked(int v) {
-        Map<String, Object> p = storage.load(getDynamicProgressKey());
-        p.put("highestLevelUnlocked", Math.max(1, v));
-        storage.save(getDynamicProgressKey(), p);
-    }
 
     public void setModePlay()     {
         mode = Mode.PLAY;
@@ -624,7 +688,7 @@ public class Game extends Application {
                     best,
                     onReplay,
                     onMain,
-                    "/images/END.png"
+                    "/images/BACKGROUND.png" // phải tồn tại thật
             );
             stage.setScene(endScene);
         });
@@ -642,8 +706,6 @@ public class Game extends Application {
             world.reset();
             world.getLevel().setCurrentLevel(1);
             storage.delete(getDynamicProgressKey());
-            playerRepo.resetPlayer();
-            scoreRepo.resetScores();
         } else {
             int currentLevel = world.getLevel().getCurrentLevel();
             world.reset();
@@ -662,13 +724,6 @@ public class Game extends Application {
         scoreSavedForGameOver = false;
         scoreSavedForWin = false;
         endScreenShown = false;
-
-        inGameScene = null;
-        world.reset();
-        world.getLevel().setCurrentLevel(1);
-        storage.delete(getDynamicProgressKey());
-        playerRepo.resetPlayer();
-        scoreRepo.resetScores();
 
         Scene menuScene = (mode == Mode.PLAY) ? MainMenu.cachedScene : MainMenu.cachedScenePractice;
         if (menuScene == null) {
@@ -715,5 +770,45 @@ public class Game extends Application {
             AudioSystem.getInstance().dispose();
             mockServer.stop();
         });
+    }
+    // Trong core/Game.java
+
+    /** Kiểm tra xem có file save trên đĩa không */
+    public boolean hasDiskSave() {
+        Map<String, Object> progress = storage.load(getDynamicProgressKey());
+        return !progress.isEmpty();
+    }
+
+    /** Lấy level từ file save trên đĩa */
+    public int getLevelFromDiskSave() {
+        Map<String, Object> progress = storage.load(getDynamicProgressKey());
+        if (!progress.isEmpty()) {
+            return ((Number) progress.getOrDefault("currentLevel", 1)).intValue();
+        }
+        return 1;
+    }
+
+    /** Lấy level hiện tại đang chạy trong RAM (khi pause) */
+    public int getCurrentMemoryLevel() {
+        // Sửa lỗi: Phải là world.getLevel()
+        if (world != null && world.getLevel() != null) {
+            return world.getLevel().getCurrentLevel();
+        }
+        return 1;
+    }
+
+    /** Xóa file save (dùng cho nút "New Game") */
+    public void wipeDiskSave() {
+        storage.delete(getDynamicProgressKey());
+        System.out.println("Disk save wiped: " + getDynamicProgressKey());
+    }
+
+    /** Kiểm tra xem game đã "kết thúc" (Game Over/Win) chưa */
+    public boolean isGameFinished() {
+        // Đảm bảo world và scoring đã được khởi tạo
+        if (world == null || world.getScoring() == null) {
+            return false; // Mặc định là false nếu chưa load
+        }
+        return world.getScoring().isGameOver() || gameWon;
     }
 }

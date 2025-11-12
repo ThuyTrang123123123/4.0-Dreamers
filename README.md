@@ -45,6 +45,8 @@ Key feature:
 - Thread âm thanh -> AudioSystem
 - I/O -> Storage, Game, MockServer
 
+5. Includes sound effects, animations, and power-up systems.
+6. Supports save/load game functionality and leaderboard system.
 
 Game mechanics:
 - 

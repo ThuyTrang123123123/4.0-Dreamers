@@ -12,62 +12,87 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.*;
+import java.util.Collections; // <-- Đã thêm import
 import java.util.concurrent.Executors;
 
 public class MockServer {
     private static final int PORT = 9091;
-    private static final String SCORES_KEY = "leaderboard"; // khóa để lưu vào file
+    private static final String SCORES_KEY = "leaderboard";
     private static HttpServer server;
     private final ObjectMapper mapper = new ObjectMapper();
-    private final Storage storage = new JsonStorage(); // 🔹 sử dụng lớp JsonStorage
+    private final Storage storage = new JsonStorage();
 
     public void start() throws IOException {
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.setExecutor(Executors.newFixedThreadPool(4));
 
-        // Tải dữ liệu từ file
-        List<Map<String, Object>> scores = storage.loadList(SCORES_KEY);
+        // === SỬA LỖI KHỞI ĐỘNG (CHỐNG NULL) ===
+        List<Map<String, Object>> loadedScores = storage.loadList(SCORES_KEY);
 
-        // Endpoint: /leaderboard/submit
+        // 1. Kiểm tra null nếu file không tồn tại
+        if (loadedScores == null) {
+            loadedScores = new ArrayList<>(); // Tạo list rỗng
+        }
+
+        // 2. Bọc trong danh sách thread-safe
+        List<Map<String, Object>> scores = Collections.synchronizedList(loadedScores);
+        // === KẾT THÚC SỬA LỖI KHỞI ĐỘNG ===
+
+
+        // Endpoint: /leaderboard/submit (Đã sửa lỗi đa luồng VÀ ép kiểu)
         server.createContext("/leaderboard/submit", new HttpHandler() {
             @Override
             public void handle(HttpExchange exchange) throws IOException {
                 if ("POST".equals(exchange.getRequestMethod())) {
-                    InputStreamReader isr = new InputStreamReader(exchange.getRequestBody());
-                    Map<String, Object> newData = mapper.readValue(isr, HashMap.class);
+                    try {
+                        InputStreamReader isr = new InputStreamReader(exchange.getRequestBody());
+                        Map<String, Object> newData = mapper.readValue(isr, HashMap.class);
 
-                    // === LOGIC MỚI ĐỂ ĐẢM BẢO UNIQUE PLAYER ===
-                    String newPlayer = (String) newData.get("player");
-                    int newScore = (Integer) newData.get("score");
-                    boolean playerExists = false;
+                        // === KHÓA scores ĐỂ ĐẢM BẢO AN TOÀN KHI GHI ===
+                        synchronized (scores) {
+                            String newPlayer = (String) newData.get("player");
 
-                    // 1. Tìm xem người chơi đã tồn tại chưa
-                    for (Map<String, Object> existingEntry : scores) {
-                        if (existingEntry.get("player").equals(newPlayer)) {
-                            playerExists = true;
-                            int oldScore = (Integer) existingEntry.get("score");
+                            // === SỬA LỖI ÉP KIỂU (NUMBER) ===
+                            int newScore = ((Number) newData.get("score")).intValue();
+                            boolean playerExists = false;
 
-                            // 2. Nếu điểm mới cao hơn, cập nhật điểm cũ
-                            if (newScore > oldScore) {
-                                existingEntry.put("score", newScore);
+                            // 1. Tìm
+                            for (Map<String, Object> existingEntry : scores) {
+                                if (existingEntry.get("player").equals(newPlayer)) {
+                                    playerExists = true;
+
+                                    // === SỬA LỖI ÉP KIỂU (NUMBER) ===
+                                    int oldScore = ((Number) existingEntry.get("score")).intValue();
+
+                                    if (newScore > oldScore) {
+                                        existingEntry.put("score", newScore);
+                                    }
+                                    break;
+                                }
                             }
-                            break; // Đã tìm thấy, thoát vòng lặp
-                        }
+
+                            // 2. Thêm mới
+                            if (!playerExists) {
+                                scores.add(newData);
+                            }
+
+                            // 3. Sắp xếp (an toàn)
+                            scores.sort((a, b) -> {
+                                int scoreA = ((Number) a.get("score")).intValue();
+                                int scoreB = ((Number) b.get("score")).intValue();
+                                return Integer.compare(scoreB, scoreA); // Giảm dần
+                            });
+
+                            // 4. Lưu lại file
+                            storage.saveList(SCORES_KEY, scores);
+                        } // <-- KẾT THÚC KHỐI SYNCHRONIZED
+
+                        exchange.sendResponseHeaders(200, -1);
+                    } catch (Exception e) {
+                        System.err.println("!!! Lỗi Server /submit: " + e.getMessage());
+                        e.printStackTrace();
+                        exchange.sendResponseHeaders(500, -1); // Gửi lỗi 500
                     }
-
-                    // 3. Nếu người chơi không tồn tại, thêm mới
-                    if (!playerExists) {
-                        scores.add(newData);
-                    }
-                    // === KẾT THÚC LOGIC MỚI ===
-
-                    // Sắp xếp giảm dần theo điểm
-                    scores.sort((a, b) -> ((Integer) b.get("score")).compareTo((Integer) a.get("score")));
-
-                    // Lưu lại vào file
-                    storage.saveList(SCORES_KEY, scores);
-
-                    exchange.sendResponseHeaders(200, -1);
                 } else {
                     exchange.sendResponseHeaders(405, -1);
                 }
@@ -75,20 +100,36 @@ public class MockServer {
             }
         });
 
-        // Endpoint: /leaderboard/top
+        // Endpoint: /leaderboard/top (Đã sửa lỗi đa luồng)
         server.createContext("/leaderboard/top", new HttpHandler() {
             @Override
             public void handle(HttpExchange exchange) throws IOException {
-                String query = exchange.getRequestURI().getQuery();
-                int limit = query != null && query.contains("limit=")
-                        ? Integer.parseInt(query.split("=")[1])
-                        : 10;
+                try {
+                    String query = exchange.getRequestURI().getQuery();
+                    int limit = query != null && query.contains("limit=")
+                            ? Integer.parseInt(query.split("=")[1])
+                            : 10;
 
-                List<Map<String, Object>> top = scores.subList(0, Math.min(limit, scores.size()));
-                String json = mapper.writeValueAsString(top);
-                exchange.sendResponseHeaders(200, json.length());
-                try (OutputStream os = exchange.getResponseBody()) {
-                    os.write(json.getBytes());
+                    List<Map<String, Object>> top;
+                    synchronized (scores) {
+                        top = new ArrayList<>(scores.subList(0, Math.min(limit, scores.size())));
+                    }
+
+                    String json = mapper.writeValueAsString(top);
+
+                    // ← SỬA: Nếu rỗng, trả về [] thay vì body rỗng
+                    if (top.isEmpty()) {
+                        json = "[]"; // Đảm bảo luôn có body hợp lệ
+                    }
+
+                    exchange.sendResponseHeaders(200, json.getBytes().length);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(json.getBytes());
+                    }
+                } catch (Exception e) {
+                    System.err.println("Lỗi Server /top: " + e.getMessage());
+                    e.printStackTrace();
+                    exchange.sendResponseHeaders(500, -1);
                 }
             }
         });
