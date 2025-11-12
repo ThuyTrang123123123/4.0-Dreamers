@@ -53,12 +53,16 @@ public class LeaderboardClient {
             conn.setRequestMethod("GET");
 
             if (conn.getResponseCode() == 200) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String json = br.readLine();
-                return mapper.readValue(json, mapper.getTypeFactory().constructCollectionType(List.class, HashMap.class));
+                // === THAY ĐỔI Ở ĐÂY ===
+                // Bỏ hoàn toàn BufferedReader và readLine()
+                // Đưa thẳng InputStream vào Jackson, nó sẽ tự xử lý
+                return mapper.readValue(conn.getInputStream(),
+                        mapper.getTypeFactory().constructCollectionType(List.class, HashMap.class));
+                // === KẾT THÚC THAY ĐỔI ===
             }
         } catch (Exception e) {
             System.err.println("Lỗi lấy leaderboard: " + e.getMessage());
+            e.printStackTrace(); // Thêm dòng này để xem chi tiết lỗi nếu còn
         }
         return new ArrayList<>();
     }

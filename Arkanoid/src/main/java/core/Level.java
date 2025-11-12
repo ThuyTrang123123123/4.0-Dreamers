@@ -33,25 +33,29 @@ public class Level {
 
     private void ensureThemeFresh() {
         String selected = ThemeManager.pathForSelectedTheme(currentLevel);
-        String keyNow = (selected == null) ? "__fallback__" : selected;
-        if (!keyNow.equals(cachedThemeKey)) {
-            backgroundImage = null;
-            try {
-                if (selected != null) {
-                    backgroundImage = new Image(
-                            Objects.requireNonNull(getClass().getResource(selected)).toExternalForm()
-                    );
-                } else {
-                    backgroundImage = new Image(
-                            Objects.requireNonNull(getClass().getResource(pathForLevel())).toExternalForm()
-                    );
-                }
-                cachedThemeKey = keyNow;
-            } catch (Exception e) {
-                System.err.println("Không load được nền: " + keyNow + " -> " + e.getMessage());
+        String keyNow = (selected == null) ? "__default__" : selected;
+
+        if (keyNow.equals(cachedThemeKey) && backgroundImage != null) {
+            return;
+        }
+
+        try {
+            String pathToUse;
+            if (selected != null) {
+                pathToUse = selected;
+            } else {
+                pathToUse = pathForLevel();
             }
+
+            backgroundImage = new Image(
+                    Objects.requireNonNull(getClass().getResource(pathToUse)).toExternalForm()
+            );
+            cachedThemeKey = keyNow;
+        } catch (Exception e) {
+            System.err.println("Không load được nền: " + keyNow + " -> " + e.getMessage());
         }
     }
+
 
     public Image getBackgroundImage() {
         ensureThemeFresh();
@@ -359,5 +363,7 @@ public class Level {
     public void setCurrentLevel(int level) {
         this.currentLevel = Math.min(level, MAX_LEVEL);
         generateLevel(this.currentLevel);
+        invalidateBackground();
+        ensureThemeFresh();
     }
 }

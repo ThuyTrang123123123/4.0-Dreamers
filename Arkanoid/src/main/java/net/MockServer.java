@@ -25,7 +25,7 @@ public class MockServer {
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.setExecutor(Executors.newFixedThreadPool(4));
 
-        // 🔹 Tải dữ liệu từ file
+        // Tải dữ liệu từ file
         List<Map<String, Object>> scores = storage.loadList(SCORES_KEY);
 
         // Endpoint: /leaderboard/submit
@@ -34,13 +34,37 @@ public class MockServer {
             public void handle(HttpExchange exchange) throws IOException {
                 if ("POST".equals(exchange.getRequestMethod())) {
                     InputStreamReader isr = new InputStreamReader(exchange.getRequestBody());
-                    Map<String, Object> data = mapper.readValue(isr, HashMap.class);
-                    scores.add(data);
+                    Map<String, Object> newData = mapper.readValue(isr, HashMap.class);
+
+                    // === LOGIC MỚI ĐỂ ĐẢM BẢO UNIQUE PLAYER ===
+                    String newPlayer = (String) newData.get("player");
+                    int newScore = (Integer) newData.get("score");
+                    boolean playerExists = false;
+
+                    // 1. Tìm xem người chơi đã tồn tại chưa
+                    for (Map<String, Object> existingEntry : scores) {
+                        if (existingEntry.get("player").equals(newPlayer)) {
+                            playerExists = true;
+                            int oldScore = (Integer) existingEntry.get("score");
+
+                            // 2. Nếu điểm mới cao hơn, cập nhật điểm cũ
+                            if (newScore > oldScore) {
+                                existingEntry.put("score", newScore);
+                            }
+                            break; // Đã tìm thấy, thoát vòng lặp
+                        }
+                    }
+
+                    // 3. Nếu người chơi không tồn tại, thêm mới
+                    if (!playerExists) {
+                        scores.add(newData);
+                    }
+                    // === KẾT THÚC LOGIC MỚI ===
 
                     // Sắp xếp giảm dần theo điểm
                     scores.sort((a, b) -> ((Integer) b.get("score")).compareTo((Integer) a.get("score")));
 
-                    // 🔹 Lưu lại vào file
+                    // Lưu lại vào file
                     storage.saveList(SCORES_KEY, scores);
 
                     exchange.sendResponseHeaders(200, -1);
@@ -70,14 +94,14 @@ public class MockServer {
         });
 
         server.start();
-        System.out.println("✅ MockServer chạy tại http://localhost:" + PORT);
-        System.out.println("✅ Đã nạp " + scores.size() + " bản ghi leaderboard từ file.");
+        System.out.println("MockServer chạy tại http://localhost:" + PORT);
+        System.out.println("Đã nạp " + scores.size() + " bản ghi leaderboard từ file.");
     }
 
     public void stop() {
         if (server != null) {
             server.stop(0);
-            System.out.println("🛑 MockServer dừng");
+            System.out.println("MockServer dừng");
         }
     }
 

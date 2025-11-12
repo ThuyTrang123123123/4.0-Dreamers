@@ -17,8 +17,14 @@ public final class ThemeManager {
     }
 
     public static String getThemeForLevel(int level) {
-        try { return store().getString(KEY_LEVEL_PREFIX + level, null); }
-        catch (Exception ignore) { return null; }
+        try {
+            String v = store().getString(KEY_LEVEL_PREFIX + level, null);
+
+            if (v == null) return null;
+            v = v.trim();
+            if (v.isEmpty() || "null".equalsIgnoreCase(v)) return null;
+            return v;
+        } catch (Exception ignore) { return null; }
     }
 
     public static String pathForSelectedTheme(int level) {
