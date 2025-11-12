@@ -13,6 +13,10 @@ import javafx.scene.image.Image;
 
 import java.util.List;
 
+/**
+ *
+ */
+
 public class Collision {
 
 
