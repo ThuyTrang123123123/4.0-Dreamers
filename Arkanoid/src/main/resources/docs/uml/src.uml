@@ -1,0 +1,1023 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>D:/Trang/GitHub &amp; Git/4.0-Dreamers/Arkanoid/src</OriginalElement>
+  <nodes>
+    <node x="426.0" y="3618.0">core.Level</node>
+    <node x="2561.0" y="3570.0">entities.Paddle</node>
+    <node x="3872.5" y="1947.5">entities.powerups.ExtraLife</node>
+    <node x="1468.5" y="2373.0">entities.bricks.factory.BrickFactory</node>
+    <node x="4062.5" y="5173.0">engine.Physics</node>
+    <node x="3863.0" y="6165.0">engine.Collision</node>
+    <node x="3452.5" y="2322.0">entities.powerups.SlowBall</node>
+    <node x="3975.5" y="670.0">entities.bricks.ExplodingBrick</node>
+    <node x="3138.0" y="5726.5">ui.theme.Colors</node>
+    <node x="1093.5" y="-14.0">entities.bricks.Brick</node>
+    <node x="-1327.5" y="658.0">data.PlayerAccount</node>
+    <node x="4007.5" y="2298.0">entities.powerups.BonusCoin</node>
+    <node x="2470.5" y="5149.0">HandleBallPaddleTest</node>
+    <node x="1107.5" y="1261.0">entities.bricks.UnbreakableBrick</node>
+    <node x="-1247.5" y="3933.0">ui.screen.LoginScreen</node>
+    <node x="764.5" y="3462.0">systems.AchievementSystem</node>
+    <node x="2591.5" y="733.0">entities.bricks.HardBrick</node>
+    <node x="1878.5" y="6213.0">HandleBulletBrickTest</node>
+    <node x="-1890.0" y="2262.0">data.SQLiteStorage</node>
+    <node x="1233.0" y="2882.0">systems.ScoringSystem</node>
+    <node x="3283.5" y="5146.0">engine.PlayExploding</node>
+    <node x="-197.5" y="3933.0">ui.screen.Guide</node>
+    <node x="3222.0" y="6273.0">core.HelloApplication</node>
+    <node x="-1522.5" y="1986.5">core.Config</node>
+    <node x="-1730.0" y="3858.0">data.JsonStorage</node>
+    <node x="1753.0" y="5701.0">util.ErrorHandler</node>
+    <node x="3172.5" y="2322.0">entities.powerups.SpeedBall</node>
+    <node x="-2012.5" y="5874.0">core.Game</node>
+    <node x="3728.0" y="2322.0">entities.powerups.EnlargePaddle</node>
+    <node x="-1437.5" y="5173.0">ui.screen.MainMenu</node>
+    <node x="-1060.5" y="5137.0">ui.screen.InGame</node>
+    <node x="1324.0" y="733.0">entities.bricks.NormalBrick</node>
+    <node x="1072.5" y="5726.5">core.interfaces.Renderable</node>
+    <node x="-2519.5" y="2323.5">data.repositories.PlayerRepository</node>
+    <node x="-1331.5" y="2274.0">data.AccountManager</node>
+    <node x="-1042.5" y="2142.0">systems.AudioSystem</node>
+    <node x="-437.5" y="3933.0">ui.screen.Introduce</node>
+    <node x="658.0" y="4930.0">core.World</node>
+    <node x="-1970.0" y="1238.5">data.Storage</node>
+    <node x="3311.5" y="1922.0">entities.powerups.ShrinkPaddle</node>
+    <node x="-174.0" y="5149.0">net.MockServer</node>
+    <node x="3592.5" y="1947.5">entities.powerups.ShootPaddle</node>
+    <node x="3772.5" y="1078.0">entities.powerups.PowerUp</node>
+    <node x="-2359.5" y="5161.0">net.LeaderboardClient</node>
+    <node x="2752.5" y="2322.0">entities.powerups.EnLargeBall</node>
+    <node x="2677.5" y="4705.0">CollisionTest</node>
+    <node x="3262.0" y="3846.0">engine.Sprite</node>
+    <node x="-2274.0" y="6273.0">core.Launcher</node>
+    <node x="3748.0" y="5701.0">ui.theme.Fonts</node>
+    <node x="2417.0" y="922.0">entities.Ball</node>
+    <node x="-2208.0" y="3825.0">ui.screen.LevelSelect</node>
+    <node x="1651.0" y="6237.0">util.Logger</node>
+    <node x="3330.5" y="5689.0">util.EventBus</node>
+    <node x="-84.5" y="3113.0">ui.screen.End</node>
+    <node x="-842.0" y="3921.0">ui.screen.Settings</node>
+    <node x="-2245.0" y="2299.5">data.repositories.ScoreRepository</node>
+    <node x="3564.5" y="6117.0">PowerupEffectTest</node>
+    <node x="1363.5" y="473.0">entities.bricks.BreakableBrick</node>
+    <node x="2393.5" y="2337.0">HandleBallWallTest</node>
+    <node x="1242.5" y="6286.5">core.interfaces.Updatable</node>
+    <node x="2892.5" y="1947.5">entities.powerups.DoubleBall</node>
+    <node x="-2032.5" y="4702.0">engine.GameLoop</node>
+    <node x="27.5" y="2349.0">ui.widgets.ButtonUI</node>
+    <node x="1752.0" y="3909.0">engine.PowerUpPool</node>
+    <node x="2112.5" y="2310.0">entities.Bullet</node>
+    <node x="-2175.0" y="5713.0">core.HelloController</node>
+    <node x="1356.0" y="5677.0">HandleBallBrickTest</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="ui.screen.Settings" target="core.Config" relationship="TO_ONE">
+      <point x="30.0" y="-57.0" />
+      <point x="-660.0" y="2018.0" />
+      <point x="52.5" y="0.0" />
+    </edge>
+    <edge source="HandleBallBrickTest" target="entities.Ball" relationship="CREATE">
+      <point x="0.0" y="-81.0" />
+      <point x="1530.0" y="5592.0" />
+      <point x="2371.0" y="5592.0" />
+      <point x="2371.0" y="1318.0" />
+      <point x="-153.0" y="0.0" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="data.repositories.PlayerRepository" relationship="CREATE">
+      <point x="0.0" y="45.0" />
+      <point x="-1350.0" y="6779.5" />
+      <point x="-2387.0" y="6779.5" />
+      <point x="-2387.0" y="4648.0" />
+      <point x="-2425.0" y="4648.0" />
+      <point x="-15.0" y="94.5" />
+    </edge>
+    <edge source="core.Game" target="data.repositories.PlayerRepository" relationship="TO_ONE">
+      <point x="20.0" y="-444.0" />
+      <point x="-1850.0" y="5720.5" />
+      <point x="-1751.0" y="5720.5" />
+      <point x="-1751.0" y="3807.5" />
+      <point x="-2410.0" y="3807.5" />
+      <point x="0.0" y="94.5" />
+    </edge>
+    <edge source="engine.PowerUpPool" target="entities.powerups.BonusCoin" relationship="CREATE">
+      <point x="-71.0" y="-69.0" />
+      <point x="1879.0" y="332.5" />
+      <point x="4380.0" y="332.5" />
+      <point x="4380.0" y="6008.0" />
+      <point x="3936.0" y="6008.0" />
+      <point x="3936.0" y="4615.0" />
+      <point x="4170.0" y="4615.0" />
+      <point x="0.0" y="120.0" />
+    </edge>
+    <edge source="core.Game" target="engine.GameLoop" relationship="CREATE">
+      <point x="-62.5" y="-444.0" />
+      <point x="17.5" y="96.0" />
+    </edge>
+    <edge source="CollisionTest" target="entities.Bullet" relationship="CREATE">
+      <point x="66.5" y="-93.0" />
+      <point x="2876.5" y="3411.5" />
+      <point x="2235.0" y="3411.5" />
+      <point x="2235.0" y="2671.5" />
+      <point x="2208.0" y="2671.5" />
+      <point x="-22.0" y="108.0" />
+    </edge>
+    <edge source="core.Level" target="entities.bricks.Brick" relationship="TO_MANY">
+      <point x="0.0" y="-360.0" />
+      <point x="570.0" y="178.0" />
+      <point x="-156.5" y="0.0" />
+    </edge>
+    <edge source="ui.screen.InGame" target="core.Game" relationship="TO_ONE">
+      <point x="-190.5" y="62.5" />
+      <point x="-1582.0" y="5280.5" />
+      <point x="-1582.0" y="6318.0" />
+      <point x="142.5" y="0.0" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="ui.screen.LoginScreen" relationship="CREATE">
+      <point x="87.5" y="0.0" />
+      <point x="-1180.0" y="5218.0" />
+      <point x="-110.0" y="45.0" />
+    </edge>
+    <edge source="core.Game" target="ui.screen.InGame" relationship="TO_ONE">
+      <point x="-15.0" y="444.0" />
+      <point x="-1885.0" y="6809.5" />
+      <point x="-855.0" y="6809.5" />
+      <point x="15.0" y="81.0" />
+    </edge>
+    <edge source="entities.powerups.EnLargeBall" target="entities.powerups.PowerUp" relationship="GENERALIZATION">
+      <point x="0.0" y="-96.0" />
+      <point x="2870.0" y="2290.0" />
+      <point x="3571.0" y="2290.0" />
+      <point x="3571.0" y="1318.0" />
+      <point x="-177.5" y="0.0" />
+    </edge>
+    <edge source="core.Game" target="engine.PlayExploding" relationship="CREATE">
+      <point x="142.5" y="137.5" />
+      <point x="3071.0" y="6455.5" />
+      <point x="3071.0" y="5218.0" />
+      <point x="-146.5" y="0.0" />
+    </edge>
+    <edge source="core.World" target="entities.Ball" relationship="CREATE">
+      <point x="0.0" y="288.0" />
+      <point x="790.0" y="5592.0" />
+      <point x="2371.0" y="5592.0" />
+      <point x="2371.0" y="1318.0" />
+      <point x="-153.0" y="0.0" />
+    </edge>
+    <edge source="CollisionTest" target="entities.Ball" relationship="CREATE">
+      <point x="-132.5" y="0.0" />
+      <point x="2412.0" y="4798.0" />
+      <point x="2412.0" y="5592.0" />
+      <point x="2371.0" y="5592.0" />
+      <point x="2371.0" y="1318.0" />
+      <point x="-153.0" y="0.0" />
+    </edge>
+    <edge source="entities.bricks.UnbreakableBrick" target="entities.bricks.Brick" relationship="GENERALIZATION">
+      <point x="-182.5" y="0.0" />
+      <point x="1081.0" y="1318.0" />
+      <point x="1081.0" y="503.0" />
+      <point x="1250.0" y="503.0" />
+      <point x="0.0" y="192.0" />
+    </edge>
+    <edge source="PowerupEffectTest" target="entities.Ball" relationship="CREATE">
+      <point x="0.0" y="-201.0" />
+      <point x="3670.0" y="5592.0" />
+      <point x="2371.0" y="5592.0" />
+      <point x="2371.0" y="1318.0" />
+      <point x="-153.0" y="0.0" />
+    </edge>
+    <edge source="engine.PlayExploding" target="engine.Sprite" relationship="CREATE">
+      <point x="15.0" y="-72.0" />
+      <point x="15.0" y="132.0" />
+    </edge>
+    <edge source="entities.bricks.ExplodingBrick" target="entities.bricks.BreakableBrick" relationship="GENERALIZATION">
+      <point x="0.0" y="-108.0" />
+      <point x="4150.0" y="617.0" />
+      <point x="1550.0" y="617.0" />
+      <point x="0.0" y="45.0" />
+    </edge>
+    <edge source="entities.powerups.DoubleBall" target="entities.Ball" relationship="CREATE">
+      <point x="-117.5" y="0.0" />
+      <point x="2371.0" y="2018.0" />
+      <point x="2371.0" y="1318.0" />
+      <point x="-153.0" y="0.0" />
+    </edge>
+    <edge source="HandleBallPaddleTest" target="entities.Ball" relationship="CREATE">
+      <point x="-159.5" y="0.0" />
+      <point x="2412.0" y="5218.0" />
+      <point x="2412.0" y="5592.0" />
+      <point x="2371.0" y="5592.0" />
+      <point x="2371.0" y="1318.0" />
+      <point x="-153.0" y="0.0" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="ui.screen.Introduce" relationship="CREATE">
+      <point x="87.5" y="30.0" />
+      <point x="-1120.0" y="5248.0" />
+      <point x="-1120.0" y="4982.5" />
+      <point x="-350.0" y="4982.5" />
+      <point x="0.0" y="45.0" />
+    </edge>
+    <edge source="PowerupEffectTest" target="entities.powerups.SpeedBall" relationship="CREATE">
+      <point x="-105.5" y="-92.5" />
+      <point x="3110.0" y="6225.5" />
+      <point x="3110.0" y="2418.0" />
+      <point x="-117.5" y="0.0" />
+    </edge>
+    <edge source="entities.powerups.SlowBall" target="entities.powerups.PowerUp" relationship="GENERALIZATION">
+      <point x="0.0" y="-96.0" />
+      <point x="3570.0" y="2290.0" />
+      <point x="3571.0" y="2290.0" />
+      <point x="3571.0" y="1318.0" />
+      <point x="-177.5" y="0.0" />
+    </edge>
+    <edge source="core.World" target="core.Level" relationship="CREATE">
+      <point x="-124.5" y="-288.0" />
+      <point x="95.5" y="360.0" />
+    </edge>
+    <edge source="entities.bricks.factory.BrickFactory" target="entities.bricks.UnbreakableBrick" relationship="CREATE">
+      <point x="78.0" y="45.0" />
+      <point x="1728.0" y="2503.5" />
+      <point x="1689.0" y="2503.5" />
+      <point x="1689.0" y="2686.5" />
+      <point x="1290.0" y="2686.5" />
+      <point x="0.0" y="57.0" />
+    </edge>
+    <edge source="PowerupEffectTest" target="entities.powerups.ShrinkPaddle" relationship="CREATE">
+      <point x="38.0" y="-201.0" />
+      <point x="3708.0" y="6008.0" />
+      <point x="3726.0" y="6008.0" />
+      <point x="3726.0" y="2671.5" />
+      <point x="3430.0" y="2671.5" />
+      <point x="0.0" y="96.0" />
+    </edge>
+    <edge source="data.AccountManager" target="data.PlayerAccount" relationship="CREATE">
+      <point x="0.0" y="-144.0" />
+      <point x="0.0" y="120.0" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="core.Config" relationship="CREATE">
+      <point x="26.0" y="-45.0" />
+      <point x="-1324.0" y="3700.5" />
+      <point x="-1485.0" y="3700.5" />
+      <point x="-15.0" y="31.5" />
+    </edge>
+    <edge source="CollisionTest" target="entities.bricks.NormalBrick" relationship="CREATE">
+      <point x="-132.5" y="-15.0" />
+      <point x="2262.0" y="4783.0" />
+      <point x="2262.0" y="3426.5" />
+      <point x="1728.0" y="3426.5" />
+      <point x="1728.0" y="2518.5" />
+      <point x="1849.0" y="2518.5" />
+      <point x="1849.0" y="778.0" />
+      <point x="166.0" y="0.0" />
+    </edge>
+    <edge source="core.Game" target="core.World" relationship="CREATE">
+      <point x="-15.0" y="-444.0" />
+      <point x="-1885.0" y="5632.0" />
+      <point x="881.5" y="5632.0" />
+      <point x="91.5" y="288.0" />
+    </edge>
+    <edge source="HandleBulletBrickTest" target="entities.bricks.NormalBrick" relationship="CREATE">
+      <point x="131.5" y="0.0" />
+      <point x="2262.0" y="6318.0" />
+      <point x="2262.0" y="3426.5" />
+      <point x="1728.0" y="3426.5" />
+      <point x="1728.0" y="2518.5" />
+      <point x="1849.0" y="2518.5" />
+      <point x="1849.0" y="778.0" />
+      <point x="166.0" y="0.0" />
+    </edge>
+    <edge source="entities.powerups.SpeedBall" target="entities.powerups.PowerUp" relationship="GENERALIZATION">
+      <point x="0.0" y="-96.0" />
+      <point x="3290.0" y="2290.0" />
+      <point x="3571.0" y="2290.0" />
+      <point x="3571.0" y="1318.0" />
+      <point x="-177.5" y="0.0" />
+    </edge>
+    <edge source="net.MockServer" target="data.JsonStorage" relationship="CREATE">
+      <point x="15.0" y="69.0" />
+      <point x="-75.0" y="5455.5" />
+      <point x="-1652.0" y="5455.5" />
+      <point x="-1652.0" y="4330.5" />
+      <point x="-1550.0" y="4330.5" />
+      <point x="0.0" y="120.0" />
+    </edge>
+    <edge source="engine.PowerUpPool" target="entities.powerups.PowerUp" relationship="TO_MANY">
+      <point x="0.0" y="69.0" />
+      <point x="1950.0" y="4600.0" />
+      <point x="3990.0" y="4600.0" />
+      <point x="3990.0" y="2251.0" />
+      <point x="4125.0" y="2251.0" />
+      <point x="175.0" y="240.0" />
+    </edge>
+    <edge source="core.World" target="entities.powerups.PowerUp" relationship="TO_MANY">
+      <point x="0.0" y="-288.0" />
+      <point x="790.0" y="4600.0" />
+      <point x="3990.0" y="4600.0" />
+      <point x="3990.0" y="2251.0" />
+      <point x="4125.0" y="2251.0" />
+      <point x="175.0" y="240.0" />
+    </edge>
+    <edge source="HandleBallBrickTest" target="entities.bricks.NormalBrick" relationship="CREATE">
+      <point x="174.0" y="0.0" />
+      <point x="1728.0" y="5758.0" />
+      <point x="1728.0" y="2518.5" />
+      <point x="1849.0" y="2518.5" />
+      <point x="1849.0" y="778.0" />
+      <point x="166.0" y="0.0" />
+    </edge>
+    <edge source="core.Game" target="data.repositories.ScoreRepository" relationship="CREATE">
+      <point x="0.0" y="444.0" />
+      <point x="-1870.0" y="6794.5" />
+      <point x="-2537.0" y="6794.5" />
+      <point x="-2537.0" y="362.5" />
+      <point x="-720.0" y="362.5" />
+      <point x="-720.0" y="3867.5" />
+      <point x="-1301.0" y="3867.5" />
+      <point x="-1301.0" y="3792.5" />
+      <point x="-2075.0" y="3792.5" />
+      <point x="15.0" y="118.5" />
+    </edge>
+    <edge source="entities.powerups.DoubleBall" target="entities.powerups.PowerUp" relationship="GENERALIZATION">
+      <point x="0.0" y="70.5" />
+      <point x="3010.0" y="2206.0" />
+      <point x="3571.0" y="2206.0" />
+      <point x="3571.0" y="1318.0" />
+      <point x="-177.5" y="0.0" />
+    </edge>
+    <edge source="ui.screen.Settings" target="systems.AudioSystem" relationship="TO_ONE">
+      <point x="15.0" y="-57.0" />
+      <point x="-675.0" y="2418.0" />
+      <point x="152.5" y="0.0" />
+    </edge>
+    <edge source="entities.bricks.HardBrick" target="entities.bricks.BreakableBrick" relationship="GENERALIZATION">
+      <point x="0.0" y="-45.0" />
+      <point x="2750.0" y="617.0" />
+      <point x="1550.0" y="617.0" />
+      <point x="0.0" y="45.0" />
+    </edge>
+    <edge source="core.Game" target="data.JsonStorage" relationship="CREATE">
+      <point x="142.5" y="-15.0" />
+      <point x="-1652.0" y="6303.0" />
+      <point x="-1652.0" y="4330.5" />
+      <point x="-1550.0" y="4330.5" />
+      <point x="0.0" y="120.0" />
+    </edge>
+    <edge source="ui.screen.LoginScreen" target="data.AccountManager" relationship="TO_ONE">
+      <point x="-140.0" y="-45.0" />
+      <point x="0.0" y="144.0" />
+    </edge>
+    <edge source="ui.screen.LevelSelect" target="ui.widgets.ButtonUI" relationship="CREATE">
+      <point x="0.0" y="153.0" />
+      <point x="-1990.0" y="4417.0" />
+      <point x="-230.0" y="4417.0" />
+      <point x="-230.0" y="2418.0" />
+      <point x="-102.5" y="0.0" />
+    </edge>
+    <edge source="engine.Collision" target="engine.Physics" relationship="CREATE">
+      <point x="80.0" y="-153.0" />
+      <point x="0.0" y="45.0" />
+    </edge>
+    <edge source="entities.bricks.factory.BrickFactory" target="entities.bricks.ExplodingBrick" relationship="CREATE">
+      <point x="181.5" y="-15.0" />
+      <point x="1909.0" y="2403.0" />
+      <point x="1909.0" y="362.5" />
+      <point x="4350.0" y="362.5" />
+      <point x="4350.0" y="778.0" />
+      <point x="174.5" y="0.0" />
+    </edge>
+    <edge source="engine.PowerUpPool" target="entities.powerups.EnlargePaddle" relationship="CREATE">
+      <point x="0.0" y="-69.0" />
+      <point x="1950.0" y="3396.5" />
+      <point x="3708.0" y="3396.5" />
+      <point x="3708.0" y="2418.0" />
+      <point x="-122.0" y="0.0" />
+    </edge>
+    <edge source="entities.Paddle" target="entities.Bullet" relationship="CREATE">
+      <point x="-149.0" y="-15.0" />
+      <point x="2235.0" y="3963.0" />
+      <point x="2235.0" y="2671.5" />
+      <point x="2208.0" y="2671.5" />
+      <point x="-22.0" y="108.0" />
+    </edge>
+    <edge source="HandleBallBrickTest" target="entities.bricks.UnbreakableBrick" relationship="CREATE">
+      <point x="15.0" y="-81.0" />
+      <point x="1545.0" y="5647.0" />
+      <point x="1689.0" y="5647.0" />
+      <point x="1689.0" y="2686.5" />
+      <point x="1290.0" y="2686.5" />
+      <point x="0.0" y="57.0" />
+    </edge>
+    <edge source="HandleBulletBrickTest" target="entities.Bullet" relationship="CREATE">
+      <point x="131.5" y="15.0" />
+      <point x="2235.0" y="6333.0" />
+      <point x="2235.0" y="2671.5" />
+      <point x="2208.0" y="2671.5" />
+      <point x="-22.0" y="108.0" />
+    </edge>
+    <edge source="PowerupEffectTest" target="entities.powerups.BonusCoin" relationship="CREATE">
+      <point x="105.5" y="-195.5" />
+      <point x="3936.0" y="6122.5" />
+      <point x="3936.0" y="4615.0" />
+      <point x="4170.0" y="4615.0" />
+      <point x="0.0" y="120.0" />
+    </edge>
+    <edge source="core.World" target="engine.PowerUpPool" relationship="TO_ONE">
+      <point x="132.0" y="-15.0" />
+      <point x="1920.0" y="5203.0" />
+      <point x="-30.0" y="69.0" />
+    </edge>
+    <edge source="PowerupEffectTest" target="entities.powerups.EnLargeBall" relationship="CREATE">
+      <point x="-105.5" y="62.5" />
+      <point x="3017.0" y="6380.5" />
+      <point x="3017.0" y="2418.0" />
+      <point x="117.5" y="0.0" />
+    </edge>
+    <edge source="core.Game" target="net.LeaderboardClient" relationship="CREATE">
+      <point x="-45.0" y="-444.0" />
+      <point x="-1915.0" y="5218.0" />
+      <point x="169.5" y="0.0" />
+    </edge>
+    <edge source="core.Game" target="entities.Ball" relationship="CREATE">
+      <point x="0.0" y="-444.0" />
+      <point x="-1870.0" y="5592.0" />
+      <point x="2371.0" y="5592.0" />
+      <point x="2371.0" y="1318.0" />
+      <point x="-153.0" y="0.0" />
+    </edge>
+    <edge source="ui.screen.InGame" target="systems.AchievementSystem" relationship="TO_ONE">
+      <point x="0.0" y="-81.0" />
+      <point x="-870.0" y="5014.0" />
+      <point x="-215.0" y="5014.0" />
+      <point x="-215.0" y="4432.0" />
+      <point x="-225.5" y="454.0" />
+    </edge>
+    <edge source="core.Game" target="ui.screen.LevelSelect" relationship="CREATE">
+      <point x="142.5" y="15.0" />
+      <point x="-1687.0" y="6333.0" />
+      <point x="-1687.0" y="4633.0" />
+      <point x="-2005.0" y="4633.0" />
+      <point x="-15.0" y="153.0" />
+    </edge>
+    <edge source="core.Game" target="engine.GameLoop" relationship="TO_ONE">
+      <point x="-77.5" y="-444.0" />
+      <point x="2.5" y="96.0" />
+    </edge>
+    <edge source="engine.PowerUpPool" target="entities.powerups.ShrinkPaddle" relationship="CREATE">
+      <point x="-116.0" y="-69.0" />
+      <point x="1834.0" y="3351.5" />
+      <point x="3726.0" y="3351.5" />
+      <point x="3726.0" y="2671.5" />
+      <point x="3430.0" y="2671.5" />
+      <point x="0.0" y="96.0" />
+    </edge>
+    <edge source="engine.GameLoop" target="core.Game" relationship="TO_ONE">
+      <point x="82.5" y="0.0" />
+      <point x="-1582.0" y="4798.0" />
+      <point x="-1582.0" y="6318.0" />
+      <point x="142.5" y="0.0" />
+    </edge>
+    <edge source="HandleBulletBrickTest" target="entities.bricks.ExplodingBrick" relationship="CREATE">
+      <point x="15.0" y="-105.0" />
+      <point x="2025.0" y="5978.0" />
+      <point x="4350.0" y="5978.0" />
+      <point x="4350.0" y="778.0" />
+      <point x="174.5" y="0.0" />
+    </edge>
+    <edge source="CollisionTest" target="entities.Paddle" relationship="CREATE">
+      <point x="132.5" y="0.0" />
+      <point x="3041.0" y="4798.0" />
+      <point x="3041.0" y="5044.5" />
+      <point x="2439.0" y="5044.5" />
+      <point x="2439.0" y="3978.0" />
+      <point x="-149.0" y="0.0" />
+    </edge>
+    <edge source="data.repositories.PlayerRepository" target="data.Storage" relationship="TO_ONE">
+      <point x="109.5" y="0.0" />
+      <point x="-2272.0" y="2418.0" />
+      <point x="-2272.0" y="1318.0" />
+      <point x="-180.0" y="0.0" />
+    </edge>
+    <edge source="ui.screen.LoginScreen" target="ui.widgets.ButtonUI" relationship="CREATE">
+      <point x="177.5" y="0.0" />
+      <point x="-867.0" y="3978.0" />
+      <point x="-867.0" y="4417.0" />
+      <point x="-230.0" y="4417.0" />
+      <point x="-230.0" y="2418.0" />
+      <point x="-102.5" y="0.0" />
+    </edge>
+    <edge source="PowerupEffectTest" target="entities.powerups.EnlargePaddle" relationship="CREATE">
+      <point x="85.5" y="-201.0" />
+      <point x="3755.5" y="5993.0" />
+      <point x="3708.0" y="5993.0" />
+      <point x="3708.0" y="2418.0" />
+      <point x="-122.0" y="0.0" />
+    </edge>
+    <edge source="entities.powerups.ShrinkPaddle" target="entities.powerups.PowerUp" relationship="GENERALIZATION">
+      <point x="118.5" y="0.0" />
+      <point x="3571.0" y="2018.0" />
+      <point x="3571.0" y="1318.0" />
+      <point x="-177.5" y="0.0" />
+    </edge>
+    <edge source="HandleBallBrickTest" target="entities.bricks.ExplodingBrick" relationship="CREATE">
+      <point x="0.0" y="81.0" />
+      <point x="1530.0" y="5978.0" />
+      <point x="4350.0" y="5978.0" />
+      <point x="4350.0" y="778.0" />
+      <point x="174.5" y="0.0" />
+    </edge>
+    <edge source="core.Level" target="entities.bricks.factory.BrickFactory" relationship="CREATE">
+      <point x="30.0" y="-360.0" />
+      <point x="600.0" y="2433.0" />
+      <point x="-181.5" y="15.0" />
+    </edge>
+    <edge source="core.World" target="entities.Ball" relationship="TO_MANY">
+      <point x="-132.0" y="-15.0" />
+      <point x="408.5" y="5203.0" />
+      <point x="408.5" y="-31.5" />
+      <point x="2926.0" y="-31.5" />
+      <point x="2926.0" y="1318.0" />
+      <point x="153.0" y="0.0" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="data.AccountManager" relationship="CREATE">
+      <point x="87.5" y="-30.0" />
+      <point x="-1240.0" y="5188.0" />
+      <point x="-1240.0" y="4432.0" />
+      <point x="-1281.5" y="4432.0" />
+      <point x="-71.5" y="144.0" />
+    </edge>
+    <edge source="core.World" target="systems.AchievementSystem" relationship="CREATE">
+      <point x="-43.0" y="-288.0" />
+      <point x="747.0" y="4462.0" />
+      <point x="-225.5" y="484.0" />
+    </edge>
+    <edge source="PowerupEffectTest" target="entities.powerups.SlowBall" relationship="CREATE">
+      <point x="-105.5" y="-112.5" />
+      <point x="3298.0" y="6205.5" />
+      <point x="3298.0" y="5607.0" />
+      <point x="3620.0" y="5607.0" />
+      <point x="3620.0" y="2656.5" />
+      <point x="3570.0" y="2656.5" />
+      <point x="0.0" y="96.0" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="ui.widgets.ButtonUI" relationship="CREATE">
+      <point x="0.0" y="-45.0" />
+      <point x="-1350.0" y="4417.0" />
+      <point x="-230.0" y="4417.0" />
+      <point x="-230.0" y="2418.0" />
+      <point x="-102.5" y="0.0" />
+    </edge>
+    <edge source="HandleBallWallTest" target="entities.Ball" relationship="CREATE">
+      <point x="-116.5" y="0.0" />
+      <point x="2371.0" y="2418.0" />
+      <point x="2371.0" y="1318.0" />
+      <point x="-153.0" y="0.0" />
+    </edge>
+    <edge source="ui.screen.LevelSelect" target="data.repositories.PlayerRepository" relationship="TO_ONE">
+      <point x="218.0" y="0.0" />
+      <point x="-1751.0" y="3978.0" />
+      <point x="-1751.0" y="3807.5" />
+      <point x="-2410.0" y="3807.5" />
+      <point x="0.0" y="94.5" />
+    </edge>
+    <edge source="ui.screen.InGame" target="ui.widgets.ButtonUI" relationship="CREATE">
+      <point x="190.5" y="0.0" />
+      <point x="-230.0" y="5218.0" />
+      <point x="-230.0" y="2418.0" />
+      <point x="-102.5" y="0.0" />
+    </edge>
+    <edge source="data.JsonStorage" target="data.Storage" relationship="REALIZATION">
+      <point x="0.0" y="-120.0" />
+      <point x="-1550.0" y="2611.5" />
+      <point x="-1912.0" y="2611.5" />
+      <point x="-1912.0" y="1706.5" />
+      <point x="-1790.0" y="1706.5" />
+      <point x="0.0" y="79.5" />
+    </edge>
+    <edge source="entities.powerups.EnlargePaddle" target="entities.powerups.PowerUp" relationship="GENERALIZATION">
+      <point x="0.0" y="-96.0" />
+      <point x="3850.0" y="2290.0" />
+      <point x="3571.0" y="2290.0" />
+      <point x="3571.0" y="1318.0" />
+      <point x="-177.5" y="0.0" />
+    </edge>
+    <edge source="engine.PowerUpPool" target="entities.powerups.DoubleBall" relationship="CREATE">
+      <point x="-15.0" y="-69.0" />
+      <point x="1935.0" y="3381.5" />
+      <point x="3087.0" y="3381.5" />
+      <point x="3087.0" y="2124.5" />
+      <point x="3025.0" y="2124.5" />
+      <point x="15.0" y="70.5" />
+    </edge>
+    <edge source="engine.PowerUpPool" target="entities.powerups.ExtraLife" relationship="CREATE">
+      <point x="-56.0" y="-69.0" />
+      <point x="1894.0" y="347.5" />
+      <point x="4365.0" y="347.5" />
+      <point x="4365.0" y="2018.0" />
+      <point x="117.5" y="0.0" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="core.Game" relationship="TO_ONE">
+      <point x="-87.5" y="0.0" />
+      <point x="-1582.0" y="5218.0" />
+      <point x="-1582.0" y="6318.0" />
+      <point x="142.5" y="0.0" />
+    </edge>
+    <edge source="engine.PowerUpPool" target="entities.powerups.EnLargeBall" relationship="CREATE">
+      <point x="-101.0" y="-69.0" />
+      <point x="1849.0" y="3366.5" />
+      <point x="3017.0" y="3366.5" />
+      <point x="3017.0" y="2418.0" />
+      <point x="117.5" y="0.0" />
+    </edge>
+    <edge source="CollisionTest" target="entities.powerups.EnlargePaddle" relationship="CREATE">
+      <point x="132.5" y="-15.0" />
+      <point x="3708.0" y="4783.0" />
+      <point x="3708.0" y="2418.0" />
+      <point x="-122.0" y="0.0" />
+    </edge>
+    <edge source="HandleBulletBrickTest" target="entities.bricks.UnbreakableBrick" relationship="CREATE">
+      <point x="-15.0" y="-105.0" />
+      <point x="1995.0" y="5647.0" />
+      <point x="1689.0" y="5647.0" />
+      <point x="1689.0" y="2686.5" />
+      <point x="1290.0" y="2686.5" />
+      <point x="0.0" y="57.0" />
+    </edge>
+    <edge source="ui.screen.Guide" target="ui.widgets.ButtonUI" relationship="CREATE">
+      <point x="-87.5" y="0.0" />
+      <point x="-230.0" y="3978.0" />
+      <point x="-230.0" y="2418.0" />
+      <point x="-102.5" y="0.0" />
+    </edge>
+    <edge source="entities.powerups.BonusCoin" target="entities.powerups.PowerUp" relationship="GENERALIZATION">
+      <point x="0.0" y="-120.0" />
+      <point x="4170.0" y="2206.0" />
+      <point x="3571.0" y="2206.0" />
+      <point x="3571.0" y="1318.0" />
+      <point x="-177.5" y="0.0" />
+    </edge>
+    <edge source="PowerupEffectTest" target="entities.powerups.ExtraLife" relationship="CREATE">
+      <point x="105.5" y="-180.5" />
+      <point x="3954.0" y="6137.5" />
+      <point x="3954.0" y="5993.0" />
+      <point x="4365.0" y="5993.0" />
+      <point x="4365.0" y="2018.0" />
+      <point x="117.5" y="0.0" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="ui.screen.LevelSelect" relationship="CREATE">
+      <point x="-87.5" y="15.0" />
+      <point x="-1687.0" y="5233.0" />
+      <point x="-1687.0" y="4633.0" />
+      <point x="-2005.0" y="4633.0" />
+      <point x="-15.0" y="153.0" />
+    </edge>
+    <edge source="core.Game" target="net.MockServer" relationship="TO_ONE">
+      <point x="-30.0" y="444.0" />
+      <point x="-1900.0" y="6824.5" />
+      <point x="-30.0" y="6824.5" />
+      <point x="60.0" y="69.0" />
+    </edge>
+    <edge source="HandleBallPaddleTest" target="entities.Paddle" relationship="CREATE">
+      <point x="-159.5" y="-15.0" />
+      <point x="2439.0" y="5203.0" />
+      <point x="2439.0" y="3978.0" />
+      <point x="-149.0" y="0.0" />
+    </edge>
+    <edge source="PowerupEffectTest" target="entities.Paddle" relationship="CREATE">
+      <point x="-105.5" y="-62.5" />
+      <point x="3041.0" y="6255.5" />
+      <point x="3041.0" y="5044.5" />
+      <point x="2439.0" y="5044.5" />
+      <point x="2439.0" y="3978.0" />
+      <point x="-149.0" y="0.0" />
+    </edge>
+    <edge source="PowerupEffectTest" target="entities.powerups.ShootPaddle" relationship="CREATE">
+      <point x="-105.5" y="-122.5" />
+      <point x="3313.0" y="6195.5" />
+      <point x="3313.0" y="5647.0" />
+      <point x="3637.0" y="5647.0" />
+      <point x="3637.0" y="3336.5" />
+      <point x="3155.0" y="3336.5" />
+      <point x="3155.0" y="1706.5" />
+      <point x="3710.0" y="1706.5" />
+      <point x="0.0" y="-70.5" />
+    </edge>
+    <edge source="core.Game" target="data.repositories.ScoreRepository" relationship="TO_ONE">
+      <point x="-30.0" y="-444.0" />
+      <point x="-1900.0" y="4937.5" />
+      <point x="-2242.0" y="4937.5" />
+      <point x="-2242.0" y="3095.5" />
+      <point x="-2090.0" y="3095.5" />
+      <point x="0.0" y="118.5" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="data.repositories.ScoreRepository" relationship="CREATE">
+      <point x="68.5" y="-45.0" />
+      <point x="-1281.5" y="5144.5" />
+      <point x="-1301.0" y="5144.5" />
+      <point x="-1301.0" y="3792.5" />
+      <point x="-2075.0" y="3792.5" />
+      <point x="15.0" y="118.5" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="ui.screen.Settings" relationship="CREATE">
+      <point x="87.5" y="-15.0" />
+      <point x="-1165.0" y="5203.0" />
+      <point x="-1165.0" y="4600.0" />
+      <point x="-690.0" y="4600.0" />
+      <point x="0.0" y="57.0" />
+    </edge>
+    <edge source="engine.PowerUpPool" target="entities.powerups.SpeedBall" relationship="CREATE">
+      <point x="-131.0" y="-69.0" />
+      <point x="1819.0" y="3336.5" />
+      <point x="3110.0" y="3336.5" />
+      <point x="3110.0" y="2418.0" />
+      <point x="-117.5" y="0.0" />
+    </edge>
+    <edge source="net.MockServer" target="data.Storage" relationship="TO_ONE">
+      <point x="0.0" y="69.0" />
+      <point x="-90.0" y="5316.5" />
+      <point x="-2459.0" y="5316.5" />
+      <point x="-2459.0" y="4663.0" />
+      <point x="-2272.0" y="4663.0" />
+      <point x="-2272.0" y="1318.0" />
+      <point x="-180.0" y="0.0" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="data.JsonStorage" relationship="CREATE">
+      <point x="-87.5" y="-15.0" />
+      <point x="-1652.0" y="5203.0" />
+      <point x="-1652.0" y="4330.5" />
+      <point x="-1550.0" y="4330.5" />
+      <point x="0.0" y="120.0" />
+    </edge>
+    <edge source="core.World" target="systems.AchievementSystem" relationship="TO_ONE">
+      <point x="-132.0" y="0.0" />
+      <point x="11.5" y="5218.0" />
+      <point x="11.5" y="5014.0" />
+      <point x="-215.0" y="5014.0" />
+      <point x="-215.0" y="4432.0" />
+      <point x="-225.5" y="454.0" />
+    </edge>
+    <edge source="engine.PowerUpPool" target="entities.powerups.SlowBall" relationship="CREATE">
+      <point x="-146.0" y="-69.0" />
+      <point x="1804.0" y="3321.5" />
+      <point x="3620.0" y="3321.5" />
+      <point x="3620.0" y="2656.5" />
+      <point x="3570.0" y="2656.5" />
+      <point x="0.0" y="96.0" />
+    </edge>
+    <edge source="ui.screen.End" target="ui.widgets.ButtonUI" relationship="CREATE">
+      <point x="-214.5" y="0.0" />
+      <point x="-230.0" y="3158.0" />
+      <point x="-230.0" y="2418.0" />
+      <point x="-102.5" y="0.0" />
+    </edge>
+    <edge source="HandleBallBrickTest" target="entities.bricks.HardBrick" relationship="CREATE">
+      <point x="174.0" y="74.5" />
+      <point x="2208.0" y="5832.5" />
+      <point x="2208.0" y="2686.5" />
+      <point x="2095.0" y="2686.5" />
+      <point x="2095.0" y="778.0" />
+      <point x="-158.5" y="0.0" />
+    </edge>
+    <edge source="PowerupEffectTest" target="core.World" relationship="CREATE">
+      <point x="15.0" y="-201.0" />
+      <point x="3685.0" y="5632.0" />
+      <point x="881.5" y="5632.0" />
+      <point x="91.5" y="288.0" />
+    </edge>
+    <edge source="HandleBulletBrickTest" target="entities.bricks.HardBrick" relationship="CREATE">
+      <point x="131.5" y="-15.0" />
+      <point x="2208.0" y="6303.0" />
+      <point x="2208.0" y="2686.5" />
+      <point x="2095.0" y="2686.5" />
+      <point x="2095.0" y="778.0" />
+      <point x="-158.5" y="0.0" />
+    </edge>
+    <edge source="core.World" target="core.Level" relationship="TO_ONE">
+      <point x="-83.5" y="-288.0" />
+      <point x="136.5" y="360.0" />
+    </edge>
+    <edge source="data.SQLiteStorage" target="data.Storage" relationship="REALIZATION">
+      <point x="-180.0" y="0.0" />
+      <point x="-1912.0" y="2418.0" />
+      <point x="-1912.0" y="1706.5" />
+      <point x="-1790.0" y="1706.5" />
+      <point x="0.0" y="79.5" />
+    </edge>
+    <edge source="entities.powerups.ExtraLife" target="entities.powerups.PowerUp" relationship="GENERALIZATION">
+      <point x="0.0" y="70.5" />
+      <point x="3990.0" y="2206.0" />
+      <point x="3571.0" y="2206.0" />
+      <point x="3571.0" y="1318.0" />
+      <point x="-177.5" y="0.0" />
+    </edge>
+    <edge source="ui.screen.InGame" target="systems.ScoringSystem" relationship="TO_ONE">
+      <point x="0.0" y="81.0" />
+      <point x="-870.0" y="5531.0" />
+      <point x="1390.0" y="5531.0" />
+      <point x="0.0" y="276.0" />
+    </edge>
+    <edge source="data.repositories.ScoreRepository" target="data.Storage" relationship="TO_ONE">
+      <point x="-155.0" y="0.0" />
+      <point x="-2272.0" y="2418.0" />
+      <point x="-2272.0" y="1318.0" />
+      <point x="-180.0" y="0.0" />
+    </edge>
+    <edge source="core.World" target="systems.ScoringSystem" relationship="TO_ONE">
+      <point x="15.0" y="288.0" />
+      <point x="805.0" y="5531.0" />
+      <point x="1390.0" y="5531.0" />
+      <point x="0.0" y="276.0" />
+    </edge>
+    <edge source="core.Game" target="data.Storage" relationship="TO_ONE">
+      <point x="-142.5" y="-62.5" />
+      <point x="-2459.0" y="6255.5" />
+      <point x="-2459.0" y="4663.0" />
+      <point x="-2272.0" y="4663.0" />
+      <point x="-2272.0" y="1318.0" />
+      <point x="-180.0" y="0.0" />
+    </edge>
+    <edge source="core.World" target="entities.Paddle" relationship="CREATE">
+      <point x="-15.0" y="288.0" />
+      <point x="775.0" y="6440.5" />
+      <point x="2439.0" y="6440.5" />
+      <point x="2439.0" y="3978.0" />
+      <point x="-149.0" y="0.0" />
+    </edge>
+    <edge source="entities.powerups.ShootPaddle" target="entities.powerups.PowerUp" relationship="GENERALIZATION">
+      <point x="-117.5" y="0.0" />
+      <point x="3571.0" y="2018.0" />
+      <point x="3571.0" y="1318.0" />
+      <point x="-177.5" y="0.0" />
+    </edge>
+    <edge source="ui.screen.LevelSelect" target="core.Game" relationship="TO_ONE">
+      <point x="218.0" y="147.5" />
+      <point x="-1582.0" y="4125.5" />
+      <point x="-1582.0" y="6318.0" />
+      <point x="142.5" y="0.0" />
+    </edge>
+    <edge source="ui.screen.LevelSelect" target="data.repositories.ScoreRepository" relationship="TO_ONE">
+      <point x="-218.0" y="0.0" />
+      <point x="-2242.0" y="3978.0" />
+      <point x="-2242.0" y="3095.5" />
+      <point x="-2090.0" y="3095.5" />
+      <point x="0.0" y="118.5" />
+    </edge>
+    <edge source="PowerupEffectTest" target="entities.powerups.DoubleBall" relationship="CREATE">
+      <point x="-105.5" y="-77.5" />
+      <point x="3087.0" y="6240.5" />
+      <point x="3087.0" y="2124.5" />
+      <point x="3025.0" y="2124.5" />
+      <point x="15.0" y="70.5" />
+    </edge>
+    <edge source="entities.bricks.BreakableBrick" target="entities.bricks.Brick" relationship="GENERALIZATION">
+      <point x="-186.5" y="0.0" />
+      <point x="1081.0" y="518.0" />
+      <point x="1081.0" y="503.0" />
+      <point x="1250.0" y="503.0" />
+      <point x="0.0" y="192.0" />
+    </edge>
+    <edge source="ui.screen.Introduce" target="ui.widgets.ButtonUI" relationship="CREATE">
+      <point x="87.5" y="0.0" />
+      <point x="-230.0" y="3978.0" />
+      <point x="-230.0" y="2418.0" />
+      <point x="-102.5" y="0.0" />
+    </edge>
+    <edge source="core.World" target="entities.Paddle" relationship="TO_ONE">
+      <point x="132.0" y="15.0" />
+      <point x="2180.5" y="5233.0" />
+      <point x="2180.5" y="3891.5" />
+      <point x="-149.0" y="-86.5" />
+    </edge>
+    <edge source="core.Game" target="core.World" relationship="TO_ONE">
+      <point x="142.5" y="70.0" />
+      <point x="760.0" y="6388.0" />
+      <point x="-30.0" y="288.0" />
+    </edge>
+    <edge source="core.Game" target="net.MockServer" relationship="CREATE">
+      <point x="142.5" y="55.0" />
+      <point x="-45.0" y="6373.0" />
+      <point x="45.0" y="69.0" />
+    </edge>
+    <edge source="entities.bricks.factory.BrickFactory" target="entities.bricks.HardBrick" relationship="CREATE">
+      <point x="181.5" y="0.0" />
+      <point x="1984.0" y="2418.0" />
+      <point x="1984.0" y="2686.5" />
+      <point x="2095.0" y="2686.5" />
+      <point x="2095.0" y="778.0" />
+      <point x="-158.5" y="0.0" />
+    </edge>
+    <edge source="core.Level" target="entities.bricks.factory.BrickFactory" relationship="TO_ONE">
+      <point x="15.0" y="-360.0" />
+      <point x="585.0" y="2418.0" />
+      <point x="-181.5" y="0.0" />
+    </edge>
+    <edge source="core.World" target="systems.ScoringSystem" relationship="CREATE">
+      <point x="-15.0" y="-288.0" />
+      <point x="775.0" y="4541.5" />
+      <point x="1375.0" y="4541.5" />
+      <point x="-15.0" y="276.0" />
+    </edge>
+    <edge source="core.Game" target="ui.screen.InGame" relationship="CREATE">
+      <point x="142.5" y="98.5" />
+      <point x="-885.0" y="6416.5" />
+      <point x="-15.0" y="81.0" />
+    </edge>
+    <edge source="engine.PowerUpPool" target="entities.powerups.ShootPaddle" relationship="CREATE">
+      <point x="15.0" y="-69.0" />
+      <point x="1965.0" y="3552.5" />
+      <point x="3637.0" y="3552.5" />
+      <point x="3637.0" y="3336.5" />
+      <point x="3155.0" y="3336.5" />
+      <point x="3155.0" y="1706.5" />
+      <point x="3710.0" y="1706.5" />
+      <point x="0.0" y="-70.5" />
+    </edge>
+    <edge source="entities.bricks.NormalBrick" target="entities.bricks.Brick" relationship="GENERALIZATION">
+      <point x="-166.0" y="0.0" />
+      <point x="1081.0" y="778.0" />
+      <point x="1081.0" y="503.0" />
+      <point x="1250.0" y="503.0" />
+      <point x="0.0" y="192.0" />
+    </edge>
+    <edge source="core.Game" target="data.repositories.PlayerRepository" relationship="CREATE">
+      <point x="-142.5" y="-77.5" />
+      <point x="-2387.0" y="6240.5" />
+      <point x="-2387.0" y="4648.0" />
+      <point x="-2425.0" y="4648.0" />
+      <point x="-15.0" y="94.5" />
+    </edge>
+    <edge source="ui.screen.MainMenu" target="core.Game" relationship="CREATE">
+      <point x="-15.0" y="45.0" />
+      <point x="-1365.0" y="6440.5" />
+      <point x="142.5" y="122.5" />
+    </edge>
+    <edge source="core.Game" target="ui.screen.MainMenu" relationship="CREATE">
+      <point x="142.5" y="30.0" />
+      <point x="-1380.0" y="6348.0" />
+      <point x="-30.0" y="45.0" />
+    </edge>
+    <edge source="HandleBulletBrickTest" target="core.World" relationship="CREATE">
+      <point x="0.0" y="-105.0" />
+      <point x="2010.0" y="5632.0" />
+      <point x="881.5" y="5632.0" />
+      <point x="91.5" y="288.0" />
+    </edge>
+    <edge source="ui.screen.Settings" target="ui.widgets.ButtonUI" relationship="CREATE">
+      <point x="-152.0" y="0.0" />
+      <point x="-867.0" y="3978.0" />
+      <point x="-867.0" y="4417.0" />
+      <point x="-230.0" y="4417.0" />
+      <point x="-230.0" y="2418.0" />
+      <point x="-102.5" y="0.0" />
+    </edge>
+    <edge source="HandleBallBrickTest" target="core.World" relationship="CREATE">
+      <point x="-15.0" y="-81.0" />
+      <point x="1515.0" y="5632.0" />
+      <point x="881.5" y="5632.0" />
+      <point x="91.5" y="288.0" />
+    </edge>
+    <edge source="engine.PlayExploding" target="engine.Sprite" relationship="TO_ONE">
+      <point x="0.0" y="-72.0" />
+      <point x="0.0" y="132.0" />
+    </edge>
+    <edge source="core.World" target="engine.PowerUpPool" relationship="CREATE">
+      <point x="132.0" y="0.0" />
+      <point x="1935.0" y="5218.0" />
+      <point x="-15.0" y="69.0" />
+    </edge>
+    <edge source="core.Game" target="net.LeaderboardClient" relationship="TO_ONE">
+      <point x="-142.5" y="-92.5" />
+      <point x="-2192.5" y="6225.5" />
+      <point x="-2.5" y="57.0" />
+    </edge>
+    <edge source="core.World" target="entities.Bullet" relationship="TO_MANY">
+      <point x="-58.0" y="-288.0" />
+      <point x="732.0" y="2355.5" />
+      <point x="-117.5" y="-62.5" />
+    </edge>
+    <edge source="data.AccountManager" target="data.PlayerAccount" relationship="TO_MANY">
+      <point x="15.0" y="-144.0" />
+      <point x="15.0" y="120.0" />
+    </edge>
+    <edge source="entities.bricks.factory.BrickFactory" target="entities.bricks.NormalBrick" relationship="CREATE">
+      <point x="0.0" y="45.0" />
+      <point x="1650.0" y="3426.5" />
+      <point x="1728.0" y="3426.5" />
+      <point x="1728.0" y="2518.5" />
+      <point x="1849.0" y="2518.5" />
+      <point x="1849.0" y="778.0" />
+      <point x="166.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.09815326450487132" showDependencies="true" x="931.5" y="3406.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

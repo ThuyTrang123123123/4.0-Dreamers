@@ -46,7 +46,6 @@ import ui.screen.*;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.scene.paint.Color;
 import javafx.geometry.Insets;
 
