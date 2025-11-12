@@ -228,18 +228,19 @@ public class Game extends Application {
                 if (Collision.isBallTouchingPaddle(ball, paddle)) {
                     Collision.handleBallPaddleCollision(ball, paddle);
                 }
-                /**Phần sửa MA**/
-                for (Brick brick : world.getBricks()) {
-                    if (brick instanceof ExplodingBrick) {
-                        if (Collision.isBallTouchingBrick(ball, brick)) {
-                            PlayExploding explosion = new PlayExploding(3, 3, brick.getX(), brick.getY());
-                            explosion.start(gc); // bắt đầu animation}
-                        }
-                    }
-                }
-                // hết sửa
                 Collision.handleBallBrickCollision(ball, world.getBricks(), world);
 
+            }
+        }
+
+        for (Brick brick : world.getBricks()) {
+            if (brick instanceof ExplodingBrick) {
+                ExplodingBrick eb = (ExplodingBrick) brick;
+                if (brick.isDestroyed() && !eb.hasExploded()) {
+                    PlayExploding explosion = new PlayExploding(3, 3, brick.getX(), brick.getY());
+                    explosion.start(gc); // bắt đầu animation
+                    eb.setHasExploded(true); // chỉ gọi 1 lần hiệu ứng
+                }
             }
         }
 
