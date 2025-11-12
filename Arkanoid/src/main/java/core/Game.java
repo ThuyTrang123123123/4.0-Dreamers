@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import data.AccountManager;
 import entities.Bullet;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -80,7 +81,7 @@ public class Game extends Application {
     private boolean scoreSavedForWin = false;// Flag cho win
     private boolean endScreenShown = false;
 
-    private static final String PROGRESS_PLAY = "progress_play";
+    //private static final String PROGRESS_PLAY = "progress_play";
     private static final String SCORES_PLAY   = "scores_play";
     private static final String SCORES_PRACT  = "scores_practice";
 
@@ -92,7 +93,7 @@ public class Game extends Application {
         world.init(canvas);
 
         if (mode == Mode.PLAY) {
-            Map<String, Object> progress = storage.load(PROGRESS_PLAY);
+            Map<String, Object> progress = storage.load(getDynamicProgressKey());
             if (!progress.isEmpty()) {
                 int loadedScore  = ((Number) progress.getOrDefault("score", 0)).intValue();
                 int loadedLives  = ((Number) progress.getOrDefault("lives", 1)).intValue();
@@ -371,6 +372,19 @@ public class Game extends Application {
         }
     }
 
+    /**
+     * Lấy key (tên file) để lưu/tải progress, dựa trên người dùng đã đăng nhập.
+     */
+    private String getDynamicProgressKey() {
+        String username = AccountManager.getLoggedInUser();
+        if (username == null || username.isEmpty()) {
+            return "progress_guest"; // Dùng file riêng cho khách (Guest)
+        }
+        // Thay thế các ký tự không an toàn trong tên file
+        String safeUsername = username.replaceAll("[^a-zA-Z0-9_.-]", "_");
+        return "progress_" + safeUsername;
+    }
+
     private void saveProgress() {
         if (mode != Mode.PLAY) return;
 
@@ -387,7 +401,7 @@ public class Game extends Application {
         }
         progress.put("unlockedAchievements", unlockedIds);
 
-        storage.save(PROGRESS_PLAY, progress);
+        storage.save(getDynamicProgressKey(), progress);
 
         scoreRepo.saveScore(world.getLevel().getCurrentLevel(), world.getScoring().getScore());
 
@@ -401,15 +415,21 @@ public class Game extends Application {
     }
 
     private void saveScoreOnce(String reason) {
+
         int finalScore = world.getScoring().getScore();
         int finalLevel = world.getLevel().getCurrentLevel();
 
-        // Save local high score
+        // Lưu local
         scoreRepo.saveScore(finalLevel, finalScore);
+        String playerName = AccountManager.getLoggedInUser();
+        // Nếu không ai đăng nhập (playerName là null), dùng tên mặc định từ playerRepo
+        if (playerName == null || playerName.isEmpty()) {
+            playerName = playerRepo.getPlayerName(); // Fallback về "Guest"
+        }
+        // Gửi lên leaderboard
+        leaderboardClient.submitScore(playerName, finalScore);
 
-        leaderboardClient.submitScore(playerRepo.getPlayerName(), finalScore);
-
-        System.out.println("Score saved ONCE for " + reason + ": " + finalScore);
+        System.out.println("Score saved ONCE for " + reason + " as " + playerName + ": " + finalScore);
     }
 
     public void showPause() {
@@ -435,16 +455,16 @@ public class Game extends Application {
         if (mode == Mode.PLAY) {
             world.reset();
             world.getLevel().setCurrentLevel(1);
-            storage.delete(PROGRESS_PLAY);
+            storage.delete(getDynamicProgressKey());
             playerRepo.resetPlayer();
             scoreRepo.resetScores();
-            System.out.println("🔁 Restart PLAY mode → back to Level 1");
+            System.out.println("Restart PLAY mode → back to Level 1");
         }
         else if (mode == Mode.PRACTICE) {
             int currentLevel = world.getLevel().getCurrentLevel();
             world.reset();
             world.getLevel().setCurrentLevel(currentLevel);
-            System.out.println("🔁 Restart PRACTICE mode → stay at Level " + currentLevel);
+            System.out.println("Restart PRACTICE mode → stay at Level " + currentLevel);
         }
     }
 
@@ -484,17 +504,44 @@ public class Game extends Application {
 
         VBox leaderboardBox = new VBox(10);
         leaderboardBox.setAlignment(Pos.CENTER);
+        // CSS nhẹ cho đẹp
+        leaderboardBox.setStyle("-fx-padding: 20; -fx-background-color: #F4F4F4;");
 
         Label title = new Label("Top 10 Scores");
         title.setFont(Fonts.main(24));
+        title.setTextFill(Colors.PRIMARY);
+        leaderboardBox.getChildren().add(title);
 
-        for (Map<String, Object> entry : topScores) {
-            Label scoreLabel = new Label((String) entry.get("player") + ": " + entry.get("score"));
+        // === THAY ĐỔI VÒNG LẶP ===
+        // Dùng vòng lặp for-i để lấy số thứ tự
+        for (int i = 0; i < topScores.size(); i++) {
+            Map<String, Object> entry = topScores.get(i);
+
+            int rank = i + 1; // Số thứ tự (bắt đầu từ 1)
+            String player = (String) entry.get("player");
+            // Đảm bảo lấy "score" ra là Integer
+            int score = ((Number) entry.get("score")).intValue();
+
+            String text = rank + ". " + player + ": " + score;
+            Label scoreLabel = new Label(text);
+            scoreLabel.setFont(Fonts.main(16));
+
+            // (Tùy chọn) Tô màu cho top 3
+            if (rank == 1) {
+                scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #D4AF37;"); // Vàng
+            } else if (rank == 2) {
+                scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #C0C0C0;"); // Bạc
+            } else if (rank == 3) {
+                scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #CD7F32;"); // Đồng
+            }
+
             leaderboardBox.getChildren().add(scoreLabel);
         }
+        // === KẾT THÚC THAY ĐỔI ===
 
         Scene leaderboardScene = new Scene(leaderboardBox, 400, 600);
         Stage leaderboardStage = new Stage();
+        leaderboardStage.setTitle("Leaderboard");
         leaderboardStage.setScene(leaderboardScene);
         leaderboardStage.show();
     }
@@ -522,9 +569,10 @@ public class Game extends Application {
         startLoopIfNeeded();
     }
 
+
     public int getHighestLevelUnlocked() {
         try {
-            Map<String, Object> p = storage.load(PROGRESS_PLAY);
+            Map<String, Object> p = storage.load(getDynamicProgressKey());
             int highest = ((Number)p.getOrDefault(
                     "highestLevelUnlocked",
                     Math.max(1, ((Number)p.getOrDefault("currentLevel", 1)).intValue())
@@ -536,9 +584,9 @@ public class Game extends Application {
     }
 
     public void setHighestLevelUnlocked(int v) {
-        Map<String, Object> p = storage.load(PROGRESS_PLAY);
+        Map<String, Object> p = storage.load(getDynamicProgressKey());
         p.put("highestLevelUnlocked", Math.max(1, v));
-        storage.save(PROGRESS_PLAY, p);
+        storage.save(getDynamicProgressKey(), p);
     }
 
     public void setModePlay()     {
@@ -586,7 +634,7 @@ public class Game extends Application {
         });
     }
 
-   private void startNewRun() {
+    private void startNewRun() {
         gamePaused = false;
         gameWon = false;
         justCompleted = false;
@@ -597,7 +645,7 @@ public class Game extends Application {
         if (mode == Mode.PLAY) {
             world.reset();
             world.getLevel().setCurrentLevel(1);
-            storage.delete(PROGRESS_PLAY);
+            storage.delete(getDynamicProgressKey());
             playerRepo.resetPlayer();
             scoreRepo.resetScores();
         } else {

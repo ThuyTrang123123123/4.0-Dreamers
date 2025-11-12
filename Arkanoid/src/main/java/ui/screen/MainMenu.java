@@ -2,6 +2,7 @@ package ui.screen;
 
 import core.Config;
 import core.Game;
+import data.AccountManager;
 import data.JsonStorage;
 import data.Storage;
 import data.repositories.PlayerRepository;
@@ -25,6 +26,15 @@ public class MainMenu {
     public static Game practiceGame;
 
     public Scene create(Stage stage) {
+        AccountManager accountManager = new AccountManager();
+
+        // Kiểm tra đã đăng nhập chưa
+        if (AccountManager.getLoggedInUser() == null) {
+            LoginScreen loginScreen = new LoginScreen(stage, accountManager, () -> {
+                stage.setScene(create(stage)); // Sau khi login thành công
+            });
+            return loginScreen.create();
+        }
         VBox root = new VBox(20);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(24));
@@ -84,7 +94,7 @@ public class MainMenu {
             stage.setScene(settings.create(stage));
         });
 
-        ButtonUI leaderboardBtn = new ButtonUI("View Leaderboard");
+        ButtonUI leaderboardBtn = new ButtonUI("View");
         leaderboardBtn.setOnAction(e -> {
             Game gameInstance = new Game();
             gameInstance.showLeaderboard();
@@ -94,6 +104,12 @@ public class MainMenu {
         exitBtn.setOnAction(e -> stage.close());
 
         root.getChildren().addAll(playBtn, levelSelectBtn, settingsBtn, leaderboardBtn, exitBtn);
+        ButtonUI logoutBtn = new ButtonUI("Log out");
+        logoutBtn.setOnAction(e -> {
+            AccountManager.logout();
+            stage.setScene(create(stage));
+        });
+        root.getChildren().add(logoutBtn);
         return new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
     }
 
