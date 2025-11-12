@@ -53,6 +53,8 @@ import ui.theme.Colors;
 import ui.theme.Fonts;
 
 import javafx.beans.property.IntegerProperty;
+import javafx.scene.paint.Color;
+import javafx.geometry.Insets;
 
 public class Game extends Application {
     private Canvas canvas;
@@ -500,45 +502,98 @@ public class Game extends Application {
     }
 
     public void showLeaderboard() {
+        // --- 1. Lấy Top 10 Toàn Cầu (Giữ nguyên) ---
         List<Map<String, Object>> topScores = leaderboardClient.getTopScores(10);
 
         VBox leaderboardBox = new VBox(10);
         leaderboardBox.setAlignment(Pos.CENTER);
-        // CSS nhẹ cho đẹp
-        leaderboardBox.setStyle("-fx-padding: 20; -fx-background-color: #F4F4F4;");
+        leaderboardBox.setStyle("-fx-padding: 20; -fx-background-color: #FFF8F6;"); // Cập nhật màu nền
 
-        Label title = new Label("Top 10 Scores");
-        title.setFont(Fonts.main(24));
+        Label title = new Label("🏆 BXH 🏆");
+        title.setFont(Fonts.main(28));
         title.setTextFill(Colors.PRIMARY);
         leaderboardBox.getChildren().add(title);
 
-        // === THAY ĐỔI VÒNG LẶP ===
-        // Dùng vòng lặp for-i để lấy số thứ tự
+        // --- 2. Hiển thị Top 10 Toàn Cầu (Giữ nguyên) ---
         for (int i = 0; i < topScores.size(); i++) {
             Map<String, Object> entry = topScores.get(i);
 
-            int rank = i + 1; // Số thứ tự (bắt đầu từ 1)
+            int rank = i + 1;
             String player = (String) entry.get("player");
-            // Đảm bảo lấy "score" ra là Integer
             int score = ((Number) entry.get("score")).intValue();
 
             String text = rank + ". " + player + ": " + score;
             Label scoreLabel = new Label(text);
             scoreLabel.setFont(Fonts.main(16));
 
-            // (Tùy chọn) Tô màu cho top 3
             if (rank == 1) {
                 scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #D4AF37;"); // Vàng
             } else if (rank == 2) {
-                scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #C0C0C0;"); // Bạc
+                scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A9A9A9;"); // Bạc
             } else if (rank == 3) {
                 scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #CD7F32;"); // Đồng
             }
 
             leaderboardBox.getChildren().add(scoreLabel);
         }
-        // === KẾT THÚC THAY ĐỔI ===
 
+        // --- 3. Thêm một đường kẻ phân cách ---
+        // (Tạo khoảng cách trực quan)
+        VBox.setMargin(title, new Insets(0, 0, 15, 0)); // Thêm margin dưới title
+        javafx.scene.shape.Line separator = new javafx.scene.shape.Line(0, 0, 300, 0);
+        separator.setStroke(Color.web("#E0E0E0"));
+        VBox.setMargin(separator, new Insets(15, 0, 15, 0)); // Thêm margin trên và dưới
+        leaderboardBox.getChildren().add(separator);
+
+
+        // --- 4. LOGIC MỚI: Hiển thị Thành Tích Cá Nhân ---
+        String currentUser = AccountManager.getLoggedInUser();
+
+        // Chỉ hiển thị nếu có người dùng đăng nhập (không phải Guest)
+        if (currentUser != null && !currentUser.isEmpty()) {
+
+            // Lấy Level cao nhất (từ file progress_User.json)
+            // Phương thức này đã được chúng ta sửa để đọc theo tài khoản
+            int personalBestLevel = getHighestLevelUnlocked();
+
+            // Lấy Điểm cao nhất (từ file scores_User.json)
+            // Chúng ta cần duyệt qua file điểm cá nhân để tìm điểm cao nhất
+            ScoreRepository personalScoreRepo = new ScoreRepository(storage);
+            List<Map<String, Object>> allMyScores = personalScoreRepo.getAllHighScores();
+
+            int personalBestScore = 0;
+            for (Map<String, Object> entry : allMyScores) {
+                int score = ((Number) entry.get("score")).intValue();
+                if (score > personalBestScore) {
+                    personalBestScore = score;
+                }
+            }
+
+            // Tạo các Label UI
+            Label personalTitle = new Label(currentUser + "'s Records");
+            personalTitle.setFont(Fonts.main(22));
+            personalTitle.setStyle("-fx-font-weight: bold; -fx-text-fill: #2C7A7B;"); // Màu teal
+            VBox.setMargin(personalTitle, new Insets(0, 0, 10, 0));
+
+            Label bestScoreLabel = new Label("Best Score: " + personalBestScore);
+            bestScoreLabel.setFont(Fonts.main(18));
+
+            Label bestLevelLabel = new Label("Highest Level: " + personalBestLevel);
+            bestLevelLabel.setFont(Fonts.main(18));
+
+            leaderboardBox.getChildren().addAll(personalTitle, bestScoreLabel, bestLevelLabel);
+
+        } else {
+            // Nếu là Guest, hiển thị lời nhắc
+            Label guestLabel = new Label("Log in to view your records!");
+            guestLabel.setFont(Fonts.main(16));
+            guestLabel.setStyle("-fx-text-fill: #777777;");
+            leaderboardBox.getChildren().add(guestLabel);
+        }
+        // --- Kết thúc Logic Mới ---
+
+
+        // --- 5. Hiển thị cửa sổ (Giữ nguyên) ---
         Scene leaderboardScene = new Scene(leaderboardBox, 400, 600);
         Stage leaderboardStage = new Stage();
         leaderboardStage.setTitle("Leaderboard");
