@@ -2,6 +2,9 @@ package ui.theme;
 
 import javafx.scene.paint.Color;
 
+/**
+ * Colors – Quản lý  màu dùng trong giao diện ứng dụng.
+ */
 public class Colors {
     public static final Color PRIMARY = Color.web("#FF6F61"); // Hồng pastel
     public static final Color BACKGROUND = Color.web("#FFF8F6"); // Hồng nhạt
@@ -11,5 +14,4 @@ public class Colors {
     public static final Color BUTTON = Color.web("#B3EF9E"); //xanh ngọc
     public static final Color SECONDARY = Color.web("#FFB6A4");
     public static final Color BRICKS = Color.OLIVE;
-//    public static final Color BUTTON = Color.web("#FFB6A4");
 }

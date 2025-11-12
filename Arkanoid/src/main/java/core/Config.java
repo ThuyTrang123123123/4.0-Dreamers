@@ -1,5 +1,9 @@
 package core;
-
+/**
+ * Lớp Config (Cấu hình)
+ * Chứa các hằng số tĩnh (static final) định nghĩa kích thước màn hình,
+ * bố cục cấp độ, kích thước đối tượng và tốc độ mặc định trong trò chơi.
+ */
 public class Config {
     public static final int SCREEN_WIDTH = 800;
     public static final int SCREEN_HEIGHT = 600;

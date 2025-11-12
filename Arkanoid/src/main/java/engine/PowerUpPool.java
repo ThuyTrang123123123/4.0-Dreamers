@@ -6,6 +6,10 @@ import entities.powerups.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Powerup Pool-  dùng để quản lý tái sử dụng power up, tránh tạo mới nhiều lần
+ */
+
 public class PowerUpPool {
     private final List<PowerUp> available = new ArrayList<>();
     private final List<PowerUp> inUse = new ArrayList<>();
@@ -60,7 +64,9 @@ public class PowerUpPool {
             return new ShootPaddle(x,y);
         }
 
-
+        if (type == ShootPaddle.class) {
+            return new ShootPaddle(x, y);
+        }
         throw new IllegalArgumentException("Unknown PowerUp type: " + type.getSimpleName());
     }
 }

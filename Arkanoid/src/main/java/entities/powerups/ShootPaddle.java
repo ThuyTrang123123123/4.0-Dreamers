@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 /**
- * PowerUp: ShootPaddle - bắn 1 viên đạn từ Paddle.
+ * ShootPaddle – Biến thanh đỡ bóng thành vũ khí có thể bắn đạn.
  */
 
 public class ShootPaddle extends PowerUp {

@@ -10,8 +10,9 @@ import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
 
 /**
- * PowerUp: Enlarge Paddle — làm paddle to hơn trong vài giây.
+ * EnlargePaddle – Mở rộng thanh đỡ bóng, tăng khả năng phòng thủ.
  */
+
 public class EnlargePaddle extends PowerUp {
 
     private final double enlargeFactor = 1.5;

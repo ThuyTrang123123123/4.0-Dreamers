@@ -15,6 +15,9 @@ import ui.widgets.ButtonUI;
 
 import java.util.Objects;
 
+/**
+ * End – Màn hình kết thúc trò chơi, hiển thị  tùy chọn chơi lại.
+ */
 public class End {
     public static Scene create(
             Stage stage,

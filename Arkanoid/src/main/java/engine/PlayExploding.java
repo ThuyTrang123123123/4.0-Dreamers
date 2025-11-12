@@ -4,6 +4,10 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+/**
+ * PlayExploding- gọi hiệu ứng khi gạch nổ bị phá
+ */
+
 public class PlayExploding {
 
     private Sprite explosionSprite;
@@ -11,7 +15,7 @@ public class PlayExploding {
     private boolean finished = false;
     Image explosionSheet = new Image(getClass().getResource("/images/ESS.png").toExternalForm());
 
-    public PlayExploding( int columns, int rows, double x, double y) {
+    public PlayExploding(int columns, int rows, double x, double y) {
         this.explosionSprite = new Sprite(explosionSheet, columns, rows);
         this.x = x;
         this.y = y;

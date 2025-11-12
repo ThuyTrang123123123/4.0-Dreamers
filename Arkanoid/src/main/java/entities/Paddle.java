@@ -7,6 +7,10 @@ import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
 import ui.theme.Colors;
 
+/**
+ * Paddle – Thanh đỡ bóng do người chơi điều khiển.
+ * Có thể thay đổi kích thước, tốc độ và khả năng bắn tùy theo power-up.
+ */
 public class Paddle {
     private double x, y;
     private double width, height;
@@ -26,32 +30,82 @@ public class Paddle {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.scaleFactor=1.0;
-        this.baseWidth=width;
+        this.scaleFactor = 1.0;
+        this.baseWidth = width;
         this.color = defaultColor;
     }
 
-    public double getX() { return x; }
-    public double getY() { return y; }
-    public double getWidth() { return width; }
-    public double getHeight() { return height; }
-    public double getSpeed() { return speed; }
-    public boolean isMoveLeft() { return moveLeft; }
-    public boolean isMoveRight() { return moveRight; }
+    public double getX() {
+        return x;
+    }
 
-    public boolean isShooting() { return shooting; }
-    public void setShooting(boolean shooting) { this.shooting = shooting; }
+    public double getY() {
+        return y;
+    }
 
-    public void setX(double x) { this.x = x; }
-    public void setY(double y) { this.y = y; }
-    public void setWidth(double width) { this.width = width; }
-    public void setHeight(double height) { this.height = height; }
-    public void setSpeed(double speed) { this.speed = speed; }
-    public void setMoveLeft(boolean moveLeft) { this.moveLeft = moveLeft; }
-    public void setMoveRight(boolean moveRight) { this.moveRight = moveRight; }
+    public double getWidth() {
+        return width;
+    }
 
-    public long getShootEndTime() { return shootEndTime; }
-    public void setShootEndTime(long time) { this.shootEndTime = time; }
+    public double getHeight() {
+        return height;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public boolean isMoveLeft() {
+        return moveLeft;
+    }
+
+    public boolean isMoveRight() {
+        return moveRight;
+    }
+
+    public boolean isShooting() {
+        return shooting;
+    }
+
+    public void setShooting(boolean shooting) {
+        this.shooting = shooting;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public void setWidth(double width) {
+        this.width = width;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
+    public void setMoveLeft(boolean moveLeft) {
+        this.moveLeft = moveLeft;
+    }
+
+    public void setMoveRight(boolean moveRight) {
+        this.moveRight = moveRight;
+    }
+
+    public long getShootEndTime() {
+        return shootEndTime;
+    }
+
+    public void setShootEndTime(long time) {
+        this.shootEndTime = time;
+    }
 
     public void update(double deltaTime) {
         this.color = defaultColor;
@@ -67,6 +121,7 @@ public class Paddle {
         gc.setFill(color != null ? color : defaultColor);
         gc.fillRect(x - width / 2, y - height / 2, width, height);
     }
+
     public void applyScale(double factor) {
         scaleFactor *= factor;
         updateWidth();
@@ -78,7 +133,7 @@ public class Paddle {
     }
 
     private void updateWidth() {
-        this.width = baseWidth* scaleFactor;
+        this.width = baseWidth * scaleFactor;
     }
 
     public void onKeyPressed(KeyCode code) {
@@ -123,5 +178,7 @@ public class Paddle {
         if (c != null) this.color = c;
     }
 
-    public Color getColor() { return color; }
+    public Color getColor() {
+        return color;
+    }
 }

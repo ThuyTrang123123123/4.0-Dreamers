@@ -6,6 +6,11 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.Stop;
 
+/**
+ * Lớp NormalBrick.
+ * Đây là loại gạch cơ bản nhất, chỉ cần 1 hitPoint để phá hủy.
+ */
+
 public class NormalBrick extends Brick {
     // Màu vàng cố định cho tất cả gạch
     private final Color brickColor = Color.web("#FFD700"); // Vàng trong trẻo
@@ -24,10 +29,10 @@ public class NormalBrick extends Brick {
         // Tính toán các màu
         Color darkColor = brickColor.darker();
         Color lightColor = brickColor.brighter();
-        //VẼ LỚP ĐẬM
+        // Lớp đậm
         gc.setFill(darkColor.darker());
         gc.fillRect(drawX + 1, drawY + 1, width - 2, height - 2);
-        //VẼ GRADIENT CHÍNH
+        // Vẽ gradient
         LinearGradient verticalGradient = new LinearGradient(
                 0, drawY + 3, 0, drawY + height - 3,
                 false, CycleMethod.NO_CYCLE,
@@ -39,7 +44,7 @@ public class NormalBrick extends Brick {
         gc.setFill(verticalGradient);
         gc.fillRect(drawX + 3, drawY + 3, width - 6, height - 6);
 
-        //VẼ PHẦN SÁNG PHÍA TRÊN (highlight)
+        // Phần sáng trên
         LinearGradient topHighlight = new LinearGradient(
                 0, drawY + 3, 0, drawY + height * 0.4,
                 false, CycleMethod.NO_CYCLE,
@@ -49,7 +54,7 @@ public class NormalBrick extends Brick {
         );
         gc.setFill(topHighlight);
         gc.fillRect(drawX + 4, drawY + 4, width - 8, height * 0.4);
-        //VẼ PHẦN TỐI PHÍA DƯỚI
+        // Phần tối dưới
         LinearGradient bottomShadow = new LinearGradient(
                 0, drawY + height * 0.6, 0, drawY + height - 3,
                 false, CycleMethod.NO_CYCLE,
@@ -59,11 +64,11 @@ public class NormalBrick extends Brick {
         );
         gc.setFill(bottomShadow);
         gc.fillRect(drawX + 4, drawY + height * 0.6, width - 8, height * 0.37);
-        // VẼ VIỀN SÁNG BÊN TRONG
+        // Viền sáng trong
         gc.setStroke(lightColor.brighter());
         gc.setLineWidth(1);
         gc.strokeRect(drawX + 2.5, drawY + 2.5, width - 5, height - 5);
-        // VẼ VIỀN ĐẬM BÊN TRONG
+        // Viền đậm trong
         gc.setStroke(darkColor);
         gc.setLineWidth(1);
         gc.strokeRect(drawX + 3.5, drawY + 3.5, width - 7, height - 7);

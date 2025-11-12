@@ -9,6 +9,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+/**
+ * EnLargeBall – Tăng kích thước bóng, giúp dễ đánh trúng mục tiêu hơn.
+ */
+
 public class EnLargeBall extends PowerUp {
     private double EnLargeFactor = 1.25;
     private final double duration = 8.0;

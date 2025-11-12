@@ -10,8 +10,9 @@ import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
 
 /**
- * PowerUp: Slow Ball — giảm tốc độ bóng.
+ * SlowBall – Làm chậm tốc độ bóng, giúp dễ kiểm soát hơn.
  */
+
 public class SlowBall extends PowerUp {
 
     private final double slowFactor = 0.7; // chậm lại 30%

@@ -10,8 +10,9 @@ import javafx.scene.paint.Color;
 import javafx.geometry.Rectangle2D;
 
 /**
- * PowerUp: Shrink Paddle — làm paddle nhỏ đi trong vài giây.
+ * ShrinkPaddle – Thu nhỏ thanh đỡ bóng, tăng độ khó cho người chơi.
  */
+
 public class ShrinkPaddle extends PowerUp {
 
     private final double shrinkFactor = 0.8;

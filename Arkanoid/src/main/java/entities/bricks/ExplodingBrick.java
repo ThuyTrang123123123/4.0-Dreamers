@@ -8,6 +8,13 @@ import javafx.scene.paint.Stop;
 
 import java.util.List;
 
+/**
+ * Lớp ExplodingBrick.
+ * Đại diện cho một viên gạch nổ. Khi bị phá hủy, nó sẽ kích hoạt vụ nổ.
+ * phá hủy các viên gạch lân cận và có thể tạo ra phản ứng dây chuyền .
+ * Kế thừa từ BreakableBrick và chỉ cần 1 hitPoint.
+ */
+
 public class ExplodingBrick extends BreakableBrick {
     private static final int GRID_RANGE = 1; // nổ lan 8 ô xung quanh (1 ô mỗi hướng)
     private boolean hasExploded = false;
@@ -27,11 +34,10 @@ public class ExplodingBrick extends BreakableBrick {
     @Override
     public void hit() {
         super.hit();
-
     }
 
     /**
-     * Nổ lan ra 8 ô xung quanh (và đệ quy nếu gặp ExplodingBrick)
+     * Nổ lan ra 8 ô xung quanh (và đệ quy nếu gặp ExplodingBrick).
      */
     public int exployNearbyAndCount(List<Brick> bricks) {
         int destroyedCount = 0;

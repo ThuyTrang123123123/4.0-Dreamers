@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * LeaderboardClient
+ * Chịu trách nhiệm giao tiếp với API máy chủ Bảng xếp hạng.
+ */
 public class LeaderboardClient {
     private static final String API_URL = "http://localhost:9091/leaderboard"; // Thay bằng URL thật
     private final ObjectMapper mapper = new ObjectMapper();

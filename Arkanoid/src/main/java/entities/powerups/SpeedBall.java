@@ -10,8 +10,9 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 /**
- * PowerUp: Speed Ball — Tăng tốc độ bóng.
+ * SpeedBall – Tăng tốc độ bóng, tạo thử thách cao hơn.
  */
+
 public class SpeedBall extends PowerUp {
     private final double speedFactor = 1.25; // tăng tốc
     private final double duration = 8.0;

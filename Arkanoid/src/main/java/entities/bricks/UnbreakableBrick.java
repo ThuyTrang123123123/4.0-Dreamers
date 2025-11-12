@@ -2,18 +2,22 @@ package entities.bricks;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 
-public class UnbreakableBrick extends Brick {
+/**
+ * Lớp UnbreakableBrick.
+ * Không thể bị phá hủy.
+ */
+
+public class UnbreakableBrick extends Brick{
     public UnbreakableBrick(double x, double y, double width, double height) {
-        super(x, y, width, height, 1);
+        super(x, y, width, height,0);
     }
 
     @Override
     public void hit() {
-        // Không thể phá
         setDestroyed(false);
     }
 
