@@ -7,9 +7,18 @@ import java.util.List;
 
 public class ExplodingBrick extends BreakableBrick {
     private static final int GRID_RANGE = 1; // nổ lan 8 ô xung quanh (1 ô mỗi hướng)
+    private boolean hasExploded = false;
+
+    public boolean hasExploded() {
+        return hasExploded;
+    }
+
+    public void setHasExploded(boolean value) {
+        this.hasExploded = value;
+    }
 
     public ExplodingBrick(double x, double y, double width, double height) {
-        super(x, y, width, height,1);
+        super(x, y, width, height, 1);
     }
 
     @Override
@@ -54,7 +63,6 @@ public class ExplodingBrick extends BreakableBrick {
 
         return destroyedCount;
     }
-
 
 
     @Override

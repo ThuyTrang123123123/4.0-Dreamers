@@ -10,12 +10,14 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import systems.AudioSystem;
 import ui.screen.InGame;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 
 import data.repositories.PlayerRepository;
 import data.repositories.ScoreRepository;
+import ui.widgets.ButtonUI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +58,7 @@ public class LevelSelect {
 
         VBox header = new VBox(6);
         Label title = new Label("Select Level");
-        title.setTextFill(Colors.TEXT);
+        title.setTextFill(Colors.TEXTBT);
         title.setFont(Fonts.main(28));
         Label sub = new Label("Practice Mode — Select Any Leve");
         sub.setTextFill(Colors.TEXTBT);
@@ -65,17 +67,21 @@ public class LevelSelect {
 
         GridPane grid = buildGrid();
 
-        HBox footer = new HBox(12);
+        VBox footer = new VBox(12);
         footer.setAlignment(Pos.CENTER_LEFT);
-        Button back = makeButton("Back", 100, 40, () -> stage.setScene(MainMenu.cachedScene));
-        footer.getChildren().add(back);
+        ButtonUI backBtn = new ButtonUI("Back");
+        backBtn.setOnAction(e -> {
+            AudioSystem.getInstance().playSound("select.mp3");
+            stage.setScene(MainMenu.cachedScenePractice);
+        });
+        footer.getChildren().add(backBtn);
 
         root.setTop(header);
         BorderPane.setMargin(header, new Insets(0, 0, 12, 0));
         root.setCenter(grid);
         root.setBottom(footer);
 
-        Scene scene = new Scene(root, 960, 600);
+        Scene scene = new Scene(root, Config.SCREEN_WIDTH, Config.SCREEN_HEIGHT);
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) stage.setScene(MainMenu.cachedScene);
         });
@@ -128,7 +134,7 @@ public class LevelSelect {
             Button b = makeLevelButton(i);
             Label score = new Label("—");
             score.setFont(Fonts.main(12));
-            score.setTextFill(Colors.TEXT);
+            score.setTextFill(Colors.TEXTBT);
 
             levelButtons.add(b);
             scoreLabels.add(score);
@@ -172,7 +178,7 @@ public class LevelSelect {
 
             int best = bestScores[i - 1];
             s.setText(best > 0 ? ("Best: " + best) : "—");
-            s.setTextFill(Colors.TEXT);
+            s.setTextFill(Colors.TEXTBT);
         }
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LeaderboardClient {
-    private static final String API_URL = "http://localhost:8080/leaderboard"; // Thay bằng URL thật
+    private static final String API_URL = "http://localhost:9091/leaderboard"; // Thay bằng URL thật
     private final ObjectMapper mapper = new ObjectMapper();
 
     public boolean submitScore(String playerName, int score) {
@@ -51,15 +51,26 @@ public class LeaderboardClient {
             URL url = new URL(API_URL + "/top?limit=" + top);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
 
-            if (conn.getResponseCode() == 200) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String json = br.readLine();
-                return mapper.readValue(json, mapper.getTypeFactory().constructCollectionType(List.class, HashMap.class));
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                // Kiểm tra Content-Length
+                int contentLength = conn.getContentLength();
+                if (contentLength == 0) {
+                    return new ArrayList<>(); // Trả về list rỗng nếu server gửi body rỗng
+                }
+
+                return mapper.readValue(conn.getInputStream(),
+                        mapper.getTypeFactory().constructCollectionType(List.class, HashMap.class));
+            } else {
+                System.err.println("Server trả về mã lỗi: " + responseCode);
+                return new ArrayList<>();
             }
         } catch (Exception e) {
             System.err.println("Lỗi lấy leaderboard: " + e.getMessage());
+            return new ArrayList<>(); // Luôn trả về list rỗng nếu lỗi
         }
-        return new ArrayList<>();
     }
 }

@@ -1,4 +1,3 @@
-// ScoringSystem.java
 package systems;
 
 import javafx.application.Platform;
@@ -55,7 +54,7 @@ public class ScoringSystem {
             lives.set(newLives);
             System.out.println((newLives - current) + " Mạng! Hiện tại: " + newLives + "/" + MAX_LIVES);
         } else {
-            System.out.println(" Đã đạt tối đa " + MAX_LIVES + " mạng!");
+            System.out.println("Đã đạt tối đa " + MAX_LIVES + " mạng!");
         }
     }
 

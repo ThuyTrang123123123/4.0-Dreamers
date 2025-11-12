@@ -13,7 +13,7 @@ public class Config {
     public static final double BALL_RADIUS = 10;
     public static final double BALL_SPEED = 350;
 
-    public static final String DEFAULT_MUSIC = "nhac1.wav";
+    public static final String DEFAULT_MUSIC = "TRUYỆN AUDIO.mp3";
 
     public static final double BONUSCOIN_RADIUS = 15;
     public static final double BONUSCOIN_SPEED = 100;

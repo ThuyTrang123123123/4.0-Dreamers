@@ -54,6 +54,7 @@ public class Paddle {
     public void setShootEndTime(long time) { this.shootEndTime = time; }
 
     public void update(double deltaTime) {
+        this.color = defaultColor;
         if (moveLeft) x -= speed * deltaTime;
         if (moveRight) x += speed * deltaTime;
 

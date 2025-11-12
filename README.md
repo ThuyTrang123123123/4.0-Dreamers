@@ -1,43 +1,121 @@
-"BTL OOP 11"
+Arkanoid Game - Celestial Resonance - Object-Oriented Programming Project
+---
 
-Nhóm 4.0-Dreamers
+Author
+---
 
-ERC = pause
+Group 2 - Class INT2204 11
 
-M = back to menu
+1. Nguyễn Thùy Trang - 24021644
+2. Nguyễn Minh Anh - 24021370
+3. Phan Yến Nhi - 24022705
+4. Trịnh Thị Vân - 24022842
 
-C = resume
+Instructor: Kiều Văn Tuyên
+Semester: HK1 - 2025
+---
 
-R = Restart
+Description
+---
+This is a classic Arkanoid game developed in Java as a final project for Object-Oriented Programming course. The project demonstrates the implementation of OOP principles and design patterns.
 
-SPACE = bắn bóng
+Key feature:
+1. The game is developed using Java 21+ with JavaFX for GUI.
 
-A - TUẦN 1:
+2. Implements core OOP principles: Encapsulation, Inheritance, Polymorphism, and Abstraction.
 
-- Chạy được level 1: Chỉnh sửa va chạm với biên, đá, vợt mượt
+3. Applies multiple design patterns: 
+- Factory: BrickFactory 
+- Behavior Pattern: GameLoop
+- Facade: World, MainMenu, LevelSelect
+- Strategy: Storage, ScoringSystem, ThemeManager
+- State: MainMenu, LevelSelect, Setting, InGame, End
+- Observer: EventBus, MainMenu, LevelSelect, Setting, End, Shop
+- Command: InGame
+- Singleton: AudioSystem, ScoringSystem, JSonStorage, SQLiteStorage, ThemeManager
+- Object Pool: PowerUpPool
+- Reposity Pattern: PlayerRepository, ScoreRepository
+- Builder: ButtonUI
+- MVC: Game, World, ui/screen/*
+- Logger: Logger, ErrorHandle
 
-- Chuyển màn từ start sang level
+4. Features multithreading for smooth gameplay and responsive UI.
+- Luồng Game Loop 60 fps -> GameLoop
+- Luồng Render -> Game, GameLoop
+- Thread âm thanh -> AudioSystem
+- I/O -> Storage, Game, MockServer
 
-- Hiện HUD
+5. Includes sound effects, animations, and power-up systems.
+6. Supports save/load game functionality and leaderboard system.
 
-- Vẽ bằng canvas
+Game mechanics:
+- 
 
-B - Tuần 2 :
+- 
 
-- Thêm settings chọn 3 loại nhạc, thêm âm thanh hitbrick
+- 
 
-- Tạo 12 level 
+...
+---
 
-- Thêm 4 loại gạch
+UML Diagram
 
-- Ghi nhận thành tích
+...
+---
 
-- Thêm powerups
+Design Patterns Implementation
+1. ...
+Used in :
+Purpose :
+---
 
-- Chỉnh collision cho va chạm mượt
+**Multithreading Implementation**
 
-![alt text](image.png)
+...
+---
 
-![alt text](image-1.png)
+**Installation**
+1. Clone the project from the repository.
+2. Open the project in the IDE.
+3. Run the project.
 
-![alt text](image-2.png)
+**Usage**
+
+**Control**
+...
+
+**How to Play**
+1. 
+2. 
+3. 
+...
+
+**Power-ups**
+...
+
+**Scoring System**
+...
+---
+
+**Demo**
+...
+---
+
+**Future Improvements**
+...
+---
+
+**Technologies Used**
+...
+---
+
+**License**
+... 
+---
+
+**Notes**
+...
+---
+
+*Last update: 12/11/2025*
+

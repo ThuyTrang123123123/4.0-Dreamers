@@ -10,6 +10,8 @@ import java.util.Map;
 public class SQLiteStorage implements Storage {
     private static final String DB_URL = "jdbc:sqlite:src/main/resources/data/game.db";
     private Connection conn;
+    private static final SQLiteStorage INSTANCE = new SQLiteStorage();
+    public static SQLiteStorage getInstance() { return INSTANCE; }
 
     public SQLiteStorage() {
         try {
@@ -95,5 +97,28 @@ public class SQLiteStorage implements Storage {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void putRaw(String key, String value) {
+        try (PreparedStatement pstmt =
+                     conn.prepareStatement("REPLACE INTO storage (key, value) VALUES (?, ?)")) {
+            pstmt.setString(1, key);
+            pstmt.setString(2, value);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getRaw(String key) {
+        try (PreparedStatement pstmt =
+                     conn.prepareStatement("SELECT value FROM storage WHERE key = ?")) {
+            pstmt.setString(1, key);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) return rs.getString("value");
+            }
+        } catch (Exception e) {
+        }
+        return null;
     }
 }

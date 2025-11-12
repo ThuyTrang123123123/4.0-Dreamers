@@ -54,7 +54,7 @@ public class PlayerRepository {
             data.put("highestLevelUnlocked", Math.max(1, level));
             storage.save("player", data);
         } catch (Exception e) {
-            System.err.println("⚠️ Không lưu được highestLevelUnlocked: " + e.getMessage());
+            System.err.println("Không lưu được highestLevelUnlocked: " + e.getMessage());
         }
     }
 

@@ -24,10 +24,6 @@ public class Level {
         generateLevel(currentLevel);
     }
 
-    private String pathForLevel() {
-        return "/images/Level " + currentLevel + ".png";
-    }
-
     public Image getBackgroundImage() {
         if (backgroundImage == null) {
             try {
@@ -41,6 +37,10 @@ public class Level {
             }
         }
         return backgroundImage;
+    }
+
+    private String pathForLevel() {
+        return "/images/Level " + currentLevel + ".png";
     }
 
     private void generateLevel(int level) {
@@ -84,8 +84,6 @@ public class Level {
     private void generateLevel2() {
         String[][] pattern = {
                 {"", "H", "", "", "", "", "H", ""},
-                {"", "", "H", "N", "H", "", "", ""},
-                {"", "H", "N", "", "N", "H", "", ""},
                 {"", "", "H", "H", "H", "H", "", ""},
                 {"", "H", "N", "N", "N", "N", "H", ""},
                 {"H", "N", "", "", "", "", "N", "H"},
@@ -344,13 +342,3 @@ public class Level {
         generateLevel(this.currentLevel);
     }
 }
-
-//Test:
-//        {"", "", "", "", "", "", "", ""},
-//        {"", "", "", "", "", "", "", ""}
-//        {"", "N", "", "", "", "", "", "", ""},
-//        {"", "", "", "", "", "", "", ""},
-//        {"", "", "", "", "", "", "", "", ""},
-//        {"", "", "", "", "", "", "", ""},
-//        {"", "", "", "", "", "", "", "", ""},
-//        {"", "", "", "", "", "", "", ""}
