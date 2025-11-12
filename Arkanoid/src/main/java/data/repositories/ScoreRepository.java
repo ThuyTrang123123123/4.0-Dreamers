@@ -99,7 +99,7 @@ public class ScoreRepository {
             scores.add(newEntry);
         }
 
-        storage.loadList(getDynamicScoresKey());
+        storage.saveList(getDynamicScoresKey(), scores);
     }
 
 }

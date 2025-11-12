@@ -98,7 +98,6 @@ public class Collision {
                     double chance = Math.random();
                     if (chance < 0.25) {
                         Class<? extends PowerUp> type;
-                        /**
                         double r = Math.random();
                         if (r < 1.0 / 9) {
                             type = BonusCoin.class;
@@ -118,8 +117,7 @@ public class Collision {
                             type = EnLargeBall.class;
                         } else {
                             type = ShootPaddle.class;
-                        }**/
-                        type = ShootPaddle.class;
+                        }
                         PowerUp pu = world.getPowerUpPool().acquire(type, brick.getX(), brick.getY());
                         world.getPowerUps().add(pu);
                     }

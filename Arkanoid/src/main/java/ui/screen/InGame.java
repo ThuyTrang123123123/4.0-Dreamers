@@ -22,7 +22,7 @@ public class InGame {
     private Label scoreLabel;
     private Label livesLabel;
     private Label bricksLabel;
-    private Label rankLabel;
+   // private Label rankLabel;
     private final Game game;
     private final ScoringSystem scoring;
     private final AchievementSystem achievements;
@@ -54,14 +54,10 @@ public class InGame {
         bricksLabel.setFont(Fonts.main(18));
         bricksLabel.setTextFill(Colors.TEXT);
 
-        rankLabel = new Label("🥉 Đồng");
-        rankLabel.setFont(Fonts.main(18));
-        rankLabel.setTextFill(Colors.TEXT);
-
         ButtonUI pauseBtn = new ButtonUI("Pause");
         pauseBtn.setOnAction(e -> game.showPause());
 
-        HBox hudBar = new HBox(30, scoreLabel, livesLabel, bricksLabel, rankLabel, pauseBtn);
+        HBox hudBar = new HBox(30, scoreLabel, livesLabel, bricksLabel, pauseBtn);
         hudBar.setAlignment(Pos.CENTER);
         hudBar.setStyle("-fx-padding: 10; -fx-background-color: #" + colorToHex(Colors.SECONDARY) + ";");
 
@@ -86,11 +82,7 @@ public class InGame {
         bricksLabel.setFont(Fonts.main(18));
         bricksLabel.setTextFill(Colors.TEXT);
 
-        rankLabel = new Label("🥉 Đồng");
-        rankLabel.setFont(Fonts.main(18));
-        rankLabel.setTextFill(Colors.TEXT);
-
-        HBox hudBar = new HBox(40, scoreLabel, livesLabel, bricksLabel, rankLabel);
+        HBox hudBar = new HBox(40, scoreLabel, livesLabel, bricksLabel);
         hudBar.setAlignment(Pos.TOP_LEFT);
         hudBar.setPadding(new Insets(10));
         hudBar.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 8;");
@@ -105,7 +97,7 @@ public class InGame {
         scoreLabel.setText("Score: " + scoring.getScore());
         livesLabel.setText("Lives: " + scoring.getLives());
         bricksLabel.setText("Bricks: " + scoring.getBricksDestroyed());
-        rankLabel.setText(achievements.getCurrentRankIcon() + " " + achievements.getCurrentRankName());
+       // rankLabel.setText(achievements.getCurrentRankIcon() + " " + achievements.getCurrentRankName());
     }
 
     private String colorToHex(Color color) {
