@@ -33,8 +33,8 @@ public class Shop {
         this.listener = listener;
     }
 
-    private static final int COST_C = 30;
-    private static final int COST_T = 50;
+    private static final int COST_C = 3;
+    private static final int COST_T = 5;
 
     public Scene create(Stage stage) {
         if (game == null || game.getWorld() == null) {
@@ -47,8 +47,8 @@ public class Shop {
         Runnable refreshPoints = () -> {
             int wallet = game.getWorld().getScoring().getWallet();
             pointsLbl.setText("Scores you have: " + wallet
-                    + "\n You need 30 score to buy Christmas Mode"
-                    + "\n You need 50 score to buy LunarYear Mode"
+                    + "\n You need 3 score to buy Christmas Mode"
+                    + "\n You need 5 score to buy LunarYear Mode"
                     );
         };
         refreshPoints.run();
