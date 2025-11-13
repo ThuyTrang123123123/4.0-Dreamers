@@ -11,6 +11,9 @@ import ui.widgets.ButtonUI;
 
 import java.util.Objects;
 
+/**
+ * Guide – Màn hình hướng dẫn cách chơi
+ */
 public class Guide {
     public static Scene create(Stage stage) {
         Image bg = new Image(

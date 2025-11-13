@@ -46,7 +46,6 @@ import ui.screen.*;
 import ui.theme.Colors;
 import ui.theme.Fonts;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.scene.paint.Color;
 import javafx.geometry.Insets;
 import ui.theme.ThemeManager;
@@ -449,7 +448,6 @@ public class Game extends Application {
 
         System.out.println("Score saved ONCE for " + reason + " as " + playerName + ": " + finalScore);
 
-        // === THÊM VÀO ĐÂY / ĐẢM BẢO BẠN CÓ DÒNG NÀY ===
         // Nếu game kết thúc (thắng hoặc thua), xóa file "progress" (run này đã kết thúc)
         if (reason.equals("GAME_OVER") || reason.equals("WIN")) {
             storage.delete(getDynamicProgressKey());
@@ -528,7 +526,7 @@ public class Game extends Application {
     }
 
     public void showLeaderboard() {
-        // --- 1. Lấy Top 10 Toàn Cầu (Giữ nguyên) ---
+        // 1. Lấy Top 10 Toàn Cầu (Giữ nguyên)
         List<Map<String, Object>> topScores = leaderboardClient.getTopScores(10);
 
         VBox leaderboardBox = new VBox(10);
@@ -540,7 +538,7 @@ public class Game extends Application {
         title.setTextFill(Colors.PRIMARY);
         leaderboardBox.getChildren().add(title);
 
-        // --- 2. Hiển thị Top 10 Toàn Cầu (Giữ nguyên) ---
+        // 2. Hiển thị Top 10 Toàn Cầu (Giữ nguyên)
         for (int i = 0; i < topScores.size(); i++) {
             Map<String, Object> entry = topScores.get(i);
 
@@ -563,7 +561,7 @@ public class Game extends Application {
             leaderboardBox.getChildren().add(scoreLabel);
         }
 
-        // --- 3. Thêm một đường kẻ phân cách ---
+        // 3. Thêm một đường kẻ phân cách
         // (Tạo khoảng cách trực quan)
         VBox.setMargin(title, new Insets(0, 0, 15, 0)); // Thêm margin dưới title
         javafx.scene.shape.Line separator = new javafx.scene.shape.Line(0, 0, 300, 0);
@@ -572,7 +570,7 @@ public class Game extends Application {
         leaderboardBox.getChildren().add(separator);
 
 
-        // --- 4. LOGIC MỚI: Hiển thị Thành Tích Cá Nhân ---
+        // 4. LOGIC MỚI: Hiển thị Thành Tích Cá Nhân
         String currentUser = AccountManager.getLoggedInUser();
 
         // Chỉ hiển thị nếu có người dùng đăng nhập (không phải Guest)
@@ -616,10 +614,10 @@ public class Game extends Application {
             guestLabel.setStyle("-fx-text-fill: #777777;");
             leaderboardBox.getChildren().add(guestLabel);
         }
-        // --- Kết thúc Logic Mới ---
+        // Kết thúc Logic mới
 
 
-        // --- 5. Hiển thị cửa sổ (Giữ nguyên) ---
+        //  5. Hiển thị cửa sổ (Giữ nguyên)
         Scene leaderboardScene = new Scene(leaderboardBox, 400, 600);
         Stage leaderboardStage = new Stage();
         leaderboardStage.setTitle("Leaderboard");
@@ -668,7 +666,7 @@ public class Game extends Application {
                     highestLevelFound = level;
                 }
             }
-            // Trả về level cao nhất bạn TỪNG CHƠI
+            // Trả về level cao nhất bạn từng chơi
             return highestLevelFound;
 
         } catch (Exception e) {

@@ -14,10 +14,10 @@ import javafx.geometry.Rectangle2D;
  * Có thể được mở rộng để tạo nhiều loại khác nhau như BonusCoin, ExtraLife,...
  */
 public abstract class PowerUp {
-    protected double x, y;           // Tọa độ
-    protected double width, height;  // Kích thước
+    protected double x, y;            // Tọa độ
+    protected double width, height;   // Kích thước
     protected double velocityY = 100; // Tốc độ rơi
-    protected Color color = Color.AQUA;           // Màu hiển thị
+    protected Color color = Color.AQUA; // Màu hiển thị
     protected boolean collected = false; // Đã được ăn chưa
     protected boolean active = true;     // Còn tồn tại trên màn hình không
     private boolean firstUpdate = true;
@@ -90,7 +90,6 @@ public abstract class PowerUp {
      */
     public abstract void onCollected(World world);
 
-    // === Getter / Setter ===
     public boolean isActive() { return active; }
     public double getX() { return x; }
     public double getY() { return y; }

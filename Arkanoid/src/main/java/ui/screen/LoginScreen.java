@@ -15,6 +15,9 @@ import ui.widgets.ButtonUI;
 import java.io.File;
 import ui.screen.MainMenu;
 
+/**
+ * LoginScreen – Màn hình đăng nhập, xử lý xác thực người dùng.
+ */
 public class LoginScreen {
     private final Stage stage;
     private final AccountManager accountManager;

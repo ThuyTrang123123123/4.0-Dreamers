@@ -5,8 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 /**
- * Sprite - Quản lý hoạt ảnh theo sprite sheet
- * Dùng cho các hiệu ứng như Explosion, Animation, v.v.
+ * Sprite - dùng làm animation cho hiệu ứng nổ gạch
  */
 public class Sprite {
     private Image image;
@@ -15,6 +14,7 @@ public class Sprite {
     private int frameDelay = 5;  // số lần update trước khi chuyển frame
     private int frameCounter = 0;
     private double scale = 0.25;
+
     public Sprite(Image image, int columns, int rows) {
         this.image = image;
 
@@ -30,6 +30,7 @@ public class Sprite {
             }
         }
     }
+
     public void update() {
         frameCounter++;
         if (frameCounter >= frameDelay) {
@@ -40,6 +41,7 @@ public class Sprite {
             }
         }
     }
+
     public void render(GraphicsContext gc, double x, double y) {
         Rectangle2D frame = frames[currentFrame];
         double w = frame.getWidth() * scale;

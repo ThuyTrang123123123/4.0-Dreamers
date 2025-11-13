@@ -3,6 +3,10 @@ package engine;
 import entities.Ball;
 import entities.bricks.Brick;
 
+/**
+ * Physics- logic bóng bật lại khi va chạm
+ */
+
 public class Physics {
 
     public static void reflectBall(Ball ball, Brick brick) {

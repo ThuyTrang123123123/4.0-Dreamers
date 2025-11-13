@@ -11,6 +11,9 @@ import ui.widgets.ButtonUI;
 
 import java.util.Objects;
 
+/**
+ * Introduce – Màn hình giới thiệu game,  chứa cốt truyện , hướng dẫn nút bấm
+ */
 public class Introduce {
     public Scene create(Stage stage) {
         Image bg = new Image(

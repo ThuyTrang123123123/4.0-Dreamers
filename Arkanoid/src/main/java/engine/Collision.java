@@ -13,6 +13,10 @@ import javafx.scene.image.Image;
 
 import java.util.List;
 
+/**
+ * Collison-xử lý va chạm các vật thể
+ */
+
 public class Collision {
 
 

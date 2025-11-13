@@ -10,10 +10,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-
 /**
- * PowerUp: Double Ball — Tạo thêm 1 quả bóng mới.
+ * DoubleBall – Nhân đôi số lượng bóng đang hoạt động.
  */
+
 public class DoubleBall extends PowerUp {
 
     private final double duration = 8.0;

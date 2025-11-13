@@ -4,6 +4,10 @@ import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
+/**
+ * ScoringSystem.
+ * Chịu trách nhiệm quản lý điểm số, mạng sống và số lượng gạch đã phá hủy.
+ */
 public class ScoringSystem {
     private final IntegerProperty score;
     private final IntegerProperty lives;

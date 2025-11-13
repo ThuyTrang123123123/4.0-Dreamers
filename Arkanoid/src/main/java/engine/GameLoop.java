@@ -4,6 +4,10 @@ import javafx.animation.AnimationTimer;
 import core.Game;
 import javafx.application.Platform;
 
+/**
+ * Gameloop-vòng lặp game
+ */
+
 public class GameLoop implements Runnable {
     private volatile boolean running;
     private final int FPS = 60;

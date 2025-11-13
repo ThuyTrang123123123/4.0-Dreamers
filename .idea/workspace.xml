@@ -5,10 +5,103 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fcbb384-3dd7-4502-a3e2-4ef6ed75b2d7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/Shop.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/Shop.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2025-11-12 23-58-17.mkv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Arkanoid/.idea/.name" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Arkanoid/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Arkanoid/src/main/resources/docs/uml/src.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Arkanoid/src/main/resources/docs/uml/src.uml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Bullet.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DoubleBall.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ELB.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EnlargePaddle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ExtraLife.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShootPaddle-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShootPaddle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShrinkPaddle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SlowBall.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpeedBall.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bonusCoin.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/image-3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/image-4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/image-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/4.0-Dreamers.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/4.0-Dreamers.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/core/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/core/Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/core/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/core/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/core/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/core/HelloApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/core/Level.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/core/Level.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/core/World.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/core/World.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/data/AccountManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/data/AccountManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/data/repositories/PlayerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/data/repositories/PlayerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/data/repositories/ScoreRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/data/repositories/ScoreRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/Collision.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/Collision.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/GameLoop.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/GameLoop.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/Physics.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/Physics.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/PlayExploding.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/PlayExploding.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/PowerUpPool.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/PowerUpPool.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/Sprite.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/engine/Sprite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/Ball.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/Ball.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/Bullet.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/Bullet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/Paddle.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/Paddle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/BreakableBrick.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/BreakableBrick.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/Brick.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/Brick.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/ExplodingBrick.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/ExplodingBrick.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/HardBrick.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/HardBrick.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/NormalBrick.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/NormalBrick.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/UnbreakableBrick.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/UnbreakableBrick.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/factory/BrickFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/bricks/factory/BrickFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/BonusCoin.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/BonusCoin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/DoubleBall.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/DoubleBall.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/EnLargeBall.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/EnLargeBall.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/EnlargePaddle.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/EnlargePaddle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/ExtraLife.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/ExtraLife.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/PowerUp.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/PowerUp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/ShootPaddle.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/ShootPaddle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/ShrinkPaddle.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/ShrinkPaddle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/SlowBall.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/SlowBall.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/SpeedBall.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/entities/powerups/SpeedBall.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/net/LeaderboardClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/net/LeaderboardClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/systems/AchievementSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/systems/AchievementSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/systems/ScoringSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/systems/ScoringSystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/End.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/End.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/Guide.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/Guide.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/InGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/InGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/Introduce.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/Introduce.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/LevelSelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/LevelSelect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/LoginScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/LoginScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/MainMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/screen/Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/theme/Colors.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/theme/Colors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/theme/Fonts.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/theme/Fonts.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/widgets/ButtonUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/java/ui/widgets/ButtonUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/images/ShootPaddle.png" beforeDir="false" afterPath="$PROJECT_DIR$/Arkanoid/src/main/resources/images/ShootPaddle.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/2076685.eps" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/2076686.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/2076687.ai" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/2307-w006-n001-155B-p12-155.eps" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/2307-w006-n001-155B-p12-155.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/72431-OE45BK-469.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/72431-OE45BO-598.ai" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/72431-OE45BY-124.eps" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/85bceffd-613e-47e2-949c-b20b6a5f620b.eps" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/85bceffd-613e-47e2-949c-b20b6a5f620b.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/9747525.ai" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/9747526.eps" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/9747527.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/Fonts.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/GOLD_GAME_LOOK_PODIUM.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/GOLD_GAME_LOOK_PODIUM.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/LOSE_Mesa de trabajo 1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/License free.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/License premium.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/Lose.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/VICTORY_Mesa de trabajo 1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/Win.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arkanoid/src/main/resources/themes/Win_Mesa de trabajo 1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +143,7 @@
     "JUnit.HandleBallWallTest.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "keep-new",
+    "git-widget-placeholder": "Merging keep-new",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Trang/4.0-Dreamers",
     "project.structure.last.edited": "Modules",

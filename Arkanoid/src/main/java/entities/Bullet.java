@@ -4,6 +4,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.geometry.Rectangle2D;
 
+/**
+ * Bullet – Đạn được bắn ra từ Paddle khi có power-up ShootPaddle.
+ */
 public class Bullet {
     private double x, y;
     private final double speed = 500;

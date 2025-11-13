@@ -21,6 +21,9 @@ import javafx.scene.control.ButtonType;
 import java.util.Optional;
 import java.util.Objects;
 
+/**
+ * MainMenu – Màn hình menu chính, nơi người chơi bắt đầu hoặc truy cập các tùy chọn khác.
+ */
 public class MainMenu {
     public static Scene cachedScene;
     public static Scene cachedScenePractice;
